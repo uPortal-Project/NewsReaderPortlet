@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
+	                    http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+	version="1.0">
+
+    <portlet>
+        <portlet-name>news</portlet-name>
+        <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+        <init-param>
+            <name>contextConfigLocation</name>
+            <value>/WEB-INF/context/portlet/news.xml</value>
+        </init-param>
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+            <portlet-mode>edit</portlet-mode>
+            <portlet-mode>help</portlet-mode>
+        </supports>
+        <portlet-info>
+            <title>My news</title>
+        </portlet-info>
+        <security-role-ref>
+            <role-name>everyone</role-name>
+            <role-link>local.0</role-link>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>newsAdmin</role-name>
+            <role-link>local.110</role-link>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>student</role-name>
+            <role-link>local.104</role-link>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>staff</role-name>
+            <role-link>local.106</role-link>
+        </security-role-ref>
+    </portlet>
+    
+    <user-attribute>
+        <name>username</name>
+    </user-attribute>
+    <user-attribute>
+        <name>password</name>
+    </user-attribute>
+    <user-attribute>
+        <name>user.name</name>
+    </user-attribute>
+    <user-attribute>
+        <name>user.name.full</name>
+    </user-attribute>
+    <user-attribute>
+        <name>contentGroup</name>
+    </user-attribute>
+
+</portlet-app>

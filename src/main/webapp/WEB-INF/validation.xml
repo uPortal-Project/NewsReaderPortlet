@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC
+  "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN"
+  "http://jakarta.apache.org/commons/dtd/validator_1_1.dtd">
+<form-validation>
+    <formset>
+        <form name="newsListingCommand">
+            <field property="name" depends="required">
+                <arg0 key="portlet.news.form.name"/>
+            </field>
+            <field property="url" depends="required">
+                <arg0 key="portlet.news.form.url"/>
+            </field>
+        </form>
+    </formset>
+</form-validation>

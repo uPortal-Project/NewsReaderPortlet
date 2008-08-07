@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="true" default-cascade="all-delete-orphan">
+
+    <class name="org.jasig.portlet.newsreader.NewsDefinition" table="NEWS_STORE">
+        
+        <!-- BASE CLASS PROPERTIES -->
+        <!-- We don't actually intend to use the base class on its own -->
+        
+        <!-- unique id -->
+        <id name="id" type="long" unsaved-value="-1">
+            <column name="NEWS_ID" not-null="true"/>
+            <generator class="native"/>
+        </id>
+
+        <!-- discriminator to determine whether this is an administratively 
+            or user-defined news definition -->
+        <discriminator column="NEWS_LISTING_TYPE" type="string"/>
+        
+        <!-- display name -->
+        <property name="name" type="string">
+            <column name="NEWS_NAME" length="100"/>
+        </property>
+        
+        <!-- full classname of the adapter for retrieving the news we're defining -->
+        <property name="className" type="string">
+            <column name="NEWS_CLASS" length="100"/>
+        </property>
+        
+        <!-- news definition parameters -->
+        <map name="parameters" lazy="false" table="NEWS_PARAMETER" cascade="all-delete-orphan">
+            <key column="NEWS_ID"/>
+            <index column="NEWS_PARAMETER_NAME" type="string"/>
+            <element type="string" column="NEWS_PARAMETER_VALUE" not-null="true"/>
+        </map>
+
+        
+        <!-- SUBCLASSES -->
+
+        <!-- user-defined newss and their configurations -->
+        <subclass name="org.jasig.portlet.newsreader.UserDefinedNewsDefinition"
+            discriminator-value="UD">
+            
+            <!-- configuration for this user-defined news -->
+            <one-to-one name="userConfiguration" class="org.jasig.portlet.newsreader.UserDefinedNewsConfiguration"
+                property-ref="newsDefinition">
+            </one-to-one>
+            
+        </subclass>
+        
+
+        <!-- admin-defined, system-wide newss -->
+        <subclass name="org.jasig.portlet.newsreader.PredefinedNewsDefinition"
+            discriminator-value="PD">
+        
+            <!-- user configurations and preferences for pre-defined newss
+                these allow users to hide default system newss and potentially
+                set user-specific parameters -->
+            <set name="userConfigurations" inverse="true" cascade="delete">
+                <key column="NEWS_ID"/>
+                <one-to-many
+                    class="org.jasig.portlet.newsreader.PredefinedNewsConfiguration"/>
+            </set>
+            
+            <set name="defaultRoles" lazy="true" table="NEWS_ROLE" cascade="all-delete-orphan"> 
+                <key column="NEWS_ID"/> 
+                <element type="string" column="ROLE_NAME" not-null="true"/> 
+            </set> 
+            
+        </subclass>
+
+    </class>
+
+</hibernate-mapping>
