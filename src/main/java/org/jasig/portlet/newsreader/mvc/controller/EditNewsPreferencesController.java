@@ -23,21 +23,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.jasig.portlet.newsreader.mvc.controller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jasig.portlet.newsreader.NewsConfiguration;
-import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
-import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
-import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
-import org.jasig.portlet.newsreader.dao.NewsStore;
-import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.AbstractController;
-
-import javax.portlet.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletSession;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.newsreader.NewsConfiguration;
+import org.jasig.portlet.newsreader.NewsSet;
+import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
+import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
+import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
+import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
+import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.mvc.AbstractController;
 
 
 /**
@@ -58,25 +66,33 @@ public class EditNewsPreferencesController extends AbstractController {
 
         Map<String, Object> model = new HashMap<String, Object>();
 
-        // get user information
-        Map userinfo = (Map) request.getAttribute(PortletRequest.USER_INFO);
-        String subscribeId = (String) userinfo.get(userToken);
-
-        // add the user-defined newss to the model
-        List<UserDefinedNewsConfiguration> myNewsConfigurations = newsStore.getUserDefinedNewsConfigurations(subscribeId, false);
+        PortletSession session = request.getPortletSession();
+        Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
+        NewsSet set = setCreationService.getNewsSet(setId, request);
+        setId = set.getId();
+        Set<NewsConfiguration> configurations = set.getNewsConfigurations();
+        
+        // divide the configurations into user-defined and pre-defined
+        // configurations for display
+        List<UserDefinedNewsConfiguration> myNewsConfigurations = new ArrayList<UserDefinedNewsConfiguration>();
+        List<PredefinedNewsConfiguration> predefinedNewsConfigurations = new ArrayList<PredefinedNewsConfiguration>();
+        for (NewsConfiguration configuration : configurations) {
+        	if (configuration instanceof UserDefinedNewsConfiguration) {
+        		myNewsConfigurations.add((UserDefinedNewsConfiguration) configuration);
+        	} else if (configuration instanceof PredefinedNewsConfiguration) {
+        		predefinedNewsConfigurations.add((PredefinedNewsConfiguration) configuration);
+        	}
+        }
+        
         model.put("myNewsConfigurations", myNewsConfigurations);
-
-        // add the predefined newss to the model
-        List<PredefinedNewsConfiguration> predefinedNewsConfigurations = newsStore.getPredefinedNewsConfigurations(subscribeId, false);
         model.put("predefinedNewsConfigurations", predefinedNewsConfigurations);
 
         // get the user's role listings
-        PortletSession session = request.getPortletSession();
-        Set<String> userRoles = (Set<String>) session.getAttribute("userRoles");
+        Set<String> userRoles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
 
-        // get a list of predefined newss the user doesn't
+        // get a list of predefined feeds the user doesn't
         // currently have configured
-        List<PredefinedNewsDefinition> definitions = newsStore.getHiddenPredefinedNewsDefinitions(subscribeId, userRoles);
+        List<PredefinedNewsDefinition> definitions = newsStore.getHiddenPredefinedNewsDefinitions(setId, userRoles);
         model.put("hiddenFeeds", definitions);
 
         model.put("predefinedEditActions", predefinedEditActions);
@@ -91,6 +107,9 @@ public class EditNewsPreferencesController extends AbstractController {
         Long id = Long.parseLong(request.getParameter("id"));
         String actionCode = request.getParameter("actionCode");
         PortletSession session = request.getPortletSession();
+        Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
+        NewsSet set = setCreationService.getNewsSet(setId, request);
+        setId = set.getId();
 
         if (actionCode.equals("delete")) {
             NewsConfiguration config = newsStore.getNewsConfiguration(id);
@@ -111,22 +130,13 @@ public class EditNewsPreferencesController extends AbstractController {
             //hidden.remove(config.getId());
         } else if (actionCode.equals("showNew")) {
             // get user information
-            Map userinfo = (Map) request.getAttribute(PortletRequest.USER_INFO);
-            String subscribeId = (String) userinfo.get(userToken);
             PredefinedNewsDefinition definition = (PredefinedNewsDefinition) newsStore.getNewsDefinition(id);
             log.debug("definition to save " + definition.toString());
             PredefinedNewsConfiguration config = new PredefinedNewsConfiguration();
-            config.setSubscribeId(subscribeId);
             config.setNewsDefinition(definition);
+            config.setNewsSet(set);
             newsStore.storeNewsConfiguration(config);
         }
-    }
-
-
-    private String userToken = "user.login.id";
-
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
     }
 
 
@@ -140,6 +150,11 @@ public class EditNewsPreferencesController extends AbstractController {
 
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
+    }
+
+    private NewsSetResolvingService setCreationService;
+    public void setSetCreationService(NewsSetResolvingService setCreationService) {
+    	this.setCreationService = setCreationService;
     }
 
 }

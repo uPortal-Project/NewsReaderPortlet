@@ -23,21 +23,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.jasig.portlet.newsreader.mvc.controller;
 
-import com.sun.syndication.feed.synd.SyndFeed;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletSession;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
+import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.IInitializationService;
+import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.mvc.AbstractController;
 
-import javax.portlet.*;
-import java.util.*;
+import com.sun.syndication.feed.synd.SyndFeed;
 
 /*
  * @author Anthony Colebourne
@@ -52,16 +65,15 @@ public class NewsController extends AbstractController {
         Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
 
-        Map userinfo = (Map) request.getAttribute(PortletRequest.USER_INFO);
-
-        // get this portlet's unique subscription id
-        String subscribeId = (String) userinfo.get(userToken);
+        // get this user's id
+        String userId = request.getRemoteUser();
 
         /**
          * If this is a new session, perform any necessary
          * portlet initialization.
          */
 
+		NewsSet set = null;
         if (session.getAttribute("initialized") == null) {
 
             // get a set of all role names currently configured for
@@ -76,18 +88,26 @@ public class NewsController extends AbstractController {
                 if (request.isUserInRole(role))
                     userRoles.add(role);
             }
-            session.setAttribute("userRoles", userRoles);
+            session.setAttribute("userRoles", userRoles, PortletSession.PORTLET_SCOPE);
 
             // determine if this user belongs to the defined news
             // administration group and store the result in the session
             session.setAttribute("isAdmin",
                     request.isUserInRole("newsAdmin"),
-                    PortletSession.APPLICATION_SCOPE);
+                    PortletSession.PORTLET_SCOPE);
 
-            // update the user's news subscriptions to include
-            // any news that have been associated with his or
-            // her role
-            newsStore.initNews(subscribeId, userRoles);
+        	Long setId = Long.parseLong(request.getPreferences().getValue("newsSetId", "-1"));
+            set = setCreationService.getNewsSet(setId, request);
+        	
+        	if (setId >= 0) {
+                // update the user's news subscriptions to include
+                // any news that have been associated with his or
+                // her role
+                newsStore.initNews(set, userRoles);
+        		newsStore.storeNewsSet(set);
+        	}
+        	        	
+        	session.setAttribute("setId", set.getId(), PortletSession.PORTLET_SCOPE);
 
             // set the default number of days to display
             session.setAttribute("items", defaultItems);
@@ -103,15 +123,17 @@ public class NewsController extends AbstractController {
 
         } else {
 
+        	Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
+            set = setCreationService.getNewsSet(setId, request);
 
         }
 
         /**
          * Get all the subscribed feeds for this user, and add them to our feed list
          */
-        List<NewsConfiguration> feeds = newsStore.getNewsConfigurations(subscribeId);
+        Set<NewsConfiguration> feeds = set.getNewsConfigurations();
         model.put("feeds", feeds);
-
+        model.put("isAdmin", (Boolean) session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
 
         SyndFeed feed = null;
         ApplicationContext ctx = this.getApplicationContext();
@@ -150,26 +172,44 @@ public class NewsController extends AbstractController {
     protected void handleActionRequestInternal(ActionRequest request, ActionResponse response) throws Exception {
         log.debug("handleActionRequestInternal");
 
-        Map userinfo = (Map) request.getAttribute(PortletRequest.USER_INFO);
-        String subscribeId = (String) userinfo.get(userToken);
+        PortletSession session = request.getPortletSession();
+        Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
+        NewsSet set = setCreationService.getNewsSet(setId, request);
+        setId = set.getId();
 
         String activeateNews = request.getParameter("activeateNews");
         if (activeateNews != null) {
-            Long activeateNewsId = Long.valueOf(activeateNews);
+            Long activeateNewsId;
+			try {
+				activeateNewsId = Long.valueOf(activeateNews);
+	            // update all relevant feeds!
+	            Set<NewsConfiguration> feeds = set.getNewsConfigurations();
+	            for (NewsConfiguration feedConfig : feeds) {
+	                if (activeateNewsId.compareTo(feedConfig.getId()) == 0) {
+	                    feedConfig.setActive(true);
+	                    newsStore.storeNewsConfiguration(feedConfig);
+	                    log.debug("Set Active and save " + feedConfig.getId());
+	                } else {
+	                    feedConfig.setActive(false);
+	                    newsStore.storeNewsConfiguration(feedConfig);
+	                    log.debug("Clear Active and save " + feedConfig.getId());
+	                }
+	            }
+			} catch (NumberFormatException e) {
+	            Set<NewsConfiguration> feeds = set.getNewsConfigurations();
+	            for (NewsConfiguration feedConfig : feeds) {
+	                if (activeateNews.equals(feedConfig.getNewsDefinition().getName())) {
+	                    feedConfig.setActive(true);
+	                    newsStore.storeNewsConfiguration(feedConfig);
+	                    log.debug("Set Active and save " + feedConfig.getId());
+	                } else {
+	                    feedConfig.setActive(false);
+	                    newsStore.storeNewsConfiguration(feedConfig);
+	                    log.debug("Clear Active and save " + feedConfig.getId());
+	                }
+	            }				
+			}
 
-            // update all relivant feeds!
-            List<NewsConfiguration> feeds = newsStore.getNewsConfigurations(subscribeId);
-            for (NewsConfiguration feedConfig : feeds) {
-                if (activeateNewsId.compareTo(feedConfig.getId()) == 0) {
-                    feedConfig.setActive(true);
-                    newsStore.storeNewsConfiguration(feedConfig);
-                    log.debug("Set Active and save " + feedConfig.getId());
-                } else {
-                    feedConfig.setActive(false);
-                    newsStore.storeNewsConfiguration(feedConfig);
-                    log.debug("Clear Active and save " + feedConfig.getId());
-                }
-            }
         }
     }
 
@@ -178,11 +218,10 @@ public class NewsController extends AbstractController {
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }
-
-    private String userToken = "user.login.id";
-
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
+    
+    private NewsSetResolvingService setCreationService;
+    public void setSetCreationService(NewsSetResolvingService setCreationService) {
+    	this.setCreationService = setCreationService;
     }
 
     private int defaultItems = 2;

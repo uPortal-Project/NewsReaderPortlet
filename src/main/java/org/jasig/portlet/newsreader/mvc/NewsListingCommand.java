@@ -26,7 +26,6 @@ package org.jasig.portlet.newsreader.mvc;
 public class NewsListingCommand {
 
     private Long id;
-    private String subscribeId;
     private String name;
     private String url;
     private boolean displayed;
@@ -43,14 +42,6 @@ public class NewsListingCommand {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getSubscribeId() {
-        return subscribeId;
-    }
-
-    public void setSubscribeId(String subscribeId) {
-        this.subscribeId = subscribeId;
     }
 
     public String getName() {
@@ -76,5 +67,5 @@ public class NewsListingCommand {
     public void setDisplayed(boolean displayed) {
         this.displayed = displayed;
     }
-
+    
 }

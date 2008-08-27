@@ -19,7 +19,7 @@
     <bean id="viewNewsController"
         class="org.jasig.portlet.newsreader.mvc.controller.NewsController">
         <property name="newsStore" ref="newsStore"/>
-        <property name="userToken"><value>${userinfo.userid.key}</value></property>
+        <property name="setCreationService" ref="setCreationService"/>
         <property name="initializationServices">
             <list>
                 <!--
@@ -34,7 +34,7 @@
     <!-- view and edit news preferences -->
     <bean id="editNewsController"
         class="org.jasig.portlet.newsreader.mvc.controller.EditNewsPreferencesController">
-        <property name="userToken" value="${userinfo.userid.key}"/>
+        <property name="setCreationService" ref="setCreationService"/>
         <property name="predefinedEditActions">
             <map>
                 <!-- Add edit screens for custom news adapters -->
@@ -55,13 +55,13 @@
     <!-- add or edit a user-defined news -->
     <bean id="editNewsConfigurationController"
         class="org.jasig.portlet.newsreader.mvc.controller.EditUserRomeController">
+        <property name="setCreationService" ref="setCreationService"/>
         <property name="formView">
             <value>editNewsUrl</value>
         </property>
         <property name="sessionForm">
             <value>false</value>
         </property>
-        <property name="userToken" value="${userinfo.userid.key}"/>
         <property name="commandName" value="newsListingCommand"/>
         <property name="commandClass" value="org.jasig.portlet.newsreader.mvc.NewsListingCommand"/>
         <property name="validator" ref="beanValidator"/>

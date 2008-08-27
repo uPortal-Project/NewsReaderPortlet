@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsDefinitionForm;
+import org.jasig.portlet.newsreader.service.UnsharedNewsSetServiceImpl;
 import org.springframework.validation.BindException;
 import org.springframework.web.portlet.mvc.SimpleFormController;
 
@@ -121,5 +122,6 @@ public class EditNewsDefinitionController extends SimpleFormController {
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }
+    
 
 }

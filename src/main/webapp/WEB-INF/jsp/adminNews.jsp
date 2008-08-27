@@ -29,7 +29,7 @@
 	        			<a href="<portlet:renderURL><portlet:param name="action" value="editNewsDefinition"/>
 	        					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
 	        					title="Edit feed">
-        					<img alt="edit" src="<c:url value="/images/news_edit.png"/>"/>
+        					<img alt="edit" src="<c:url value="/images/pencil.png"/>"/>
        					</a>
 	        		</td>
 	        		<td class="instruction">
@@ -37,7 +37,7 @@
 	        					<portlet:param name="actionCode" value="delete"/>
 	        					<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
 	        					title="Delete feed">
-	        				<img alt="delete" src="<c:url value="/images/news_delete.png"/>"/>
+	        				<img alt="delete" src="<c:url value="/images/rss_delete.png"/>"/>
 	        			</a>
 	        		</td>
 	        	</tr>
@@ -45,7 +45,7 @@
         </table>
         <p>
         	<a href="<portlet:renderURL><portlet:param name="action" value="editNewsDefinition"/></portlet:renderURL>">
-        		<img src="<c:url value="/images/news_add.png"/>" style="vertical-align: middle"/>
+        		<img src="<c:url value="/images/rss_add.png"/>" style="vertical-align: middle"/>
         		add a news feed
         	</a>
         </p>

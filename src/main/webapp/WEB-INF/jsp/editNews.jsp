@@ -38,14 +38,14 @@
 	        			<a href="<portlet:renderURL><portlet:param name="action" value="editUrl"/>
 	        					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
 	        					title="Edit feed">
-	        				<img alt="edit" src="<c:url value="/images/news_edit.png"/>"/>
+	        				<img alt="edit" src="<c:url value="/images/pencil.png"/>"/>
 	        			</a>
 	        		</td>
 	        		<td class="instruction">
 	        			<a href="<portlet:actionURL><portlet:param name="actionCode" value="delete"/>
 	        					<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
 	        					title="Delete feed">
-	        				<img alt="delete" src="<c:url value="/images/news_delete.png"/>"/>
+	        				<img alt="delete" src="<c:url value="/images/rss_delete.png"/>"/>
 	        			</a>
 	        		</td>
 	        		<td class="instruction">
@@ -70,7 +70,7 @@
         	<tr>
         		<td width="7px;">&nbsp;</td>
         		<td colspan="4" style="padding-top: 10px; padding-bottom: 15px; padding-left:5px;">
-			        	<a href="<portlet:renderURL><portlet:param name="action" value="editUrl"/></portlet:renderURL>"><img src="<c:url value="/images/news_add.png"/>" style="vertical-align: middle"/> add a news feed</a>
+			        	<a href="<portlet:renderURL><portlet:param name="action" value="editUrl"/></portlet:renderURL>"><img src="<c:url value="/images/rss_add.png"/>" style="vertical-align: middle"/> add a news feed</a>
 			        	<br/>
         		</td>
         	</tr>
@@ -91,7 +91,7 @@
 			        			<a href="<portlet:renderURL><portlet:param name="action" value="${ editAction }"/>
 			        					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
 			        					title="Edit feed">
-		        					<img alt="edit" src="<c:url value="/images/news_edit.png"/>"/>
+		        					<img alt="edit" src="<c:url value="/images/pencil.png"/>"/>
 	        					</a>
 							</c:when>
 							<c:otherwise>&nbsp;</c:otherwise>

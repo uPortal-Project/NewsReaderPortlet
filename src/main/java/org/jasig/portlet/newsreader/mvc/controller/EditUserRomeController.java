@@ -23,6 +23,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.jasig.portlet.newsreader.mvc.controller;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -31,13 +36,9 @@ import org.jasig.portlet.newsreader.UserDefinedNewsDefinition;
 import org.jasig.portlet.newsreader.adapter.RomeAdapter;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsListingCommand;
+import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.validation.BindException;
 import org.springframework.web.portlet.mvc.SimpleFormController;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
-import java.util.Map;
 
 
 /**
@@ -74,34 +75,17 @@ public class EditUserRomeController extends SimpleFormController {
                 command.setId(listing.getId());
                 command.setName(listing.getNewsDefinition().getName());
                 command.setUrl(listing.getNewsDefinition().getParameters().get("url"));
-                command.setSubscribeId(listing.getSubscribeId());
                 command.setDisplayed(listing.isDisplayed());
 
                 return command;
             } else {
                 // otherwise, construct a brand new form
-
-                // get user information
-                Map userinfo = (Map) request.getAttribute(PortletRequest.USER_INFO);
-                String subscribeId = (String) userinfo.get(userToken);
-
-                // create the form
-                NewsListingCommand command = new NewsListingCommand();
-                command.setSubscribeId(subscribeId);
-                return command;
+                return new NewsListingCommand();
             }
 
         } else {
             // otherwise, construct a brand new form
-
-            // get user information
-            Map userinfo = (Map) request.getAttribute(PortletRequest.USER_INFO);
-            String subscribeId = (String) userinfo.get(userToken);
-
-            // create the form
-            NewsListingCommand command = new NewsListingCommand();
-            command.setSubscribeId(subscribeId);
-            return command;
+            return new NewsListingCommand();
         }
     }
 
@@ -135,12 +119,14 @@ public class EditUserRomeController extends SimpleFormController {
 
             config = new UserDefinedNewsConfiguration();
             config.setNewsDefinition(definition);
-            config.setSubscribeId(form.getSubscribeId());
             config.setDisplayed(form.isDisplayed());
+            PortletSession session = request.getPortletSession();
+            Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
+            config.setNewsSet(setCreationService.getNewsSet(setId, request));
             log.debug("Insert new");
         }
 
-        log.debug("User defined News configuration is \nUser: " + config.getSubscribeId());
+//        log.debug("User defined News configuration is \nUser: " + config.getSubscribeId());
         log.debug("User defined News definition is " + config.getNewsDefinition().getName());
 
         // save the news
@@ -151,16 +137,15 @@ public class EditUserRomeController extends SimpleFormController {
 
     }
 
-    private String userToken = "user.login.id";
-
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
-    }
-
     private NewsStore newsStore;
 
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
+    }
+
+    private NewsSetResolvingService setCreationService;
+    public void setSetCreationService(NewsSetResolvingService setCreationService) {
+    	this.setCreationService = setCreationService;
     }
 
 }
