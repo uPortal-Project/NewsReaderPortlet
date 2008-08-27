@@ -3,7 +3,7 @@
 
 <hibernate-mapping default-lazy="true" default-cascade="all-delete-orphan">
 
-    <class name="org.jasig.portlet.newsreader.NewsDefinition" table="NEWS_STORE">
+    <class name="org.jasig.portlet.newsreader.NewsDefinition" table="NEWS_DEFINITION">
         
         <!-- BASE CLASS PROPERTIES -->
         <!-- We don't actually intend to use the base class on its own -->

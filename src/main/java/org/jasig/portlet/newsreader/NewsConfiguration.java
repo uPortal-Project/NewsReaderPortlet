@@ -34,9 +34,9 @@ public class NewsConfiguration {
 
     private Long id = new Long(-1);
     private NewsDefinition newsDefinition;
+    private NewsSet newsSet;
     private boolean displayed = true;
     private boolean active = true;
-    private String subscribeId;
 
 
     /**
@@ -76,24 +76,6 @@ public class NewsConfiguration {
     }
 
     /**
-     * Get the unique ID for this portlet subscription.
-     *
-     * @return
-     */
-    public String getSubscribeId() {
-        return subscribeId;
-    }
-
-    /**
-     * Set the unique ID for this portlet subscription.
-     *
-     * @param subscribeId
-     */
-    public void setSubscribeId(String subscribeId) {
-        this.subscribeId = subscribeId;
-    }
-
-    /**
      * Get the unique ID for this NewsConfiguration.
      *
      * @return
@@ -127,6 +109,14 @@ public class NewsConfiguration {
      */
 	public void setNewsDefinition(NewsDefinition definition) {
 		this.newsDefinition = definition;
+	}
+
+	public NewsSet getNewsSet() {
+		return newsSet;
+	}
+
+	public void setNewsSet(NewsSet newsSet) {
+		this.newsSet = newsSet;
 	}
 	
 }

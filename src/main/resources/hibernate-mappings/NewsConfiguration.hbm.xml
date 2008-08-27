@@ -18,11 +18,6 @@
             or user-defined news definition -->
         <discriminator column="NEWS_CONFIGURATION_TYPE" type="string"/>
         
-        <!-- portlet subscription id --> 
-        <property name="subscribeId" type="string">
-            <column name="SUBSCRIBE_ID" length="50"/>
-        </property>
-        
         <!-- flag to determine whether this news should be displayed by default -->
         <property name="displayed" type="boolean">
             <column name="DISPLAYED"/>
@@ -32,6 +27,12 @@
         <property name="active" type="boolean">
             <column name="ACTIVE"/>
         </property>
+        
+        <many-to-one 
+            name="newsSet" 
+            class="org.jasig.portlet.newsreader.NewsSet"
+            column="SET_ID" 
+            cascade="none" lazy="false"/> 
         
         
         <!-- SUBCLASSES -->

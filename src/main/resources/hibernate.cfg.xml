@@ -16,6 +16,7 @@
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
         
+        <mapping resource="hibernate-mappings/NewsSet.hbm.xml"/>
         <mapping resource="hibernate-mappings/NewsDefinition.hbm.xml"/>
         <mapping resource="hibernate-mappings/NewsConfiguration.hbm.xml"/>
         

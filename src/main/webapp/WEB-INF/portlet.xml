@@ -28,15 +28,15 @@
         </security-role-ref>
         <security-role-ref>
             <role-name>newsAdmin</role-name>
-            <role-link>local.110</role-link>
+            <role-link>local.2</role-link>
         </security-role-ref>
         <security-role-ref>
             <role-name>student</role-name>
-            <role-link>local.104</role-link>
+            <role-link>local.34</role-link>
         </security-role-ref>
         <security-role-ref>
             <role-name>staff</role-name>
-            <role-link>local.106</role-link>
+            <role-link>local.33</role-link>
         </security-role-ref>
     </portlet>
     
