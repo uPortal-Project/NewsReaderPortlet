@@ -158,6 +158,9 @@ public class NewsController extends AbstractController {
                 } catch (NewsException ex) {
                     log.warn(ex);
                     errors.add("The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+                } catch (Exception ex) {
+                    log.error(ex);
+                    errors.add("The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
                 }
             }
         }
