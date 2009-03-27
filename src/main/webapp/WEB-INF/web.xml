@@ -41,25 +41,6 @@
     <!-- [INSERT JSPC FRAGMENT HERE] -->
 
         
-    <taglib>
-        <taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri>
-        <taglib-location>/WEB-INF/tags/c.tld</taglib-location>
-    </taglib>
-    <taglib>
-        <taglib-uri>http://java.sun.com/portlet</taglib-uri>
-        <taglib-location>/WEB-INF/tld/portlet.tld</taglib-location>
-    </taglib>
-    <taglib>
-        <taglib-uri>http://www.springframework.org/tags</taglib-uri>
-        <taglib-location>/WEB-INF/tags/spring.tld</taglib-location>
-    </taglib>
-    <taglib>
-        <taglib-uri>http://java.sun.com/jsp/jstl/fmt</taglib-uri>
-        <taglib-location>/WEB-INF/tags/fmt.tld</taglib-location>
-    </taglib>
-    <taglib>
-        <taglib-uri>http://java.sun.com/jsp/jstl/functions</taglib-uri>
-        <taglib-location>/WEB-INF/tags/fn.tld</taglib-location>
-    </taglib>
+   
     
 </web-app>
