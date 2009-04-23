@@ -13,13 +13,16 @@
         </property>
     </bean>
     
+    <bean id="sessionKeyGenerator" class="org.jasig.web.util.DefaultSessionKeyGenerator">
+        <property name="seed" value="0" />
+    </bean>
+    
     <!-- Controllers -->
 
     <!-- main portlet view -->
     <bean id="viewNewsController"
         class="org.jasig.portlet.newsreader.mvc.controller.NewsController">
         <property name="newsStore" ref="newsStore"/>
-        <property name="setCreationService" ref="setCreationService"/>
         <property name="initializationServices">
             <list>
                 <!--
@@ -34,7 +37,6 @@
     <!-- view and edit news preferences -->
     <bean id="editNewsController"
         class="org.jasig.portlet.newsreader.mvc.controller.EditNewsPreferencesController">
-        <property name="setCreationService" ref="setCreationService"/>
         <property name="predefinedEditActions">
             <map>
                 <!-- Add edit screens for custom news adapters -->
@@ -85,6 +87,13 @@
     
 	<bean id="helpController" class="org.springframework.web.portlet.mvc.PortletModeNameViewController"/>
     
+    <bean id="ajaxNewsController" class="org.jasig.portlet.newsreader.mvc.controller.AjaxNewsController">
+        <property name="setCreationService" ref="setCreationService"/>
+        <property name="newsStore" ref="newsStore"/>
+        <property name="modelPasser" ref="modelPasser"/>
+        <property name="sessionKeyGenerator" ref="sessionKeyGenerator"/>
+    </bean>
+    
     <!-- Handler Mapping -->
 
     <bean id="parameterMappingInterceptor"
@@ -93,16 +102,19 @@
     <bean id="portletModeParameterHandlerMapping"
         class="org.springframework.web.portlet.handler.PortletModeParameterHandlerMapping">
         <property name="order" value="1"/>
+        <!-- 
         <property name="interceptors">
             <list>
                 <ref bean="parameterMappingInterceptor"/>
             </list>
         </property>
+         -->
         <property name="portletModeParameterMap">
             <map>
                 <entry key="view">
                     <map>
-                        <entry key="list" value-ref="viewNewsController"/>
+                        <entry key="view" value-ref="viewNewsController"/>
+                        <entry key="ajax" value-ref="ajaxNewsController"/>
                     </map>
                 </entry>
                 <entry key="edit">

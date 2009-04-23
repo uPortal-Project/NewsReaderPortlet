@@ -1,0 +1,4 @@
+
+.org-jasig-portlet-newsreader .portlet-rss-scrollable-content { overflow: auto; height: 20em; border: 1px solid #CCCCCC; padding: 0 0.5em 0 0.5em; }
+.org-jasig-portlet-newsreader .portlet-rss-scrollable-content dl { margin:0.5em; padding:0; }
+.org-jasig-portlet-newsreader .portlet-rss-scrollable-content dd { margin:0; padding:0em 0em 0.5em 0em; }

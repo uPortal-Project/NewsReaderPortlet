@@ -129,7 +129,29 @@
             <scope>compile</scope>
         </dependency>
         
+        <dependency>
+            <groupId>org.jasig</groupId>
+            <artifactId>AjaxPortletSupport</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope> 
+        </dependency>
         
+        <dependency>
+            <groupId>org.jasig.resourceserver</groupId>
+            <artifactId>resource-server-utils</artifactId>
+            <version>1.0.0-RC1</version>
+            <scope>compile</scope>            
+        </dependency>
+              
+        <!-- 
+        <dependency>
+  			<groupId>org.json</groupId>
+  			<artifactId>json</artifactId>
+  			<version>20080701</version>
+  			<scope>compile</scope>
+		</dependency>
+         -->
+         
         <!-- ===== Runtime Dependencies ================================== -->
 
         <dependency>
@@ -148,6 +170,21 @@
             <scope>runtime</scope>
         </dependency>
         
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.5</version>
+			<type>jar</type>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+			<type>jar</type>
+			<scope>runtime</scope>
+		</dependency>
 
         <!-- ===== Provided Dependencies ================================== -->
         <dependency>

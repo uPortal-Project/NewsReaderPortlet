@@ -31,11 +31,25 @@
         <servlet-class>org.springframework.web.servlet.ViewRendererServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+	<servlet>
+        <servlet-name>AjaxResponseServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/context/servlet/ajaxResponseServletContext.xml</param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    
     <servlet-mapping>
         <servlet-name>ViewRendererServlet</servlet-name>
         <url-pattern>/WEB-INF/servlet/view</url-pattern>
     </servlet-mapping>
-    
+
+	<servlet-mapping>
+        <servlet-name>AjaxResponseServlet</servlet-name>
+        <url-pattern>/ajaxResponse</url-pattern>
+    </servlet-mapping>
     
 
     <!-- [INSERT JSPC FRAGMENT HERE] -->

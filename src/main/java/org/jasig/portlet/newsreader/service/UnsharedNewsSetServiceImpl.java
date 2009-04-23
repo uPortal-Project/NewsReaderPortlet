@@ -20,63 +20,41 @@ public class UnsharedNewsSetServiceImpl implements NewsSetResolvingService {
 	
     private static Log log = LogFactory.getLog(UnsharedNewsSetServiceImpl.class);
 	
-	public NewsSet getNewsSet(Long id, PortletRequest request) {
-
-		if (id < 0) {
-			// if the id has not yet been set in the session, return a new NewsSet
-			PortletSession session = request.getPortletSession();
-			Set<String> roles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
-			if (request instanceof ActionRequest) {
-				// if this is an action request, go ahead and create a new
-				// set and store it in the database
-				log.debug("creating and saving new set");
-				NewsSet set = createNewsSet((ActionRequest) request, roles);
-				return set;
-			} else {
-				// if this is a render request, we can't set portlet preferences
-				// just return a template news set to use until we can
-				// access the portlet preferences
-				log.debug("creating new template set");
-				return getTemplateNewsSet((RenderRequest) request, roles);
-			}
-		} else {
-			log.debug("retrieving news set " + id);
-			return newsStore.getNewsSet(id);
-		}
-	}
-	
-	public NewsSet createNewsSet(ActionRequest request, Set<String> roles) {
-		NewsSet set = new NewsSet();
-		set.setUserId(request.getRemoteUser());
-		newsStore.initNews(set, roles);
-		newsStore.storeNewsSet(set);
+	public NewsSet getNewsSet(Long id, ActionRequest request) {
+		NewsSet set = null;
+		
 		PortletSession session = request.getPortletSession();
-		session.setAttribute("setId", set.getId(), PortletSession.PORTLET_SCOPE);
-		PortletPreferences preferences = request.getPreferences();
-		try {
-			preferences.setValue("newsSetId", String.valueOf(set.getId()));
-			preferences.store();
-		} catch (ReadOnlyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ValidatorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		if (id < 0) { // No preference set, need to find a set or create a new one
+			log.debug("Creating and saving new set.");
+			set = createNewsSet(request);
+		} else { 
+			// preference already set, just fetch this news
+			log.debug("Retrieving news set " + id);
+			set = newsStore.getNewsSet(id);
 		}
 
+		// Persistant set is now loaded but may still need re-initalising since last use.
+		// by adding setId to session, we signal that initaisation has taken place.
+		
+		if (session.getAttribute("setId") == null) {
+			Set<String> roles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
+			
+			newsStore.initNews(set, roles);
+			newsStore.storeNewsSet(set);
+			session.setAttribute("setId", set.getId(), PortletSession.PORTLET_SCOPE);
+		}
+		
 		return set;
 	}
 	
-	public NewsSet getTemplateNewsSet(RenderRequest request, Set<String> roles) {
+	private NewsSet createNewsSet(ActionRequest request) {
 		NewsSet set = new NewsSet();
 		set.setUserId(request.getRemoteUser());
-		newsStore.initNews(set, roles);
+		newsStore.storeNewsSet(set);
 		return set;
 	}
-
+	
 	private NewsStore newsStore;
 	public void setNewsStore(NewsStore newsStore) {
 		this.newsStore = newsStore;

@@ -4,12 +4,14 @@
 	${model.feed.author}
 </h2>
 <div class="portlet-rss-scrollable-content">
+	<dl>
 	<c:forEach items="${ model.feed.entries }" var="newsItem">
-		<h3>
+		<dt>
 			<a href="${newsItem.link}" target="_blank">
 				<c:out value="${newsItem.title}"/></a>
-		</h3>
-		<p>${newsItem.description.value}</p>
+		</dt>
+		<dd>${newsItem.description.value}</dd>
 	</c:forEach>
+	</dl>
 </div>
 <p><c:out value="${model.feed.copyright}"/></p>

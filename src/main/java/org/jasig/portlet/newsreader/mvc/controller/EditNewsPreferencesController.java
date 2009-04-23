@@ -68,8 +68,7 @@ public class EditNewsPreferencesController extends AbstractController {
 
         PortletSession session = request.getPortletSession();
         Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
-        NewsSet set = setCreationService.getNewsSet(setId, request);
-        setId = set.getId();
+        NewsSet set = newsStore.getNewsSet(setId);
         Set<NewsConfiguration> configurations = set.getNewsConfigurations();
         
         // divide the configurations into user-defined and pre-defined
@@ -108,8 +107,7 @@ public class EditNewsPreferencesController extends AbstractController {
         String actionCode = request.getParameter("actionCode");
         PortletSession session = request.getPortletSession();
         Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
-        NewsSet set = setCreationService.getNewsSet(setId, request);
-        setId = set.getId();
+        NewsSet set = newsStore.getNewsSet(setId);
 
         if (actionCode.equals("delete")) {
             NewsConfiguration config = newsStore.getNewsConfiguration(id);
@@ -151,10 +149,4 @@ public class EditNewsPreferencesController extends AbstractController {
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }
-
-    private NewsSetResolvingService setCreationService;
-    public void setSetCreationService(NewsSetResolvingService setCreationService) {
-    	this.setCreationService = setCreationService;
-    }
-
 }
