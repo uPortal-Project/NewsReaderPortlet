@@ -38,12 +38,12 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.IInitializationService;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.AbstractController;
+import org.springframework.web.portlet.mvc.ParameterizableViewController;
 
 /*
  * @author Anthony Colebourne
  */
-public class NewsController extends AbstractController {
+public class NewsController extends ParameterizableViewController {
 
     private static Log log = LogFactory.getLog(NewsController.class);
 
@@ -96,7 +96,7 @@ public class NewsController extends AbstractController {
         model.put("isAdmin", (Boolean) session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
         
         log.debug("forwarding to /viewNews");
-        return new ModelAndView("viewNews", "model", model);
+        return new ModelAndView(getViewName(), "model", model);
     }
 
     private NewsStore newsStore;

@@ -22,6 +22,7 @@
     <!-- main portlet view -->
     <bean id="viewNewsController"
         class="org.jasig.portlet.newsreader.mvc.controller.NewsController">
+        <property name="viewName" value="viewNews"/>
         <property name="newsStore" ref="newsStore"/>
         <property name="initializationServices">
             <list>
