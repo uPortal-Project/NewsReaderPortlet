@@ -26,10 +26,8 @@
                         news.append($(document.createElement('div')).attr('id', '${n}feed' + j.feeds[i].id));
                         if (j.feeds[i].id == j.activeFeed) selected = i;
                     }
-                    console.log(selected);
                     $('#${n}newsTabs').tabs({ selected: selected });
 
-                    console.log(j.activeFeed, j.feed);
                     displayTheNews(j.activeFeed, j.feed);
                     
                 },"json");
