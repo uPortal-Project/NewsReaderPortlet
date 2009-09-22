@@ -66,6 +66,13 @@ public class AjaxNewsController extends AbstractAjaxController {
 
         // only bother to fetch the active feed
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
+        if (activeFeed == null && jsonFeeds.size() > 0) {
+        	activeFeed = ((JSONObject) jsonFeeds.get(0)).getString("id");
+			PortletPreferences prefs = request.getPreferences();
+			prefs.setValue("activeFeed", activeateNews);
+			prefs.store();
+        }
+        
         if(activeFeed != null) {
 	        NewsConfiguration feedConfig = newsStore.getNewsConfiguration(Long.valueOf(activeFeed));
 	        json.put("activeFeed", feedConfig.getId());        
