@@ -177,7 +177,7 @@
 			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>
-
+        
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
@@ -215,7 +215,25 @@
 
     <build>
         <plugins>
-			<plugin>
+            <plugin>
+                <groupId>net.sf.alchim</groupId>
+                <artifactId>yuicompressor-maven-plugin</artifactId>
+                <version>0.7.1</version>
+                <executions>
+                    <execution>
+                        <goals><goal>compress</goal></goals>
+                    </execution>
+                </executions>        
+                <configuration>
+                    <excludes>
+                        <exclude>**/*.min.js</exclude>
+                    </excludes>
+                    <linebreakpos>10000</linebreakpos>
+                    <suffix>.min</suffix>
+                    <jswarn>false</jswarn>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -223,7 +241,6 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jspc-maven-plugin</artifactId>
@@ -239,7 +256,7 @@
                     <injectString>&lt;!-- [INSERT JSPC FRAGMENT HERE] --&gt;</injectString>
                 </configuration>
                 <dependencies>
-                    <!-- These dependencies are the portlet.tld is needed for JSP compilation -->
+                    <!-- These dependencies are the portlet.tld is needed for JSP compilation --> 
                     <dependency>
                         <groupId>org.apache.pluto</groupId>
                         <artifactId>pluto-taglib</artifactId>

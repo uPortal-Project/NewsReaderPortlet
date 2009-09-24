@@ -24,6 +24,12 @@ var newsreader = newsreader || {};
         return feedResult;
     };
     
+    var initSingle = function(feedResult, that) {
+        that.container.append($(document.createElement('div')).attr('id', that.options.namespace + 'feed' + feedResult.activeFeed));        
+        displayFeed(feedResult, that);
+    };    
+
+    
     /**
      * Initialized a tabbed multi-feed view
      */
@@ -210,6 +216,25 @@ var newsreader = newsreader || {};
     
     // start of creator function
     
+    newsreader.FeedView = function(container, options) {
+        var that = fluid.initView("newsreader.MultipleFeedView", container, options);
+        
+        /**
+         * Initialization method
+         */
+        that.init = function() {
+            var feeds = retrieveFeed(that);
+            that.container.html("");
+            initSingle(feeds, that);
+        };
+        
+        // initialization
+        that.initializedFeeds = [];
+        that.init();
+        
+        return that;
+    };
+
     newsreader.MultipleFeedView = function(container, options) {
         var that = fluid.initView("newsreader.MultipleFeedView", container, options);
         
@@ -237,6 +262,14 @@ var newsreader = newsreader || {};
     
     
     //start of defaults
+
+    fluid.defaults("newsreader.FeedView", {
+        feedView: 'select',
+        summaryView: 'full',
+        scrolling: false,
+        url: null,
+        namespace: null
+    });
 
     fluid.defaults("newsreader.MultipleFeedView", {
         feedView: 'select',
