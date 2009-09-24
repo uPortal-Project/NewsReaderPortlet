@@ -53,6 +53,40 @@
             <role-link>local.33</role-link>
         </security-role-ref>
     </portlet>
+
+    <portlet>
+        <portlet-name>single-feed-news</portlet-name>
+        <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+        <init-param>
+            <name>contextConfigLocation</name>
+            <value>/WEB-INF/context/portlet/single-feed.xml</value>
+        </init-param>
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+        </supports>
+        <portlet-info>
+            <title>RSS Feed</title>
+        </portlet-info>
+        <portlet-preferences>
+            <preference>
+                <name>summaryView</name>
+                <value>full</value>
+            </preference>
+            <preference>
+                <name>maxStories</name>
+                <value>10</value>
+            </preference>
+            <preference>
+                <name>storyView</name>
+                <value>select</value>
+            </preference>
+            <preference>
+                <name>className</name>
+                <value>org.jasig.portlet.newsreader.adapter.RomeAdapter</value>
+            </preference>
+        </portlet-preferences>
+    </portlet>
     
     <user-attribute>
         <name>username</name>
