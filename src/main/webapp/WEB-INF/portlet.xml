@@ -22,6 +22,20 @@
         <portlet-info>
             <title>My news</title>
         </portlet-info>
+        <portlet-preferences>
+            <preference>
+                <name>maxStories</name>
+                <value>10</value>
+            </preference>
+            <preference>
+                <name>storyView</name>
+                <value>select</value>
+            </preference>
+            <preference>
+                <name>feedView</name>
+                <value>scroll-summaries</value>
+            </preference>
+        </portlet-preferences>
         <security-role-ref>
             <role-name>everyone</role-name>
             <role-link>local.0</role-link>

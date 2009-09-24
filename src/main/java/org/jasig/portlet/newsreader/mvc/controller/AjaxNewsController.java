@@ -2,8 +2,8 @@ package org.jasig.portlet.newsreader.mvc.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,12 +52,14 @@ public class AjaxNewsController extends AbstractAjaxController {
         }
         json.put("feeds", jsonFeeds);
        	
+		PortletPreferences prefs = request.getPreferences();
 		String activeateNews = request.getParameter("activeateNews");
 		if (activeateNews != null) {
-			PortletPreferences prefs = request.getPreferences();
 			prefs.setValue("activeFeed", activeateNews);
 			prefs.store();
 		}
+		
+		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
 		
 		
 		SyndFeed feed = null;
@@ -68,7 +70,6 @@ public class AjaxNewsController extends AbstractAjaxController {
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
         if (activeFeed == null && jsonFeeds.size() > 0) {
         	activeFeed = ((JSONObject) jsonFeeds.get(0)).getString("id");
-			PortletPreferences prefs = request.getPreferences();
 			prefs.setValue("activeFeed", activeateNews);
 			prefs.store();
         }
@@ -97,7 +98,7 @@ public class AjaxNewsController extends AbstractAjaxController {
 		            jsonFeed.put("copyright", feed.getCopyright());
 		            
 		            JSONArray jsonEntries = new JSONArray();
-		            for (Iterator i = feed.getEntries().iterator(); i.hasNext();) {
+		            for (ListIterator i = feed.getEntries().listIterator(); i.hasNext() && i.nextIndex() < maxStories;) {
 		            	SyndEntry entry = (SyndEntry) i.next();
 		            	JSONObject jsonEntry = new JSONObject();
 		            	jsonEntry.put("link",entry.getLink());

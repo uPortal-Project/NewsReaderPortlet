@@ -12,4 +12,4 @@
 
 <%@ taglib prefix="rs" uri="http://www.jasig.org/resource-server" %>
 
-<link rel="stylesheet" href="<c:url value="/css/news.css"/>" type="text/css"></link>
+<link rel="stylesheet" href="<c:url value="/css/news.min.css"/>" type="text/css"></link>

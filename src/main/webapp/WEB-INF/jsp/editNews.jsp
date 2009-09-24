@@ -1,19 +1,39 @@
-<html xmlns="http://www.w3c.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:portlet="http://java.sun.com/portlet"
-    xmlns:html="/WEB-INF/tags/html" xmlns:form="http://www.springframework.org/tags/form"
-    xml:lang="en" lang="en">
-    <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
-    <head>
-        <script type="text/javascript">
-        </script>
-        
-        <style type="text/css">
-        	table.edit-news { width: 100%; }
-        	table.edit-news td { font-size: 1.1em; }
-        	table.edit-news td.instruction { color: #666; font-size: 1em; text-align: center; vertical-align: bottom; }
-        </style>
-    </head>
-    <body>
+<jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<portlet:defineObjects/>
+<c:set var="n"><portlet:namespace/></c:set>
+
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.3.2/jquery-1.3.2.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.1/js/fluid-all-1.1.1.min.js"/>"></script>
+
+<style type="text/css">
+	table.edit-news { width: 100%; }
+	table.edit-news td { font-size: 1.1em; }
+	table.edit-news td.instruction { color: #666; font-size: 1em; text-align: center; vertical-align: bottom; }
+</style>
+
+<script type="text/javascript">
+var newsReaderPortlet = newsReaderPortlet || {};
+newsReaderPortlet.jQuery = jQuery.noConflict(true);
+newsReaderPortlet.jQuery(function(){
+    var $ = newsReaderPortlet.jQuery;
+    var savePrefUrl = '<portlet:actionURL><portlet:param name="action" value="saveDisplayPreference"/></portlet:actionURL>';
+
+    $(document).ready(function(){
+        $('#${n}maxStories').change(function(){
+            $.post(savePrefUrl, { prefName: 'maxStories', prefValue: $('#${n}maxStories').val() }, null, 'json');
+        });
+        $('#${n}feedView').change(function(){
+            $.post(savePrefUrl, { prefName: 'feedView', prefValue: $('#${n}feedView').val() }, null, 'json');
+        });
+        $('#${n}storyView').change(function(){
+            $.post(savePrefUrl, { prefName: 'storyView', prefValue: $('#${n}storyView').val() }, null, 'json');
+        });
+    });
+});
+</script>
+    
+    
         <portlet:actionURL var="postUrl"></portlet:actionURL>
 
         <table class="edit-news">
@@ -133,8 +153,39 @@
         		</tr>
         	</c:forEach>
         </table>
+ 
+        <h3 style="margin-left: 7px;">Preferences</h3>
         
-        <br/>
+        <div style="margin-left: 25px">
+	        <p>
+	            <label for="${n}maxStories">Maximum number of stories to display per feed</label>
+	            <c:set var="maxStories" value="${renderRequest.preferences.map['maxStories'][0]}"/>
+                <select id="${n}maxStories">
+                    <c:forTokens items="5,10,15,20" delims="," var="item">
+                        <option ${ maxStories == item ? 'selected="selected"' : '' }>${item}</option>
+                    </c:forTokens>
+                </select>
+	        </p>
+	
+	        <p>
+	            <label for="${n}feedView">Display my feeds as</label>
+                <c:set var="feedView" value="${renderRequest.preferences.map['feedView'][0]}"/>
+	            <select id="${n}feedView">
+	                <option value="tabs" ${ feedView == 'tabs' ? 'selected="selected"' : '' }>tabs</option>
+	                <option value="select" ${ feedView == 'select' ? 'selected="selected"' : '' }>a select menu</option>
+	            </select>
+	        </p>
+	
+	        <p>
+	            <label for="${n}storyView">Display my stories as</label>
+                <c:set var="storyView" value="${renderRequest.preferences.map['storyView'][0]}"/>
+	            <select id="${n}storyView">
+	                <option value="flyout-list" ${ storyView == 'flyout-list' ? 'selected="selected"' : '' }>a list with flyouts</option>
+	                <option value="scroll-summaries" ${ storyView == 'scroll-summaries' ? 'selected="selected"' : '' }>scrolling div</option>
+	            </select>
+	        </p>
+        </div>
+        
         <p><a href="<portlet:renderURL portletMode="help"/>">Need help?</a></p>
         
         <br />
@@ -143,5 +194,3 @@
         	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> Return to news feeds</a>
         </p>
         
-    </body>
-</html>

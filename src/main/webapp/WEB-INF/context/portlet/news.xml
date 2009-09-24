@@ -94,6 +94,11 @@
         <property name="modelPasser" ref="modelPasser"/>
         <property name="sessionKeyGenerator" ref="sessionKeyGenerator"/>
     </bean>
+
+    <bean id="saveDisplayPreferenceController" class="org.jasig.portlet.newsreader.mvc.controller.SaveDisplayPreferenceController">
+        <property name="modelPasser" ref="modelPasser"/>
+        <property name="sessionKeyGenerator" ref="sessionKeyGenerator"/>
+    </bean>
     
     <!-- Handler Mapping -->
 
@@ -124,6 +129,7 @@
                         <entry key="editUrl" value-ref="editNewsConfigurationController"/>
                         <entry key="administration" value-ref="adminNewsController"/>
                         <entry key="editNewsDefinition" value-ref="editNewsDefinitionController"/>
+                        <entry key="saveDisplayPreference" value-ref="saveDisplayPreferenceController"/>
                     </map>
                 </entry>
             </map>
