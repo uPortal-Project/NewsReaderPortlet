@@ -209,6 +209,14 @@
 			<scope>runtime</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+            <type>jar</type>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- ===== Provided Dependencies ================================== -->
         <dependency>
             <groupId>javax.servlet</groupId>
