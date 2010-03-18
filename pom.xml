@@ -97,6 +97,12 @@
             <version>3.2.3.ga</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+            	<exclusion>
+			          <groupId>net.sf.ehcache</groupId>
+			          <artifactId>ehcache</artifactId>
+        		</exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
