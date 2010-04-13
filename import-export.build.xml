@@ -1,0 +1,46 @@
+<project name="NewsReaderPortlet Import/Export" basedir=".">
+
+	<property name="version" value="1.0.0"/>
+
+	<target name="export" description="Exports all News sets and their configurations">
+
+		<fail unless="dir" message="You must specify an export directory '-Ddir={dir}'"/>
+		
+        <!-- Invoke Cernunnos specifying script and parameters -->
+        <java fork="true" failonerror="true" dir="${basedir}" classname="org.danann.cernunnos.runtime.Main">
+            <classpath>
+                <pathelement path="target/NewsReaderPortlet-${version}/WEB-INF/classes"/>
+            	<fileset dir="target/NewsReaderPortlet-${version}/WEB-INF/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+            	<fileset dir="import_export/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <arg value="src/main/resources/org/jasig/portlet/newsreader/io/export.crn"/>
+        	<arg value="${dir}"/>
+        </java>
+    </target>
+
+	<!--	
+    <target name="import" description="Imports all News sets and their configurations">
+
+    	<fail unless="dir" message="You must specify an import directory '-Ddir={dir}'"/>
+
+        <java fork="true" failonerror="true" dir="${basedir}" classname="org.danann.cernunnos.runtime.Main">
+            <classpath>
+                <pathelement path="target/NewsReaderPortlet-${version}/WEB-INF/classes"/>
+            	<fileset dir="target/NewsReaderPortlet-${version}/WEB-INF/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <fileset dir="import_export/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <arg value="src/main/resources/org/jasig/portlet/newsreader/io/import.crn"/>
+            <arg value="${dir}"/>
+        </java>
+
+    </target>
+	-->
+</project>
