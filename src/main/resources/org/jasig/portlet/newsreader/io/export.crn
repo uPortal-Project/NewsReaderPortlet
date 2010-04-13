@@ -1,0 +1,57 @@
+<spring-beans context="${groovy(new File('.').toURI().toURL().toExternalForm())}" location="src/main/webapp/WEB-INF/context/applicationContext.xml">
+
+	
+
+	<!-- Got newsStore loaded from application context -->
+	
+	<sql-query data-source="${groovy(dataSource)}"> 
+		<sql>select distinct SUBSCRIBE_ID from news_configuration where NEWS_CONFIGURATION_TYPE = 'UD'</sql>
+			
+		<subtasks>
+			<groovy>
+				<script>
+					List feeds = newsStore.getUserDefinedNewsConfigurations("${req(SUBSCRIBE_ID)}",false);
+					ScriptAttributes.RESPONSE.setAttribute('feeds', feeds);
+				</script>
+				
+				<subtasks>
+					<with-attribute key="Attributes.NODE" value="${newDoc(news-set)}">
+						<append-node>
+							<name>default set</name>
+						</append-node>	
+							
+						<!-- Establish basic structure of the document... -->
+						<for-each items="${feeds}" attribute-name="feed">
+							<append-node>
+                                    <news-configuration
+                                    	name="${groovy(feed.newsDefinition.name)}"
+										class="${groovy(feed.newsDefinition.className)}">
+                                    </news-configuration>
+							</append-node>	
+							
+							<for-each items="${groovy(feed.newsDefinition.parameters.entrySet())}" attribute-name="parameterEntry">
+								<append-node parent="${singleNode(news-configuration[position() = last()])}">
+	                                    <parameter key="${groovy(parameterEntry.key)}" value="${groovy(parameterEntry.value)}"/>
+								</append-node>
+							</for-each>
+							
+						</for-each>
+					 
+						<write-document file="${$1}/${req(SUBSCRIBE_ID)}-news.xml"/> 
+					</with-attribute>
+				
+				
+					
+				</subtasks>
+				
+			</groovy>
+		
+			
+			
+		</subtasks> 
+		
+		  
+	</sql-query> 
+ 	 
+
+</spring-beans>
