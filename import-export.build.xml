@@ -1,6 +1,6 @@
 <project name="NewsReaderPortlet Import/Export" basedir=".">
 
-	<property name="version" value="1.0.0"/>
+	<property name="version" value="2.0.0-SNAPSHOT"/>
 
 	<target name="export" description="Exports all News sets and their configurations">
 
@@ -21,8 +21,7 @@
         	<arg value="${dir}"/>
         </java>
     </target>
-
-	<!--	
+	
     <target name="import" description="Imports all News sets and their configurations">
 
     	<fail unless="dir" message="You must specify an import directory '-Ddir={dir}'"/>
@@ -37,10 +36,10 @@
                     <include name="**/*.jar"/>
                 </fileset>
             </classpath>
-            <arg value="src/main/resources/org/jasig/portlet/newsreader/io/import.crn"/>
+            <arg value="src/main/resources/org/jasig/portlet/newsreader/io/import-rel-1-0-0.crn"/>
             <arg value="${dir}"/>
         </java>
 
     </target>
-	-->
+
 </project>
