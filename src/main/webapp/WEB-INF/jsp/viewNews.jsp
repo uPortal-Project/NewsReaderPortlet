@@ -5,7 +5,16 @@
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.3.2/jquery-1.3.2.min.js"/>"></script>
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>"></script>
 <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.1/js/fluid-all-1.1.1.min.js"/>"></script>
+
+<script type="text/javascript" src="<c:url value="/rs/jquery-tooltip/1.3/jquery.tooltip.min.js"/>"></script>
+
+<link rel="stylesheet" href="<c:url value="/rs/jquery-tooltip/1.3/jquery.tooltip.min.css"/>" type="text/css"></link>
+
+
 <script type="text/javascript" src="<c:url value="/scripts/news-feed-view.min.js"/>"></script>
+
+
+
 
 <style>
     ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
