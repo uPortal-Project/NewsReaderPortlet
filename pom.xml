@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jasig</groupId>
         <artifactId>jasig-parent</artifactId>
-        <version>10</version>
+        <version>15</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -15,8 +15,33 @@
     <packaging>war</packaging>
     <version>2.0.0-SNAPSHOT</version>
 
-    <name>News Portlet</name>
+	<!-- More Project Information -->
+  	<name>News Portlet</name>
     <description>News Portlet.</description>
+  	<url>http://www.ja-sig.org/wiki/display/PLT/NewsReaderPortlet</url>
+  	<inceptionYear>2009</inceptionYear>
+  	<developers>
+  		<developer>
+			<id>acolebourne</id>
+			<email>anthony@acolebourne.co.uk</email>
+			<name>Anthony Colebourne</name>
+			<organization>University of Manchester</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>bourey</id>
+			<email>jennifer.bourey@gmail.com</email>
+			<name>Jennifer Bourey</name>
+			<organization>Unicon, Inc.</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+  	</developers>
+    
 
     <scm>
         <connection>scm:svn:https://www.ja-sig.org/svn/sandbox/NewsReaderPortlet/trunk</connection>
@@ -299,6 +324,23 @@
                     <jswarn>false</jswarn>
                 </configuration>
             </plugin>
+            <plugin>
+	            <groupId>com.mycila.maven-license-plugin</groupId>
+	            <artifactId>maven-license-plugin</artifactId>
+	            <configuration>
+	                <excludes>
+	                    <exclude>target/**</exclude>
+	                    <exclude>otherlicenses/**</exclude>
+	                    <exclude>src/main/webapp/rs/**</exclude>
+	                    <exclude>src/main/webapp/WEB-INF/antisamy/**</exclude>
+	                    <exclude>src/main/webapp/WEB-INF/dtd/**</exclude>
+	                    <exclude>src/main/webapp/WEB-INF/validator-rules.xml</exclude>
+	                </excludes>
+	                <mapping>
+	                    <crn>XML_STYLE</crn>
+	                </mapping>
+	            </configuration>
+	        </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
