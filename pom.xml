@@ -15,32 +15,32 @@
     <packaging>war</packaging>
     <version>2.0.0-SNAPSHOT</version>
 
-	<!-- More Project Information -->
-  	<name>News Portlet</name>
+    <!-- More Project Information -->
+    <name>News Portlet</name>
     <description>News Portlet.</description>
-  	<url>http://www.ja-sig.org/wiki/display/PLT/NewsReaderPortlet</url>
-  	<inceptionYear>2009</inceptionYear>
-  	<developers>
-  		<developer>
-			<id>acolebourne</id>
-			<email>anthony@acolebourne.co.uk</email>
-			<name>Anthony Colebourne</name>
-			<organization>University of Manchester</organization>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>0</timezone>
-		</developer>
-		<developer>
-			<id>bourey</id>
-			<email>jennifer.bourey@gmail.com</email>
-			<name>Jennifer Bourey</name>
-			<organization>Unicon, Inc.</organization>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-  	</developers>
+    <url>http://www.ja-sig.org/wiki/display/PLT/NewsReaderPortlet</url>
+    <inceptionYear>2009</inceptionYear>
+    <developers>
+        <developer>
+            <id>acolebourne</id>
+            <email>anthony@acolebourne.co.uk</email>
+            <name>Anthony Colebourne</name>
+            <organization>University of Manchester</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>bourey</id>
+            <email>jennifer.bourey@gmail.com</email>
+            <name>Jennifer Bourey</name>
+            <organization>Unicon, Inc.</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
     
 
     <scm>
@@ -82,9 +82,9 @@
         </pluginRepository>
     </pluginRepositories>
 
-	<properties>
-		<spring.version>2.5.6</spring.version>
-	</properties>
+    <properties>
+        <spring.version>2.5.6</spring.version>
+    </properties>
     
     <dependencies>
 
@@ -123,10 +123,10 @@
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>
-            	<exclusion>
-			          <groupId>net.sf.ehcache</groupId>
-			          <artifactId>ehcache</artifactId>
-        		</exclusion>
+                <exclusion>
+                      <groupId>net.sf.ehcache</groupId>
+                      <artifactId>ehcache</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -162,17 +162,17 @@
             <scope>compile</scope>
         </dependency>
 
-		<dependency>
-    		<groupId>rome</groupId>
-    		<artifactId>rome</artifactId>
-    		<version>0.9</version>
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>rome</artifactId>
+            <version>0.9</version>
             <scope>compile</scope>
-		</dependency>
+        </dependency>
 
-		<dependency>
-			<groupId>org.owasp</groupId>
-			<artifactId>antisamy</artifactId>
-			<version>1.1.1</version>
+        <dependency>
+            <groupId>org.owasp</groupId>
+            <artifactId>antisamy</artifactId>
+            <version>1.4</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -185,12 +185,12 @@
         </dependency>
 
         <dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.5</version>
-			<type>jar</type>
-			<scope>runtime</scope>
-		</dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.5</version>
+            <type>jar</type>
+            <scope>runtime</scope>
+        </dependency>
         
         
          <dependency>
@@ -214,11 +214,11 @@
               
         <!-- 
         <dependency>
-  			<groupId>org.json</groupId>
-  			<artifactId>json</artifactId>
-  			<version>20080701</version>
-  			<scope>compile</scope>
-		</dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20080701</version>
+            <scope>compile</scope>
+        </dependency>
          -->
          
         <!-- ===== Runtime Dependencies ================================== -->
@@ -231,7 +231,7 @@
             <scope>runtime</scope>
         </dependency>
         
-  		<dependency>
+        <dependency>
             <groupId>org.springmodules</groupId>
             <artifactId>spring-modules-validation</artifactId>
             <version>0.8</version>
@@ -245,21 +245,21 @@
             </exclusions>
         </dependency>
         
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.5</version>
-			<type>jar</type>
-			<scope>runtime</scope>
-		</dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.5</version>
+            <type>jar</type>
+            <scope>runtime</scope>
+        </dependency>
         
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
-			<type>jar</type>
-			<scope>runtime</scope>
-		</dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+            <type>jar</type>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -325,22 +325,22 @@
                 </configuration>
             </plugin>
             <plugin>
-	            <groupId>com.mycila.maven-license-plugin</groupId>
-	            <artifactId>maven-license-plugin</artifactId>
-	            <configuration>
-	                <excludes>
-	                    <exclude>target/**</exclude>
-	                    <exclude>otherlicenses/**</exclude>
-	                    <exclude>src/main/webapp/rs/**</exclude>
-	                    <exclude>src/main/webapp/WEB-INF/antisamy/**</exclude>
-	                    <exclude>src/main/webapp/WEB-INF/dtd/**</exclude>
-	                    <exclude>src/main/webapp/WEB-INF/validator-rules.xml</exclude>
-	                </excludes>
-	                <mapping>
-	                    <crn>XML_STYLE</crn>
-	                </mapping>
-	            </configuration>
-	        </plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>target/**</exclude>
+                        <exclude>otherlicenses/**</exclude>
+                        <exclude>src/main/webapp/rs/**</exclude>
+                        <exclude>src/main/webapp/WEB-INF/antisamy/**</exclude>
+                        <exclude>src/main/webapp/WEB-INF/dtd/**</exclude>
+                        <exclude>src/main/webapp/WEB-INF/validator-rules.xml</exclude>
+                    </excludes>
+                    <mapping>
+                        <crn>XML_STYLE</crn>
+                    </mapping>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
