@@ -37,7 +37,8 @@
     var newsReaderPortlet = newsReaderPortlet || {};
     newsReaderPortlet.jQuery = jQuery.noConflict(true);
     newsReaderPortlet.fluid = fluid;
-    fluid = undefined;
+    fluid = null;
+    fluid_1_1 = null;
     newsReaderPortlet.jQuery(function(){
         var $ = newsReaderPortlet.jQuery;
 

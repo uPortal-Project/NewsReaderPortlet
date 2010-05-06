@@ -25,7 +25,6 @@
 
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.3.2/jquery-1.3.2.min.js"/>"></script>
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.1/js/fluid-all-1.1.1.min.js"/>"></script>
 
 <style type="text/css">
 	table.edit-news { width: 100%; }
