@@ -57,6 +57,7 @@
                 namespace: '${n}',
                 feedView: "${renderRequest.preferences.map['feedView'][0]}",
                 summaryView: "${ storyView == 'scroll-summaries' ? 'full' : 'flyout' }",
+                newWindow: ${renderRequest.preferences.map['newWindow'][0]},
                 scrolling: ${ storyView == 'scroll-summaries' ? true : false }
             };
             newsreader.MultipleFeedView("#${n}newsContainer", options);

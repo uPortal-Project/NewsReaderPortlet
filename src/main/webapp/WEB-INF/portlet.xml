@@ -53,6 +53,10 @@
                 <value>select</value>
             </preference>
             <preference>
+                <name>newWindow</name>
+                <value>false</value>
+            </preference>
+            <preference>
                 <name>feedView</name>
                 <value>scroll-summaries</value>
             </preference>
@@ -101,6 +105,10 @@
             <preference>
                 <name>storyView</name>
                 <value>select</value>
+            </preference>
+            <preference>
+                <name>newWindow</name>
+                <value>false</value>
             </preference>
             <preference>
                 <name>className</name>

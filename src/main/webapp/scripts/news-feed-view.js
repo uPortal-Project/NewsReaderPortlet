@@ -156,7 +156,11 @@ var newsreader = newsreader || {};
         var feed = feedResult.feed;
         
         // create the title
-        var header = '<h2><a href="'+feed.link+'" rel="popup">'+feed.title+'</a>'
+        var targetAttribute = '';
+        if(that.options.newWindow) {
+            targetAttribute = ' target="_new"';
+        }
+        var header = '<h2><a href="'+feed.link+'" rel="popup"' + targetAttribute + '>'+feed.title+'</a>'
         if (feed.author != undefined) header += feed.author;
         header +='</h2>';
         storyContainer.html(header);
@@ -194,12 +198,18 @@ var newsreader = newsreader || {};
         var storyContainer = $('#' + that.options.namespace + 'feed' + feedId).find('.news-items-container');
         var list = $(document.createElement('ul')).addClass('news-list');
         storyContainer.append(list);
+
+        // Decide what clicking on a link does
+        var targetAttribute = '';
+        if(that.options.newWindow) {
+            targetAttribute = ' target="_new"';
+        }
         
         // add each news feed to the list
         var html = '';
         for (var i = 0; i < feed.entries.length; i++) {
             var entry = feed.entries[i];
-            html += '<li><a class="news-item" href="'+entry.link+'" rel="popup">'+entry.title+'</a>';
+            html += '<li><a class="news-item" href="'+entry.link+'" rel="popup"' + targetAttribute + '>'+entry.title+'</a>';
             html += '<span style="display:none">'+entry.description+'</span></li>';
         }
         list.html(html);
@@ -221,10 +231,16 @@ var newsreader = newsreader || {};
         // add a list to the story container to hold our feed items 
         var storyContainer = $('#' + that.options.namespace + 'feed' + feedId).find('.news-items-container');
 
+        // Decide what clicking on a link does
+        var targetAttribute = '';
+        if(that.options.newWindow) {
+            targetAttribute = ' target="_new"';
+        }
+
         var html = '';
         for (var i = 0; i < feed.entries.length; i++) {
             var entry = feed.entries[i];
-            html += '<h3><a href="'+entry.link+'" rel="popup">'+entry.title+'</a></h3>';
+            html += '<h3><a href="'+entry.link+'" rel="popup"' + targetAttribute + '>'+entry.title+'</a></h3>';
             html += '<p>'+entry.description+'</p>';
         }
         storyContainer.html(html);
