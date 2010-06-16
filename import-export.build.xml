@@ -60,7 +60,6 @@
             <arg value="src/main/resources/org/jasig/portlet/newsreader/io/import-rel-1-0-0.crn"/>
             <arg value="${dir}"/>
         </java>
-
     </target>
 
 </project>
