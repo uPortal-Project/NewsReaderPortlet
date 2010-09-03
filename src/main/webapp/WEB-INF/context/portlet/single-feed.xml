@@ -38,14 +38,24 @@
     </bean>
     
     <!-- Controllers -->
+    <bean id="ajaxSingleFeedNewsController" class="org.jasig.portlet.newsreader.mvc.controller.AjaxSingleFeedNewsController">
+        <property name="modelPasser" ref="modelPasser"/>
+        <property name="sessionKeyGenerator" ref="sessionKeyGenerator"/>
+    </bean>
     
-    <!-- main portlet view -->
-    <bean id="viewSingleFeedNewsController"
-        class="org.jasig.portlet.newsreader.mvc.controller.SingleFeedNewsController">
+    <bean id="saveDisplayPreferenceController" class="org.jasig.portlet.newsreader.mvc.controller.SaveDisplayPreferenceController">
+    	<property name="modelPasser" ref="modelPasser" />
+    	<property name="sessionKeyGenerator" ref="sessionKeyGenerator" />
+    </bean>
+    
+    <bean id="editSingleFeedPreferencesController" class="org.jasig.portlet.newsreader.mvc.controller.EditSingleFeedPreferencesController">
+    </bean>
+    
+    <bean id="viewSingleFeedNewsController" class="org.jasig.portlet.newsreader.mvc.controller.SingleFeedNewsController">
         <property name="viewName" value="viewSingleFeed"/>
         <property name="initializationServices">
             <list>
-                <!--
+                <!-- CAS proxy ticket example
                     <bean class="edu.yale.its.tp.portlets.news.service.CasProxyInitializationService">
                     <property name="proxyTicketService" ref="casService"/>
                     </bean>
@@ -54,11 +64,7 @@
         </property>
     </bean>
     
-    <bean id="ajaxSingleFeedNewsController" class="org.jasig.portlet.newsreader.mvc.controller.AjaxSingleFeedNewsController">
-        <property name="modelPasser" ref="modelPasser"/>
-        <property name="sessionKeyGenerator" ref="sessionKeyGenerator"/>
-    </bean>
-    
+
     <!-- Handler Mapping -->
     
     <bean id="parameterMappingInterceptor"
@@ -68,11 +74,11 @@
         class="org.springframework.web.portlet.handler.PortletModeParameterHandlerMapping">
         <property name="order" value="1"/>
         <!-- 
-            <property name="interceptors">
+        <property name="interceptors">
             <list>
-            <ref bean="parameterMappingInterceptor"/>
+                <ref bean="parameterMappingInterceptor"/>
             </list>
-            </property>
+        </property>
         -->
         <property name="portletModeParameterMap">
             <map>
@@ -81,6 +87,12 @@
                         <entry key="view" value-ref="viewSingleFeedNewsController"/>
                         <entry key="ajax" value-ref="ajaxSingleFeedNewsController"/>
                     </map>
+                </entry>
+                <entry key="edit">
+                	<map>
+                		<entry key="render" value-ref="editSingleFeedPreferencesController" />
+                		<entry key="saveDisplayPreference" value-ref="saveDisplayPreferenceController"/>
+                	</map>
                 </entry>
             </map>
         </property>
@@ -92,6 +104,7 @@
         <property name="portletModeMap">
             <map>
                 <entry key="view" value-ref="viewSingleFeedNewsController"/>
+                <entry key="edit" value-ref="editSingleFeedPreferencesController" />
             </map>
         </property>
     </bean>

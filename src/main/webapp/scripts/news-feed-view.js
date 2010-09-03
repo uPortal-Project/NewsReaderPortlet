@@ -175,6 +175,8 @@ var newsreader = newsreader || {};
         // print out the feed items in the desired format
         if (that.options.summaryView == 'flyout') {
             displayFlyoutSummaries(feedResult.activeFeed, feed, that);
+		}else if(that.options.summaryView == 'title'){
+			displayTitles(feedResult.activeFeed, feed, that);
         } else {
             displayFullSummaries(feedResult.activeFeed, feed, that);
         }
@@ -193,7 +195,6 @@ var newsreader = newsreader || {};
      * Display a feed as a flyout list
      */
     var displayFlyoutSummaries = function(feedId, feed, that) {
-        
         // add a list to the story container to hold our feed items 
         var storyContainer = $('#' + that.options.namespace + 'feed' + feedId).find('.news-items-container');
         var list = $(document.createElement('ul')).addClass('news-list');
@@ -245,6 +246,21 @@ var newsreader = newsreader || {};
         }
         storyContainer.html(html);
     };
+
+	var displayTitles = function(feedId, feed, that){
+		var storyContainer = $('#' + that.options.namespace + 'feed' + feedId).find('.news-items-container');
+		var feedList = $(document.createElement("ul")).addClass("news-list");
+		
+		var feedAttr = {};
+		if(that.options.newWindow){
+			feedAttr.target = "_blank"
+		}
+
+		$(feed.entries).each(function(){
+			feedList.append("<li><a class='news-item' href='" + this.link + "'>" + this.title + "</a></li>").attr(feedAttr);
+		});
+		storyContainer.append(feedList);
+	}
     
     // end of private methods
     

@@ -34,29 +34,34 @@
     
 <c:set var="storyView">${renderRequest.preferences.map['storyView'][0]}</c:set>
 <script type="text/javascript">
-    var newsReaderPortlet = newsReaderPortlet || {};
-    newsReaderPortlet.jQuery = jQuery.noConflict(true);
-    newsReaderPortlet.fluid = fluid;
+    var ${n} = ${n} || {};
+    ${n}.jQuery = jQuery.noConflict(true);
+    ${n}.fluid = fluid;
     fluid = null;
     fluid_1_1 = null;
-    newsReaderPortlet.jQuery(function(){
-        var $ = newsReaderPortlet.jQuery;
 
-        $(document).ready(function(){
-            var options = {
-                url: '<portlet:actionURL><portlet:param name="action" value="ajax"/></portlet:actionURL>',
-                namespace: '${n}',
-                feedView: "${renderRequest.preferences.map['feedView'][0]}",
-                summaryView: "${renderRequest.preferences.map['summaryView'][0]}",
-                newWindow: ${renderRequest.preferences.map['newWindow'][0]},
-                scrolling: "${renderRequest.preferences.map['scrolling'][0]}"
-            };
-            newsreader.FeedView("#${n}newsContainer", options);
-        });
+    ${n}.jQuery(function() {
+
+        var $ = ${n}.jQuery;
+
+        var options = {
+            url: '<portlet:actionURL><portlet:param name="action" value="ajax"/></portlet:actionURL>',
+            namespace: '${n}',
+            feedView: "${renderRequest.preferences.map['feedView'][0]}",
+            summaryView: "${prefs.summaryView}",
+            newWindow: ${prefs.newWindow},
+            scrolling: "${renderRequest.preferences.map['scrolling'][0]}"
+        };
+        newsreader.FeedView("#${n}newsContainer", options);
 
     });
 </script>
 
 <div class="org-jasig-portlet-newsreader">
     <div id="${n}newsContainer">Loading . . . </div>
+    <br />
+
+    <c:if test="${supportsEdit}">
+		<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Perferences</a>
+    </c:if>
 </div>

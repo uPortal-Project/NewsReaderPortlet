@@ -72,9 +72,13 @@
        
     <br/>
     <p>
-    	<a href="<portlet:renderURL portletMode='help'/>">Help</a>&nbsp;|&nbsp;
-		<a href="<portlet:renderURL portletMode='edit'/>">Edit news feeds</a>
-        <c:if test="${ model.isAdmin }">
+        <c:if test="${supportsHelp}">
+        	<a href="<portlet:renderURL portletMode='help'/>">Help</a>
+        </c:if>
+    	<c:if test="${supportsEdit}">
+    		&nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>">Edit news feeds</a>
+        </c:if>
+        <c:if test="${isAdmin}">
 	        	&nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>">
 	        		News Administration</a>
         </c:if>

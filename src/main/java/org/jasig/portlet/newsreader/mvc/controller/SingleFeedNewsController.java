@@ -19,16 +19,20 @@
 
 package org.jasig.portlet.newsreader.mvc.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.portlet.PortletMode;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.newsreader.Preference;
 import org.jasig.portlet.newsreader.service.IInitializationService;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.mvc.ParameterizableViewController;
@@ -36,9 +40,9 @@ import org.springframework.web.portlet.mvc.ParameterizableViewController;
 public class SingleFeedNewsController extends ParameterizableViewController {
 
     private static Log log = LogFactory.getLog(SingleFeedNewsController.class);
+    private List<IInitializationService> initializationServices = Collections.emptyList();
 
-    public ModelAndView handleRenderRequestInternal(RenderRequest request,
-                                                    RenderResponse response) throws Exception {
+    public ModelAndView handleRenderRequestInternal(RenderRequest request, RenderResponse response) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
@@ -57,17 +61,23 @@ public class SingleFeedNewsController extends ParameterizableViewController {
             // mark this session as initialized
             session.setAttribute("initialized", "true");
             session.setMaxInactiveInterval(60 * 60 * 2);
-
-        } 
-
-        model.put("isAdmin", (Boolean) session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
+        }
         
+        PortletPreferences portletPrefs = request.getPreferences();
+        Map<String, Object> preferences = new HashMap<String, Object>();
+        preferences.put(Preference.SUMMARY_VIEW_STYLE, portletPrefs.getValue(Preference.SUMMARY_VIEW_STYLE, ""));
+        preferences.put(Preference.MAX_STORIES, portletPrefs.getValue(Preference.MAX_STORIES, ""));
+        preferences.put(Preference.NEW_WINDOW, portletPrefs.getValue(Preference.NEW_WINDOW, Boolean.TRUE.toString()));
+        
+        model.put("prefs", preferences);
+        
+        boolean supportsEdit = request.isPortletModeAllowed(PortletMode.EDIT);
+        model.put("supportsEdit", supportsEdit);
+
         log.debug("forwarding to " + getViewName());
-        return new ModelAndView(getViewName(), "model", model);
+        return new ModelAndView(getViewName(), model);
     }
 
-	
-    private List<IInitializationService> initializationServices;
     public void setInitializationServices(List<IInitializationService> services) {
         this.initializationServices = services;
     }

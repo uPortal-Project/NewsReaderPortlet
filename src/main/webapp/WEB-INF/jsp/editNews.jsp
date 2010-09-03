@@ -33,13 +33,15 @@
 </style>
 
 <script type="text/javascript">
-var newsReaderPortlet = newsReaderPortlet || {};
-newsReaderPortlet.jQuery = jQuery.noConflict(true);
-newsReaderPortlet.jQuery(function(){
-    var $ = newsReaderPortlet.jQuery;
-    var savePrefUrl = '<portlet:actionURL><portlet:param name="action" value="saveDisplayPreference"/></portlet:actionURL>';
+    var ${n} = ${n} || {};
+    ${n}.jQuery = jQuery.noConflict(true);
+    
+    ${n}.jQuery(function(){
 
-    $(document).ready(function(){
+        var $ = ${n}.jQuery;
+    
+        var savePrefUrl = '<portlet:actionURL><portlet:param name="action" value="saveDisplayPreference"/></portlet:actionURL>';
+    
         $('#${n}maxStories').change(function(){
             $.post(savePrefUrl, { prefName: 'maxStories', prefValue: $('#${n}maxStories').val() }, null, 'json');
         });
@@ -49,8 +51,11 @@ newsReaderPortlet.jQuery(function(){
         $('#${n}storyView').change(function(){
             $.post(savePrefUrl, { prefName: 'storyView', prefValue: $('#${n}storyView').val() }, null, 'json');
         });
+        $("#${n}newWindow").change(function(e){
+        	$.post(savePrefUrl, { prefName: 'newWindow', prefValue: $(e.target).attr("checked") }, null, 'json');
+        });
+
     });
-});
 </script>
     
     
@@ -203,6 +208,12 @@ newsReaderPortlet.jQuery(function(){
 	                <option value="flyout-list" ${ storyView == 'flyout-list' ? 'selected="selected"' : '' }>a list with flyouts</option>
 	                <option value="scroll-summaries" ${ storyView == 'scroll-summaries' ? 'selected="selected"' : '' }>scrolling div</option>
 	            </select>
+	        </p>
+	        
+	        <p>
+	            <label for="${n}newWindow">Open stories in new windows</label>
+                <c:set var="newWindow" value="${renderRequest.preferences.map['newWindow'][0]}"/>
+	            <input type="checkbox" id="${n}newWindow" ${ newWindow == "true" ? "checked='checked'" : ""} />
 	        </p>
         </div>
         

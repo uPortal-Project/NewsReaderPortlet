@@ -89,22 +89,19 @@
         <supports>
             <mime-type>text/html</mime-type>
             <portlet-mode>view</portlet-mode>
-        </supports>
+           <portlet-mode>edit</portlet-mode>
+         </supports>
         <portlet-info>
             <title>RSS Feed</title>
         </portlet-info>
         <portlet-preferences>
             <preference>
                 <name>summaryView</name>
-                <value>full</value>
+                <value>titleAndAbstract</value>
             </preference>
             <preference>
                 <name>maxStories</name>
                 <value>10</value>
-            </preference>
-            <preference>
-                <name>storyView</name>
-                <value>select</value>
             </preference>
             <preference>
                 <name>newWindow</name>

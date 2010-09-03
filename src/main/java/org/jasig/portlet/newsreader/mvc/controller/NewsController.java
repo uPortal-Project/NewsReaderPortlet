@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.portlet.PortletPreferences;
+import javax.portlet.PortletMode;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -90,10 +90,12 @@ public class NewsController extends ParameterizableViewController {
 
         } 
 
-        model.put("isAdmin", (Boolean) session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
+        model.put("supportsHelp", request.isPortletModeAllowed(PortletMode.HELP));
+        model.put("supportsEdit", request.isPortletModeAllowed(PortletMode.EDIT));
+        model.put("isAdmin", session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
         
         log.debug("forwarding to " + getViewName());
-        return new ModelAndView(getViewName(), "model", model);
+        return new ModelAndView(getViewName(), model);
     }
 
     private NewsStore newsStore;
