@@ -62,6 +62,6 @@
     <br />
 
     <c:if test="${supportsEdit}">
-		<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Perferences</a>
+		<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
     </c:if>
 </div>
