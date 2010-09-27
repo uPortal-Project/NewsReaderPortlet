@@ -93,6 +93,7 @@ public class RomeAdapter implements INewsAdapter {
      * @param policyFile String the cleaning policy
      * @return SyndFeed Feed object
      */
+    @SuppressWarnings("unchecked")
     protected SyndFeed getSyndFeed(String url, String policyFile) throws NewsException {
 
         SyndFeedInput input = new SyndFeedInput();
@@ -120,16 +121,17 @@ public class RomeAdapter implements INewsAdapter {
             AntiSamy as = new AntiSamy();
 
             List<SyndEntry> a = feed.getEntries();
+            Policy policy = Policy.getInstance(policyFile);
 
             for (SyndEntry entry : a) {
                 SyndContent description = entry.getDescription();
-
-                Policy policy = Policy.getInstance(policyFile);
-
                 CleanResults cr = as.scan(description.getValue(), policy);
                 description.setValue(cr.getCleanHTML());
                 entry.setDescription(description);
-                log.info("Feed " + url + " cleaned in " + cr.getScanTime() + " seconds");
+                if (log.isDebugEnabled()) {
+                    log.debug("SyndEntry '" + entry.getTitle() + "' cleaned in " 
+                                            + cr.getScanTime() + " seconds");
+                }
             }
 
             return feed;
