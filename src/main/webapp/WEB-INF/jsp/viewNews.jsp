@@ -25,7 +25,7 @@
 
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.3.2/jquery-1.3.2.min.js"/>"></script>
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.1/js/fluid-all-1.1.1.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.3/js/fluid-all-1.1.3.min.js"/>"></script>
 
 <script type="text/javascript" src="<c:url value="/rs/jquery-tooltip/1.3/jquery.tooltip.min.js"/>"></script>
 
@@ -40,7 +40,7 @@
 <style>
     ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
 </style>
-	
+    
 <c:set var="storyView">${renderRequest.preferences.map['storyView'][0]}</c:set>
 <script type="text/javascript">
     var newsReaderPortlet = newsReaderPortlet || {};
@@ -73,14 +73,14 @@
     <br/>
     <p>
         <c:if test="${supportsHelp}">
-        	<a href="<portlet:renderURL portletMode='help'/>">Help</a>
+            <a href="<portlet:renderURL portletMode='help'/>">Help</a>
         </c:if>
-    	<c:if test="${supportsEdit}">
-    		&nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>">Edit news feeds</a>
+        <c:if test="${supportsEdit}">
+            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>">Edit news feeds</a>
         </c:if>
         <c:if test="${isAdmin}">
-	        	&nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>">
-	        		News Administration</a>
+                &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>">
+                    News Administration</a>
         </c:if>
-	</p>
+    </p>
 </div>
