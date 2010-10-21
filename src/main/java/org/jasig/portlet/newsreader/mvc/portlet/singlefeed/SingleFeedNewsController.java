@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.singlefeed;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,15 +34,30 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.Preference;
 import org.jasig.portlet.newsreader.service.IInitializationService;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.ParameterizableViewController;
 
-public class SingleFeedNewsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("VIEW")
+public class SingleFeedNewsController {
 
-    private static Log log = LogFactory.getLog(SingleFeedNewsController.class);
+    protected final Log log = LogFactory.getLog(getClass());
+    
     private List<IInitializationService> initializationServices = Collections.emptyList();
 
-    public ModelAndView handleRenderRequestInternal(RenderRequest request, RenderResponse response) throws Exception {
+    public void setInitializationServices(List<IInitializationService> services) {
+        this.initializationServices = services;
+    }
+
+    private String viewName = "viewSingleFeed";
+    
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
+    }
+    
+    @RequestMapping
+    public ModelAndView getSingleFeedView(RenderRequest request, RenderResponse response) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
@@ -74,12 +89,8 @@ public class SingleFeedNewsController extends ParameterizableViewController {
         boolean supportsEdit = request.isPortletModeAllowed(PortletMode.EDIT);
         model.put("supportsEdit", supportsEdit);
 
-        log.debug("forwarding to " + getViewName());
-        return new ModelAndView(getViewName(), model);
-    }
-
-    public void setInitializationServices(List<IInitializationService> services) {
-        this.initializationServices = services;
+        log.debug("forwarding to " + this.viewName);
+        return new ModelAndView(this.viewName, model);
     }
 
 }

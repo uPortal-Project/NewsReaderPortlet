@@ -17,20 +17,23 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsDefinitionForm;
-import org.jasig.portlet.newsreader.service.UnsharedNewsSetServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.mvc.SimpleFormController;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
 
 
 /**
@@ -40,18 +43,17 @@ import javax.portlet.PortletRequest;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class EditNewsDefinitionController extends SimpleFormController {
+@Controller
+@RequestMapping("VIEW")
+public class EditNewsDefinitionController {
 
-    private static Log log = LogFactory
-            .getLog(EditNewsDefinitionController.class);
-
-    public EditNewsDefinitionController() {
-    }
+    protected final Log log = LogFactory.getLog(getClass());
 
     /*
       * (non-Javadoc)
       * @see org.springframework.web.portlet.mvc.AbstractFormController#formBackingObject(javax.portlet.PortletRequest)
       */
+    @ModelAttribute("form")
     protected Object formBackingObject(PortletRequest request) throws Exception {
         // if we're editing a news, retrieve the news definition from
         // the database and add the information to the form
@@ -80,7 +82,7 @@ public class EditNewsDefinitionController extends SimpleFormController {
         }
     }
 
-    @Override
+    @RequestMapping
     protected void onSubmitAction(ActionRequest request,
                                   ActionResponse response, Object command, BindException errors)
             throws Exception {
@@ -115,6 +117,7 @@ public class EditNewsDefinitionController extends SimpleFormController {
 
     private NewsStore newsStore;
 
+    @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }

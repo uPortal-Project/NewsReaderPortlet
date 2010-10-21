@@ -17,17 +17,14 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.singlefeed;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
+import javax.portlet.ResourceRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -38,20 +35,34 @@ import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
-import org.jasig.web.portlet.mvc.AbstractAjaxController;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
-public class AjaxSingleFeedNewsController extends AbstractAjaxController {
+@Controller
+@RequestMapping("VIEW")
+public class AjaxSingleFeedNewsController {
 
-	private static Log log = LogFactory.getLog(AjaxSingleFeedNewsController.class);
+	protected final Log log = LogFactory.getLog(getClass());
 
-	@Override
-	protected Map<Object, Object> handleAjaxRequestInternal(ActionRequest request,
-			ActionResponse response) throws Exception {
+    private ApplicationContext ctx;
+
+    @Autowired(required = true)
+    public void setApplicationContext(ApplicationContext ctx)
+            throws BeansException {
+        this.ctx = ctx;
+    }
+    
+	@ResourceMapping
+	public ModelAndView getAjaxNews(ResourceRequest request) throws Exception {
 		log.debug("handleAjaxRequestInternal (AjaxNewsController)");
 		
 		PortletPreferences prefs = request.getPreferences();
@@ -78,8 +89,6 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
         feedConfig.setId(new Long(1));
 		
 		SyndFeed feed = null;
-        ApplicationContext ctx = this.getApplicationContext();
-        List<String> errors = new ArrayList<String>();
         
         try {
             // get an instance of the adapter for this feed
@@ -128,12 +137,12 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
 
 		log.debug("forwarding to /ajaxFeedList");
 		
-		Map<Object, Object> model = new HashMap<Object, Object>();
+		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("json", json);
 		
 		log.debug(json);
 		
-        return model;
+		return new ModelAndView("jsonView", model);
 	}
 	
 }

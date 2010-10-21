@@ -21,11 +21,11 @@
 -->
 
 
-<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
-	                    http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
-	version="1.0">
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+    xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    schemalocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd
+        http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+        version="2.0">
 
     <portlet>
         <portlet-name>news</portlet-name>
@@ -113,6 +113,17 @@
             </preference>
         </portlet-preferences>
     </portlet>
+
+    <filter>
+        <filter-name>EtagFilter</filter-name>
+        <filter-class>org.jasig.portlet.newsreader.mvc.filter.ShallowEtagHeaderPortletFilter</filter-class>
+        <lifecycle>RESOURCE_PHASE</lifecycle>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>EtagFilter</filter-name>
+        <portlet-name>*</portlet-name>
+    </filter-mapping>
     
     <user-attribute>
         <name>username</name>

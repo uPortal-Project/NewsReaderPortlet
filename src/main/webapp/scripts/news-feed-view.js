@@ -37,7 +37,7 @@ var newsreader = newsreader || {};
             async: false,
             data: data,
             success: function(response, textStatus){
-                feedResult = response;
+                feedResult = response.json;
             }
         });
         return feedResult;
@@ -332,4 +332,4 @@ var newsreader = newsreader || {};
 
     // end of defaults
 
-})(jQuery, fluid_1_1);
+})(jQuery, fluid_1_2);

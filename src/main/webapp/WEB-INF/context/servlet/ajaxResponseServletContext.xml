@@ -20,25 +20,20 @@
 
 -->
 
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"       
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd  
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <bean id="ajaxResponseController" class="org.jasig.web.servlet.mvc.AjaxResponseController">
-        <property name="viewName" value="ajaxFeedList"/>
-        <property name="modelPasser" ref="modelPasser"/>
-    </bean>
+    <context:component-scan base-package="org.jasig.portlet.newsreader.mvc.servlet"/>
+    <context:annotation-config/>
     
-    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="order" value="0"/>
-        <property name="alwaysUseFullPath" value="true"/>
-        <property name="defaultHandler" ref="ajaxResponseController" />
-        <property name="urlMap">
-            <map>
-                <entry key="/ajaxResponse" value-ref="ajaxResponseController"/>
-            </map>
-        </property>
-    </bean>
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
     
-    <bean id="requiredAnnotationBeanPostProcessor" class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+
 </beans>

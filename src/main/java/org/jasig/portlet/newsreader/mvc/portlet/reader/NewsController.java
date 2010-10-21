@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
@@ -34,18 +35,49 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.IInitializationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.ParameterizableViewController;
 
 /*
  * @author Anthony Colebourne
  */
-public class NewsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("VIEW")
+public class NewsController {
 
-    private static Log log = LogFactory.getLog(NewsController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
-    public ModelAndView handleRenderRequestInternal(RenderRequest request,
-                                                    RenderResponse response) throws Exception {
+    private NewsStore newsStore;
+    
+    @Autowired(required = true)
+    public void setNewsStore(NewsStore newsStore) {
+        this.newsStore = newsStore;
+    }
+    
+    private int defaultItems = 2;
+    
+    public void setDefaultItems(int defaultItems) {
+        this.defaultItems = defaultItems;
+    }
+
+    private List<IInitializationService> initializationServices;
+    
+    @Resource(name="initializationServices")
+    public void setInitializationServices(List<IInitializationService> services) {
+        this.initializationServices = services;
+    }
+
+    private String viewName = "viewNews";
+    
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
+    }
+
+    @RequestMapping
+    public ModelAndView showNewsView(RenderRequest request,
+                RenderResponse response) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
@@ -94,24 +126,10 @@ public class NewsController extends ParameterizableViewController {
         model.put("supportsEdit", request.isPortletModeAllowed(PortletMode.EDIT));
         model.put("isAdmin", session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
         
-        log.debug("forwarding to " + getViewName());
-        return new ModelAndView(getViewName(), model);
+        log.debug("forwarding to " + this.viewName);
+        return new ModelAndView(this.viewName, model);
     }
 
-    private NewsStore newsStore;
-    public void setNewsStore(NewsStore newsStore) {
-        this.newsStore = newsStore;
-    }
-    
-    private int defaultItems = 2;
-    public void setDefaultItems(int defaultItems) {
-        this.defaultItems = defaultItems;
-    }
-
-    private List<IInitializationService> initializationServices;
-    public void setInitializationServices(List<IInitializationService> services) {
-        this.initializationServices = services;
-    }
 }
 
 /*

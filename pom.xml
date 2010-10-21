@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
 
     <parent>
         <groupId>org.jasig.parent</groupId>
         <artifactId>jasig-parent</artifactId>
-        <version>20</version>
+        <version>21</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>2.0.0-RC2-SNAPSHOT</version>
+    <version>3.0.0-M1-SNAPSHOT</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -54,19 +56,6 @@
         </site>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>Codehaus Snapshots</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
     <pluginRepositories>
         <pluginRepository>
             <id>maven2-repository.dev.java.net</id>
@@ -76,196 +65,318 @@
     </pluginRepositories>
 
     <properties>
-        <spring.version>2.5.6</spring.version>
+        <spring.version>3.0.4.RELEASE</spring.version>
         <resource-server.version>1.0.12</resource-server.version>
+        <pluto.version>2.1.0-SNAPSHOT</pluto.version>
+        <portlet-api.version>2.0</portlet-api.version>
+        
+        <!-- The JDBC Driver used by the portlet -->
+        <jdbc.groupId>mysql</jdbc.groupId>
+        <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
+        <jdbc.version>5.1.5</jdbc.version>
+        
     </properties>
+
+	<dependencyManagement>
+		<dependencies>
+	        <dependency>
+	            <groupId>com.googlecode.cernunnos</groupId>
+	            <artifactId>cernunnos</artifactId>
+	            <version>1.2.0</version>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>org.springframework</groupId>
+	                    <artifactId>spring</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+	        <dependency>
+	            <groupId>commons-collections</groupId>
+	            <artifactId>commons-collections</artifactId>
+	            <version>3.2.1</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>commons-httpclient</groupId>
+	            <artifactId>commons-httpclient</artifactId>
+	            <version>3.1</version>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>commons-logging</groupId>
+	                    <artifactId>commons-logging</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>junit</groupId>
+	                    <artifactId>junit</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+	        <dependency>
+	            <groupId>commons-lang</groupId>
+	            <artifactId>commons-lang</artifactId>
+	            <version>2.3</version>
+	        </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>jsr250-api</artifactId>
+                <version>1.0</version>
+            </dependency>
+	        <dependency>
+	            <groupId>javax.portlet</groupId>
+	            <artifactId>portlet-api</artifactId>
+	            <version>${portlet-api.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>javax.servlet</groupId>
+	            <artifactId>jstl</artifactId>
+	            <version>1.1.2</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>javax.servlet</groupId>
+	            <artifactId>servlet-api</artifactId>
+	            <version>2.5</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>junit</groupId>
+	            <artifactId>junit</artifactId>
+	            <version>4.2</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>log4j</groupId>
+	            <artifactId>log4j</artifactId>
+	            <version>1.2.14</version>
+	        </dependency>
+            <dependency>
+                <groupId>org.apache.portals.pluto</groupId>
+                <artifactId>pluto-taglib</artifactId>
+                <version>${pluto.version}</version>
+            </dependency>
+	        <dependency>
+	            <groupId>org.hibernate</groupId>
+	            <artifactId>hibernate</artifactId>
+	            <version>3.2.3.ga</version>
+	            <exclusions>
+	                <exclusion>
+	                      <groupId>net.sf.ehcache</groupId>
+	                      <artifactId>ehcache</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.jasig</groupId>
+	            <artifactId>AjaxPortletSupport</artifactId>
+	            <version>1.0.9</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.jasig.resourceserver</groupId>
+	            <artifactId>resource-server-content</artifactId>
+	            <version>${resource-server.version}</version>
+	            <type>war</type>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.jasig.resourceserver</groupId>
+	            <artifactId>resource-server-utils</artifactId>
+	            <version>${resource-server.version}</version>            
+	        </dependency>
+	        <dependency>
+	            <groupId>org.springframework</groupId>
+	            <artifactId>spring-aop</artifactId>
+	            <version>${spring.version}</version>
+	        </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+	        <dependency>
+	            <groupId>org.springframework</groupId>
+	            <artifactId>spring-jdbc</artifactId>
+	            <version>${spring.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.springframework</groupId>
+	            <artifactId>spring-orm</artifactId>
+	            <version>${spring.version}</version>
+	        </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+	        <dependency>
+	            <groupId>org.springframework</groupId>
+	            <artifactId>spring-webmvc-portlet</artifactId>
+	            <version>${spring.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.owasp</groupId>
+	            <artifactId>antisamy</artifactId>
+	            <version>1.4</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>rome</groupId>
+	            <artifactId>rome</artifactId>
+	            <version>0.9</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>taglibs</groupId>
+	            <artifactId>standard</artifactId>
+	            <version>1.1.2</version>
+	        </dependency>
+
+		</dependencies>
+	</dependencyManagement>
     
     <dependencies>
 
         <!-- ===== Compile Time Dependencies ============================== -->
 
         <dependency>
+            <groupId>${jdbc.groupId}</groupId>
+            <artifactId>${jdbc.artifactId}</artifactId>
+            <version>${jdbc.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.3</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate</artifactId>
-            <version>3.2.3.ga</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                      <groupId>net.sf.ehcache</groupId>
-                      <artifactId>ehcache</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
-            <version>1.1.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
         </dependency>
         
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc-portlet</artifactId>
-            <version>${spring.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
-            <version>0.9</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.owasp</groupId>
             <artifactId>antisamy</artifactId>
-            <version>1.4</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         
         <dependency>
             <groupId>org.jasig</groupId>
             <artifactId>AjaxPortletSupport</artifactId>
-            <version>1.0.4</version>
-            <scope>compile</scope> 
         </dependency>
         
         <dependency>
             <groupId>com.googlecode.cernunnos</groupId>
             <artifactId>cernunnos</artifactId>
-            <version>1.1.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>org.jasig.resourceserver</groupId>
             <artifactId>resource-server-content</artifactId>
-            <version>${resource-server.version}</version>
             <type>war</type>
         </dependency>
 
         <dependency>
             <groupId>org.jasig.resourceserver</groupId>
             <artifactId>resource-server-utils</artifactId>
-            <version>${resource-server.version}</version>            
-            <scope>compile</scope>            
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+            <version>1.0</version>
         </dependency>
               
-        <!-- 
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20080701</version>
-            <scope>compile</scope>
-        </dependency>
-         -->
-         
         <!-- ===== Runtime Dependencies ================================== -->
 
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-            <type>jar</type>
-            <scope>runtime</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springmodules</groupId>
-            <artifactId>spring-modules-validation</artifactId>
-            <version>0.8</version>
-            <type>jar</type>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>                
-            </exclusions>
-        </dependency>
-        
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.5</version>
-            <type>jar</type>
             <scope>runtime</scope>
         </dependency>
         
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-            <type>jar</type>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
-            <type>jar</type>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-            <type>jar</type>
             <scope>runtime</scope>
         </dependency>
         
@@ -273,16 +384,18 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <type>jar</type>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.portlet</groupId>
             <artifactId>portlet-api</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.portals.pluto</groupId>
+            <artifactId>pluto-taglib</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -290,14 +403,41 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.2</version>
-            <type>jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.7.0</version>
+                <configuration>
+                    <basedir>${basedir}</basedir>  
+                    <header>${jasig-short-license-url}</header>
+                    <aggregate>true</aggregate>
+                    <encoding>UTF-8</encoding>
+                    <excludes>
+                        <exclude>LICENSE</exclude>
+                        <exclude>NOTICE</exclude>
+                        <exclude>README</exclude>
+                        <exclude>.*</exclude>
+                        <exclude>docs/licenses/**</exclude>
+                        <exclude>src/main/webapp/rs/**/*</exclude>
+                    </excludes>
+                    <mapping>
+                        <crn>XML_STYLE</crn>
+                        <tag>DYNASCRIPT_STYLE</tag>
+                        <channel>XML_STYLE</channel>
+                    </mapping>
+                    <properties>
+                        <jasig-license-url>${jasig-license-url}</jasig-license-url>
+                        <jasig-license-year>${jasig-license-year}</jasig-license-year>
+                    </properties>
+                </configuration>
+            </plugin>            
             <plugin>
                 <groupId>net.sf.alchim</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
@@ -315,6 +455,28 @@
                     <suffix>.min</suffix>
                     <jswarn>false</jswarn>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jasig.resource-aggregator</groupId>
+                <artifactId>resource-aggregator-plugin</artifactId>
+                <version>1.0.3</version>
+                <configuration>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>aggregate-newsreader-skin</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <displayJsWarnings>false</displayJsWarnings>
+                            <skinConfigurationFile>src/main/webapp/skin/skin.xml</skinConfigurationFile>
+                            <skinOutputDirectory>skin-aggr/</skinOutputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
@@ -342,67 +504,34 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jspc-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>jspc</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <injectString>&lt;!-- [INSERT JSPC FRAGMENT HERE] --&gt;</injectString>
-                </configuration>
-                <dependencies>
-                    <!-- These dependencies are the portlet.tld is needed for JSP compilation --> 
-                    <dependency>
-                        <groupId>org.apache.pluto</groupId>
-                        <artifactId>pluto-taglib</artifactId>
-                        <version>1.1.3</version>
-                        <type>jar</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>javax.portlet</groupId>
-                        <artifactId>portlet-api</artifactId>
-                        <version>1.0</version>
-                        <type>jar</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>jstl</artifactId>
-                        <version>1.1.2</version>
-                        <type>jar</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>taglibs</groupId>
-                        <artifactId>standard</artifactId>
-                        <version>1.1.2</version>
-                        <type>jar</type>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <attachClasses>true</attachClasses>
                     <warName>NewsReaderPortlet</warName>
-                    <webXml>${basedir}/target/jspweb.xml</webXml>
+                    <webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
                     <overlays>
                         <overlay>
                             <groupId>org.jasig.resourceserver</groupId>
                             <artifactId>resource-server-content</artifactId>
                             <includes>
-                                <include>rs/jquery/1.3.2/</include>
-                                <include>rs/jqueryui/1.7.2/</include>
-                                <include>rs/fluid/1.1.3/</include>
+                                <include>rs/jquery/1.4.2/</include>
+                                <include>rs/jqueryui/1.8/</include>
+                                <include>rs/fluid/1.2.1/js</include>
                             </includes>
                         </overlay>
                     </overlays>
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.mycila.maven-license-plugin</groupId>
+                    <artifactId>maven-license-plugin</artifactId>
+                    <version>1.7.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

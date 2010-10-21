@@ -17,38 +17,18 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
-public class Preference {
-	public static final String MAX_STORIES = "maxStories";
-	public static final String SUMMARY_VIEW_STYLE = "summaryView";
-	public static final String NEW_WINDOW = "newWindow";
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-	private String value;
-	private Object options;
-	private boolean readOnly;
+@Controller
+@RequestMapping
+public class NewsReaderHelpController {
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public Object getOptions() {
-		return options;
-	}
-
-	public void setOptions(Object options) {
-		this.options = options;
-	}
-
-	public boolean isReadOnly() {
-		return readOnly;
-	}
-
-	public void setReadOnly(boolean readOnly) {
-		this.readOnly = readOnly;
-	}
+    @RequestMapping
+    public String showHelp() {
+        return "help";
+    }
+    
 }

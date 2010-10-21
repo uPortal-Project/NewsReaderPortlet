@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +39,9 @@ import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.dao.NewsStore;
-import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.mvc.AbstractController;
 
@@ -52,11 +54,13 @@ import org.springframework.web.portlet.mvc.AbstractController;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class EditNewsPreferencesController extends AbstractController {
+@Controller
+@RequestMapping("EDIT")
+public class EditNewsPreferencesController {
 
-    private static Log log = LogFactory.getLog(EditNewsPreferencesController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
-    @Override
+    @RequestMapping
     public ModelAndView handleRenderRequestInternal(RenderRequest request,
                                                     RenderResponse response) throws Exception {
 
@@ -96,8 +100,7 @@ public class EditNewsPreferencesController extends AbstractController {
         return new ModelAndView("/editNews", "model", model);
     }
 
-    @Override
-    protected void handleActionRequestInternal(ActionRequest request,
+    public void handleActionRequestInternal(ActionRequest request,
                                                ActionResponse response) throws Exception {
         Long id = Long.parseLong(request.getParameter("id"));
         String actionCode = request.getParameter("actionCode");
@@ -142,6 +145,7 @@ public class EditNewsPreferencesController extends AbstractController {
 
     private NewsStore newsStore;
 
+    @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }

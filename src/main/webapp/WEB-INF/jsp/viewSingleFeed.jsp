@@ -23,9 +23,9 @@
 <portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.3.2/jquery-1.3.2.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.3/js/fluid-all-1.1.3.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.4.2/jquery-1.4.2.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.2.1/js/fluid-all-1.2.1.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/scripts/news-feed-view.min.js"/>"></script>
 
 <style>
@@ -45,7 +45,7 @@
         var $ = ${n}.jQuery;
 
         var options = {
-            url: '<portlet:actionURL><portlet:param name="action" value="ajax"/></portlet:actionURL>',
+            url: '<portlet:resourceURL/>',
             namespace: '${n}',
             feedView: "${renderRequest.preferences.map['feedView'][0]}",
             summaryView: "${prefs.summaryView}",

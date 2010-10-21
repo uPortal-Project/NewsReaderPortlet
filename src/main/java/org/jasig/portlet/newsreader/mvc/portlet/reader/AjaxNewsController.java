@@ -17,11 +17,9 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
@@ -41,19 +39,60 @@ import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
-import org.jasig.web.portlet.mvc.AbstractAjaxController;
+import org.jasig.web.service.AjaxPortletSupportService;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
-public class AjaxNewsController extends AbstractAjaxController {
+@Controller
+@RequestMapping("VIEW")
+public class AjaxNewsController {
 
-	private static Log log = LogFactory.getLog(AjaxNewsController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
-	@Override
-	protected Map<Object, Object> handleAjaxRequestInternal(ActionRequest request, ActionResponse response) throws Exception {
+    private NewsStore newsStore;
+
+    @Autowired(required = true)
+    public void setNewsStore(NewsStore newsStore) {
+        this.newsStore = newsStore;
+    }
+
+    private NewsSetResolvingService setCreationService;
+
+    @Autowired(required = true)
+    public void setSetCreationService(NewsSetResolvingService setCreationService) {
+        this.setCreationService = setCreationService;
+    }
+
+    private ApplicationContext ctx;
+
+    @Autowired(required = true)
+    public void setApplicationContext(ApplicationContext ctx)
+            throws BeansException {
+        this.ctx = ctx;
+    }
+
+    private AjaxPortletSupportService ajaxPortletSupportService;
+    
+    /**
+     * Set the service for handling portlet AJAX requests.
+     * 
+     * @param ajaxPortletSupportService
+     */
+    @Autowired(required = true)
+    public void setAjaxPortletSupportService(
+                    AjaxPortletSupportService ajaxPortletSupportService) {
+            this.ajaxPortletSupportService = ajaxPortletSupportService;
+    }
+
+	@RequestMapping(params="action=ajax")
+	public void getNews(ActionRequest request, ActionResponse response) throws Exception {
 		log.debug("handleAjaxRequestInternal (AjaxNewsController)");
 		
 		JSONObject json = new JSONObject();
@@ -82,8 +121,6 @@ public class AjaxNewsController extends AbstractAjaxController {
 		
 		
 		SyndFeed feed = null;
-        ApplicationContext ctx = this.getApplicationContext();
-        List<String> errors = new ArrayList<String>();
 
         // only bother to fetch the active feed
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
@@ -149,21 +186,12 @@ public class AjaxNewsController extends AbstractAjaxController {
 
 		log.debug("forwarding to /ajaxFeedList");
 		
-		Map<Object, Object> model = new HashMap<Object, Object>();
+		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("json", json);
 		
 		log.debug(json);
 		
-        return model;
+        this.ajaxPortletSupportService.redirectAjaxResponse("ajax/json", model, request, response);
 	}
 	
-	private NewsStore newsStore;
-    public void setNewsStore(NewsStore newsStore) {
-    	this.newsStore = newsStore;
-    }
-	
-    private NewsSetResolvingService setCreationService;
-    public void setSetCreationService(NewsSetResolvingService setCreationService) {
-    	this.setCreationService = setCreationService;
-    }
 }

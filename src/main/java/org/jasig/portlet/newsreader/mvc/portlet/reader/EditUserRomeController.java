@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -33,8 +33,11 @@ import org.jasig.portlet.newsreader.adapter.RomeAdapter;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsListingCommand;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
-import org.springframework.web.portlet.mvc.SimpleFormController;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
@@ -44,12 +47,15 @@ import org.springframework.web.portlet.mvc.SimpleFormController;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class EditUserRomeController extends SimpleFormController {
+@Controller
+@RequestMapping("EDIT")
+public class EditUserRomeController {
 
-    private static Log log = LogFactory.getLog(EditUserRomeController.class);
-
-
-    public EditUserRomeController() {
+    protected final Log log = LogFactory.getLog(getClass());
+    
+    @RequestMapping(params="action=editUrl")
+    public String showEditForm() {
+        return "editNewsUrl";
     }
 
     /*
@@ -57,6 +63,7 @@ public class EditUserRomeController extends SimpleFormController {
       *
       * @see org.springframework.web.portlet.mvc.AbstractFormController#formBackingObject(javax.portlet.PortletRequest)
       */
+    @ModelAttribute("form")
     protected Object formBackingObject(PortletRequest request) throws Exception {
 
         // if we're editing a news, retrieve the news definition from
@@ -85,7 +92,7 @@ public class EditUserRomeController extends SimpleFormController {
         }
     }
 
-    @Override
+    @RequestMapping(params="action=editPreferences")
     protected void onSubmitAction(ActionRequest request,
                                   ActionResponse response, Object command, BindException errors)
             throws Exception {
@@ -135,11 +142,14 @@ public class EditUserRomeController extends SimpleFormController {
 
     private NewsStore newsStore;
 
+    @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }
 
     private NewsSetResolvingService setCreationService;
+    
+    @Autowired(required = true)
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
     	this.setCreationService = setCreationService;
     }

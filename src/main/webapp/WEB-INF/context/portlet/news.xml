@@ -20,8 +20,18 @@
 
 -->
 
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"       
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd  
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <context:component-scan base-package="org.jasig.portlet.newsreader.mvc.portlet.reader"/>
+    <context:annotation-config/>
+
     <!-- Properties configuration -->
     <bean id="propertyConfigurer"
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
@@ -34,152 +44,21 @@
         </property>
     </bean>
     
-    <bean id="sessionKeyGenerator" class="org.jasig.web.util.DefaultSessionKeyGenerator">
-        <property name="seed" value="0" />
-    </bean>
-    
-    <!-- Controllers -->
+    <util:list id="initializationServices">
+        <!--
+        <bean class="edu.yale.its.tp.portlets.news.service.CasProxyInitializationService">
+            <property name="proxyTicketService" ref="casService"/>
+        </bean>
+        -->
+    </util:list>
 
-    <!-- main portlet view -->
-    <bean id="viewNewsController"
-        class="org.jasig.portlet.newsreader.mvc.controller.NewsController">
-        <property name="viewName" value="viewNews"/>
-        <property name="newsStore" ref="newsStore"/>
-        <property name="initializationServices">
-            <list>
-                <!--
-                <bean class="edu.yale.its.tp.portlets.news.service.CasProxyInitializationService">
-                    <property name="proxyTicketService" ref="casService"/>
-                </bean>
-                -->
-            </list>
-        </property>
-    </bean>
+    <util:map id="predefinedEditActions">
+        <!-- Add edit screens for custom news adapters -->
+        <!--
+        <entry key="edu.yale.its.tp.portlets.news.adapter.SomeOtherNewsAdapter" value="editSomeOtherNews"/>
+        -->
+    </util:map>
 
-    <!-- view and edit news preferences -->
-    <bean id="editNewsController"
-        class="org.jasig.portlet.newsreader.mvc.controller.EditNewsPreferencesController">
-        <property name="predefinedEditActions">
-            <map>
-                <!-- Add edit screens for custom news adapters -->
-                <!--
-                <entry key="edu.yale.its.tp.portlets.news.adapter.SomeOtherNewsAdapter" value="editSomeOtherNews"/>
-                -->
-            </map>
-        </property>
-        <property name="newsStore" ref="newsStore"/>
-    </bean>
-
-    <!-- view and edit news preferences -->
-    <bean id="adminNewsController"
-        class="org.jasig.portlet.newsreader.mvc.controller.AdminNewsController">
-        <property name="newsStore" ref="newsStore"/>
-    </bean>
+    <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
     
-    <!-- add or edit a user-defined news -->
-    <bean id="editNewsConfigurationController"
-        class="org.jasig.portlet.newsreader.mvc.controller.EditUserRomeController">
-        <property name="setCreationService" ref="setCreationService"/>
-        <property name="formView">
-            <value>editNewsUrl</value>
-        </property>
-        <property name="sessionForm">
-            <value>false</value>
-        </property>
-        <property name="commandName" value="newsListingCommand"/>
-        <property name="commandClass" value="org.jasig.portlet.newsreader.mvc.NewsListingCommand"/>
-        <property name="validator" ref="beanValidator"/>
-        <property name="newsStore" ref="newsStore"/>
-    </bean>
-    
-    <!-- add or edit a pre-defined news -->
-    <bean id="editNewsDefinitionController"
-        class="org.jasig.portlet.newsreader.mvc.controller.EditNewsDefinitionController">
-        <property name="formView">
-            <value>editNewsDefinition</value>
-        </property>
-        <property name="sessionForm">
-            <value>false</value>
-        </property>
-        <property name="commandName" value="newsDefinitionForm"/>
-        <property name="commandClass" value="org.jasig.portlet.newsreader.mvc.NewsDefinitionForm"/>
-        <property name="newsStore" ref="newsStore"/>
-    </bean>
-    
-    
-	<bean id="helpController" class="org.springframework.web.portlet.mvc.PortletModeNameViewController"/>
-    
-    <bean id="ajaxNewsController" class="org.jasig.portlet.newsreader.mvc.controller.AjaxNewsController">
-        <property name="setCreationService" ref="setCreationService"/>
-        <property name="newsStore" ref="newsStore"/>
-        <property name="modelPasser" ref="modelPasser"/>
-        <property name="sessionKeyGenerator" ref="sessionKeyGenerator"/>
-    </bean>
-
-    <bean id="saveDisplayPreferenceController" class="org.jasig.portlet.newsreader.mvc.controller.SaveDisplayPreferenceController">
-        <property name="modelPasser" ref="modelPasser"/>
-        <property name="sessionKeyGenerator" ref="sessionKeyGenerator"/>
-    </bean>
-    
-    <!-- Handler Mapping -->
-
-    <bean id="parameterMappingInterceptor"
-        class="org.springframework.web.portlet.handler.ParameterMappingInterceptor"/>
-
-    <bean id="portletModeParameterHandlerMapping"
-        class="org.springframework.web.portlet.handler.PortletModeParameterHandlerMapping">
-        <property name="order" value="1"/>
-        <!-- 
-        <property name="interceptors">
-            <list>
-                <ref bean="parameterMappingInterceptor"/>
-            </list>
-        </property>
-         -->
-        <property name="portletModeParameterMap">
-            <map>
-                <entry key="view">
-                    <map>
-                        <entry key="view" value-ref="viewNewsController"/>
-                        <entry key="ajax" value-ref="ajaxNewsController"/>
-                    </map>
-                </entry>
-                <entry key="edit">
-                    <map>
-                        <entry key="editPreferences" value-ref="editNewsController"/>
-                        <entry key="editUrl" value-ref="editNewsConfigurationController"/>
-                        <entry key="administration" value-ref="adminNewsController"/>
-                        <entry key="editNewsDefinition" value-ref="editNewsDefinitionController"/>
-                        <entry key="saveDisplayPreference" value-ref="saveDisplayPreferenceController"/>
-                    </map>
-                </entry>
-            </map>
-        </property>
-    </bean>
-    
-    <bean id="portletModeHandlerMapping"
-        class="org.springframework.web.portlet.handler.PortletModeHandlerMapping">
-        <property name="order" value="2"/>
-        <property name="portletModeMap">
-            <map>
-                <entry key="view" value-ref="viewNewsController"/>
-                <entry key="edit" value-ref="editNewsController"/>
-                <entry key="help" value-ref="helpController"/>
-            </map>
-        </property>
-    </bean>
-
-	<bean id="beanValidator" class="org.springmodules.validation.commons.DefaultBeanValidator">
-		<property name="validatorFactory" ref="validatorFactory"/>
-	</bean>
-	
-	<bean id="validatorFactory" class="org.springmodules.validation.commons.DefaultValidatorFactory">
-		<property name="validationConfigLocations">
-			<list>
-				<value>/WEB-INF/validator-rules.xml</value>
-				<value>/WEB-INF/validation.xml</value>
-			</list>
-		</property>
-	</bean>
-
 </beans>

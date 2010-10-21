@@ -17,21 +17,20 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.AbstractController;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -42,36 +41,33 @@ import java.util.Map;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class AdminNewsController extends AbstractController {
+@Controller
+@RequestMapping("CONFIG")
+public class AdminNewsController {
 
-    private static Log log = LogFactory.getLog(AdminNewsController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
-    @Override
-    public ModelAndView handleRenderRequestInternal(RenderRequest request,
-                                                    RenderResponse response) throws Exception {
+    @RequestMapping(params="action=administration")
+    public ModelAndView handleRenderRequestInternal() throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
 
-        // get a list of all predefined newss
+        // get a list of all predefined news
         model.put("feeds", newsStore.getPredefinedNewsConfigurations());
 
         return new ModelAndView("/adminNews", "model", model);
 
     }
 
-    @Override
-    protected void handleActionRequestInternal(ActionRequest request,
-                                               ActionResponse response) throws Exception {
-        Long id = Long.parseLong(request.getParameter("id"));
-        String actionCode = request.getParameter("actionCode");
-        if (actionCode.equals("delete")) {
-            PredefinedNewsDefinition def = newsStore.getPredefinedNewsDefinition(id);
-            newsStore.deleteNewsDefinition(def);
-        }
+    @RequestMapping(params="action=deleteDefinition")
+    public void deleteDefinition(@RequestParam Long id) throws Exception {
+        PredefinedNewsDefinition def = newsStore.getPredefinedNewsDefinition(id);
+        newsStore.deleteNewsDefinition(def);
     }
 
     private NewsStore newsStore;
 
+    @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }

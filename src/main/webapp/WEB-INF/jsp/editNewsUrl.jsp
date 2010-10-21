@@ -60,7 +60,7 @@
         <br />
         <hr />
         <p>
-        	<a href="<portlet:renderURL><portlet:param name="action" value="editPrefences"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> Return to main edit page</a>
+        	<a href="<portlet:renderURL><portlet:param name="action" value="editPreferences"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> Return to main edit page</a>
         </p>
     </body>
 </html>
