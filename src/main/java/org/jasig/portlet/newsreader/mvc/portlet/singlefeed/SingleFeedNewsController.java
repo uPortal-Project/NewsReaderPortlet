@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
@@ -46,6 +47,7 @@ public class SingleFeedNewsController {
     
     private List<IInitializationService> initializationServices = Collections.emptyList();
 
+    @Resource(name="initializationServices")
     public void setInitializationServices(List<IInitializationService> services) {
         this.initializationServices = services;
     }
@@ -75,7 +77,6 @@ public class SingleFeedNewsController {
 
             // mark this session as initialized
             session.setAttribute("initialized", "true");
-            session.setMaxInactiveInterval(60 * 60 * 2);
         }
         
         PortletPreferences portletPrefs = request.getPreferences();
