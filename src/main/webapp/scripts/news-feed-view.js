@@ -251,13 +251,14 @@ var newsreader = newsreader || {};
 		var storyContainer = $('#' + that.options.namespace + 'feed' + feedId).find('.news-items-container');
 		var feedList = $(document.createElement("ul")).addClass("news-list");
 		
-		var feedAttr = {};
-		if(that.options.newWindow){
-			feedAttr.target = "_blank"
-		}
+        // Decide what clicking on a link does
+        var targetAttribute = '';
+        if(that.options.newWindow) {
+            targetAttribute = ' target="_new"';
+        }
 
 		$(feed.entries).each(function(){
-			feedList.append("<li><a class='news-item' href='" + this.link + "'>" + this.title + "</a></li>").attr(feedAttr);
+			feedList.append('<li><a href="' + this.link + '" class="news-item"' + targetAttribute + '>' + this.title + '</a></li>');
 		});
 		storyContainer.append(feedList);
 	}
