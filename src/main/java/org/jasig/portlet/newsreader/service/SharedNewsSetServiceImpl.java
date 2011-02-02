@@ -28,7 +28,6 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletSession;
 import javax.portlet.ReadOnlyException;
-import javax.portlet.RenderRequest;
 import javax.portlet.ValidatorException;
 
 import org.apache.commons.logging.Log;
@@ -56,7 +55,7 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 	 * 
 	 * Initalise the NewsSet  
 	 */
-	public NewsSet getNewsSet(Long id, ActionRequest request) {
+	public NewsSet getNewsSet(Long id, PortletRequest request) {
 		NewsSet set = null;
 
 		PortletSession session = request.getPortletSession();
@@ -70,24 +69,24 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 			}
 			else {
 				log.debug("No existing set found, creating and saving new set.");
-				set = createNewsSet(request);
+//				set = createNewsSet(request);
 			}
 			
 			// now we have a set, assocoiate it with this portlet instance.
-			PortletPreferences preferences = request.getPreferences();
-			try {
-				preferences.setValue("newsSetId", String.valueOf(set.getId()));
-				preferences.store();
-			} catch (ReadOnlyException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ValidatorException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			PortletPreferences preferences = request.getPreferences();
+//			try {
+//				preferences.setValue("newsSetId", String.valueOf(set.getId()));
+//				preferences.store();
+//			} catch (ReadOnlyException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (ValidatorException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			
 		} else { // preference already set, just fetch this news
 			log.debug("Retrieving news set " + id);

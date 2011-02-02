@@ -32,7 +32,7 @@ var newsreader = newsreader || {};
         var feedResult;
         $.ajax({
             url: that.options.url,
-            type: "POST",
+            type: "GET",
             dataType: "json",
             async: false,
             data: data,

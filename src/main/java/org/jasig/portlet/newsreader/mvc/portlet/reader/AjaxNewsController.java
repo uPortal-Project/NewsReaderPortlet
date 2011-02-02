@@ -24,9 +24,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
+import javax.portlet.ResourceRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -39,13 +38,15 @@ import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
-import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -78,21 +79,11 @@ public class AjaxNewsController {
         this.ctx = ctx;
     }
 
-    private AjaxPortletSupportService ajaxPortletSupportService;
-    
-    /**
-     * Set the service for handling portlet AJAX requests.
-     * 
-     * @param ajaxPortletSupportService
-     */
-    @Autowired(required = true)
-    public void setAjaxPortletSupportService(
-                    AjaxPortletSupportService ajaxPortletSupportService) {
-            this.ajaxPortletSupportService = ajaxPortletSupportService;
-    }
-
-	@RequestMapping(params="action=ajax")
-	public void getNews(ActionRequest request, ActionResponse response) throws Exception {
+	@ResourceMapping
+    public ModelAndView getNews(
+            ResourceRequest request,
+            @RequestParam(value = "activeateNews", required = false) String activeateNews)
+            throws Exception {
 		log.debug("handleAjaxRequestInternal (AjaxNewsController)");
 		
 		JSONObject json = new JSONObject();
@@ -111,7 +102,6 @@ public class AjaxNewsController {
         json.put("feeds", jsonFeeds);
        	
 		PortletPreferences prefs = request.getPreferences();
-		String activeateNews = request.getParameter("activeateNews");
 		if (activeateNews != null) {
 			prefs.setValue("activeFeed", activeateNews);
 			prefs.store();
@@ -191,7 +181,7 @@ public class AjaxNewsController {
 		
 		log.debug(json);
 		
-        this.ajaxPortletSupportService.redirectAjaxResponse("ajax/json", model, request, response);
+        return new ModelAndView("jsonView", model);
 	}
 	
 }

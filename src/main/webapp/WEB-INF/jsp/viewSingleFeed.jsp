@@ -31,6 +31,25 @@
 <style>
     ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
 </style>
+
+<div class="org-jasig-portlet-newsreader">
+    <div id="${n}newsContainer">Loading . . . </div>
+    <br />
+
+    <div id="${n}feed">
+        <h2>
+            <a href="" target="" class="up-newsreader-feed-name" rel="popup"></a>
+        </h2>
+        <div class="up-newsreader-story ${ renderRequest.preferences.map['scrolling'][0] == 'true' ? 'portlet-rss-scrollable-content' : ''}">
+            <a class="up-newsreader-story-name"></a>
+            <p class="up-newsreader-story-summary"></p>
+        </div>
+    </div>
+
+    <c:if test="${supportsEdit}">
+        <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
+    </c:if>
+</div>
     
 <c:set var="storyView">${renderRequest.preferences.map['storyView'][0]}</c:set>
 <script type="text/javascript">
@@ -43,6 +62,7 @@
     ${n}.jQuery(function() {
 
         var $ = ${n}.jQuery;
+        var fluid = ${n}.fluid;
 
         var options = {
             url: '<portlet:resourceURL/>',
@@ -57,11 +77,3 @@
     });
 </script>
 
-<div class="org-jasig-portlet-newsreader">
-    <div id="${n}newsContainer">Loading . . . </div>
-    <br />
-
-    <c:if test="${supportsEdit}">
-        <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
-    </c:if>
-</div>

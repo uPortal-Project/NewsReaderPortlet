@@ -54,7 +54,7 @@ public class EditUserRomeController {
     protected final Log log = LogFactory.getLog(getClass());
     
     @RequestMapping(params="action=editUrl")
-    public String showEditForm() {
+    public String showEditForm(PortletRequest request) {
         return "editNewsUrl";
     }
 
@@ -94,7 +94,7 @@ public class EditUserRomeController {
 
     @RequestMapping(params="action=editPreferences")
     protected void onSubmitAction(ActionRequest request,
-                                  ActionResponse response, Object command, BindException errors)
+                ActionResponse response, Object command, BindException errors)
             throws Exception {
 
         // get the form data

@@ -45,7 +45,7 @@
 
         $(document).ready(function(){
             var options = {
-                url: '<portlet:actionURL><portlet:param name="action" value="ajax"/></portlet:actionURL>',
+                url: '<portlet:resourceURL/>',
                 namespace: '${n}',
                 feedView: "${renderRequest.preferences.map['feedView'][0]}",
                 summaryView: "${ storyView == 'scroll-summaries' ? 'full' : 'flyout' }",

@@ -39,14 +39,14 @@ public class UnsharedNewsSetServiceImpl implements NewsSetResolvingService {
 	
     private static Log log = LogFactory.getLog(UnsharedNewsSetServiceImpl.class);
 	
-	public NewsSet getNewsSet(Long id, ActionRequest request) {
+	public NewsSet getNewsSet(Long id, PortletRequest request) {
 		NewsSet set = null;
 		
 		PortletSession session = request.getPortletSession();
 		
 		if (id < 0) { // No preference set, need to find a set or create a new one
 			log.debug("Creating and saving new set.");
-			set = createNewsSet(request);
+//			set = createNewsSet(request);
 		} else { 
 			// preference already set, just fetch this news
 			log.debug("Retrieving news set " + id);

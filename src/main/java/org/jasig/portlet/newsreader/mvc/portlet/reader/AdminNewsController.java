@@ -22,6 +22,9 @@ package org.jasig.portlet.newsreader.mvc.portlet.reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.portlet.RenderRequest;
+import javax.portlet.ResourceRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
@@ -48,7 +51,7 @@ public class AdminNewsController {
     protected final Log log = LogFactory.getLog(getClass());
 
     @RequestMapping(params="action=administration")
-    public ModelAndView handleRenderRequestInternal() throws Exception {
+    public ModelAndView showAdminInterface(RenderRequest request) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -60,7 +63,7 @@ public class AdminNewsController {
     }
 
     @RequestMapping(params="action=deleteDefinition")
-    public void deleteDefinition(@RequestParam Long id) throws Exception {
+    public void deleteDefinition(@RequestParam Long id, ResourceRequest request) throws Exception {
         PredefinedNewsDefinition def = newsStore.getPredefinedNewsDefinition(id);
         newsStore.deleteNewsDefinition(def);
     }

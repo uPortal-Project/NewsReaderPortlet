@@ -33,7 +33,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.portlet.mvc.SimpleFormController;
 
 
 /**
@@ -44,7 +43,7 @@ import org.springframework.web.portlet.mvc.SimpleFormController;
  * @author Jen Bourey
  */
 @Controller
-@RequestMapping("VIEW")
+@RequestMapping("CONFIG")
 public class EditNewsDefinitionController {
 
     protected final Log log = LogFactory.getLog(getClass());
@@ -83,8 +82,8 @@ public class EditNewsDefinitionController {
     }
 
     @RequestMapping
-    protected void onSubmitAction(ActionRequest request,
-                                  ActionResponse response, Object command, BindException errors)
+    protected void updateNewsDefinition(ActionRequest request,
+                ActionResponse response, Object command, BindException errors)
             throws Exception {
 
         // get the form data

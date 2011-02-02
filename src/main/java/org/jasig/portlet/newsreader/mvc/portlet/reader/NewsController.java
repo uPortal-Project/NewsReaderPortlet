@@ -34,6 +34,7 @@ import javax.portlet.RenderResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.mvc.IViewSelector;
 import org.jasig.portlet.newsreader.service.IInitializationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,11 +70,13 @@ public class NewsController {
         this.initializationServices = services;
     }
 
-    private String viewName = "viewNews";
+    private IViewSelector viewSelector;
     
-    public void setViewName(String viewName) {
-        this.viewName = viewName;
+    @Autowired(required=true)
+    public void setViewSelector(IViewSelector viewSelector) {
+        this.viewSelector = viewSelector;
     }
+
 
     @RequestMapping
     public ModelAndView showNewsView(RenderRequest request,
@@ -126,8 +129,9 @@ public class NewsController {
         model.put("supportsEdit", request.isPortletModeAllowed(PortletMode.EDIT));
         model.put("isAdmin", session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
         
-        log.debug("forwarding to " + this.viewName);
-        return new ModelAndView(this.viewName, model);
+        String viewName = viewSelector.getMultiFeedViewName(request);
+        log.debug("forwarding to " + viewName);
+        return new ModelAndView(viewName, model);
     }
 
 }

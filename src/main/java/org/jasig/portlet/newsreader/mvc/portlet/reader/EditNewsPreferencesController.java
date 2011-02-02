@@ -43,7 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.AbstractController;
 
 
 /**
@@ -61,8 +60,8 @@ public class EditNewsPreferencesController {
     protected final Log log = LogFactory.getLog(getClass());
 
     @RequestMapping
-    public ModelAndView handleRenderRequestInternal(RenderRequest request,
-                                                    RenderResponse response) throws Exception {
+    public ModelAndView showConfigurationView(RenderRequest request,
+            RenderResponse response) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -87,6 +86,7 @@ public class EditNewsPreferencesController {
         model.put("predefinedNewsConfigurations", predefinedNewsConfigurations);
 
         // get the user's role listings
+        @SuppressWarnings("unchecked")
         Set<String> userRoles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
 
         // get a list of predefined feeds the user doesn't
@@ -100,8 +100,9 @@ public class EditNewsPreferencesController {
         return new ModelAndView("/editNews", "model", model);
     }
 
-    public void handleActionRequestInternal(ActionRequest request,
-                                               ActionResponse response) throws Exception {
+    @RequestMapping
+    public void updatePreferences(ActionRequest request, ActionResponse response)
+            throws Exception {
         Long id = Long.parseLong(request.getParameter("id"));
         String actionCode = request.getParameter("actionCode");
         PortletSession session = request.getPortletSession();
@@ -137,9 +138,9 @@ public class EditNewsPreferencesController {
     }
 
 
-    private Map predefinedEditActions;
+    private Map<String,String> predefinedEditActions;
 
-    public void setPredefinedEditActions(Map predefinedEditActions) {
+    public void setPredefinedEditActions(Map<String,String> predefinedEditActions) {
         this.predefinedEditActions = predefinedEditActions;
     }
 
