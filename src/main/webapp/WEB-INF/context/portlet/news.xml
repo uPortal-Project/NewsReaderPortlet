@@ -38,14 +38,13 @@
         lazy-init="false">
         <property name="locations">
             <list>
-                <value>classpath:datasource.properties</value>
                 <value>classpath:configuration.properties</value>
             </list>
         </property>
     </bean>
-    
+
     <util:list id="initializationServices">
-        <!--
+        <!-- CAS proxy ticket example
         <bean class="edu.yale.its.tp.portlets.news.service.CasProxyInitializationService">
             <property name="proxyTicketService" ref="casService"/>
         </bean>
