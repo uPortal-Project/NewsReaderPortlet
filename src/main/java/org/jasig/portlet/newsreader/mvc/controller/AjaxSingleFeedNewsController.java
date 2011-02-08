@@ -56,7 +56,7 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
 		
 		PortletPreferences prefs = request.getPreferences();
 		String url = prefs.getValue("url", null);
-		String name = prefs.getValue("name", null);
+		String name = prefs.getValue("name", "portlet preference 'name' not set");
 		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
 		String className = prefs.getValue("className", null);
 		
