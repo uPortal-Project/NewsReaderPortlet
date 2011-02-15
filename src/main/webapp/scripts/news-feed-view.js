@@ -161,7 +161,7 @@ var newsreader = newsreader || {};
             targetAttribute = ' target="_new"';
         }
         var header = '<h2><a href="'+feed.link+'" rel="popup"' + targetAttribute + '>'+feed.title+'</a>'
-        if (feed.author != undefined) header += feed.author;
+        if (feed.author != undefined) header += " by " + feed.author;
         header +='</h2>';
         storyContainer.html(header);
         

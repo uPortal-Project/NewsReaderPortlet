@@ -58,6 +58,7 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
 		String url = prefs.getValue("url", null);
 		String name = prefs.getValue("name", "portlet preference 'name' not set");
 		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
+        boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
 		String className = prefs.getValue("className", null);
 		
 		JSONObject json = new JSONObject();
@@ -86,33 +87,47 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
             INewsAdapter adapter = (INewsAdapter) ctx.getBean(className);
             // retrieve the feed from this adaptor
             feed = adapter.getSyndFeed(feedConfig, request);
-            log.debug("Got feed from adapter");
 
-            if(feed.getEntries().isEmpty()) {
-            	json.put("message", "<p>No news.</p>");
+            if ( feed != null )
+            {
+                log.debug("Got feed from adapter");
+
+                if(feed.getEntries().isEmpty()) {
+                    json.put("message", "<p>No news.</p>");
+                }
+                else {
+                    //turn feed into JSON
+                    JSONObject jsonFeed = new JSONObject();
+	            
+                    jsonFeed.put("link", feed.getLink());
+                    jsonFeed.put("title", feed.getTitle());
+
+                    if ( showAuthor == true )
+                    {
+                        jsonFeed.put("author", feed.getAuthor());
+                    }
+
+                    jsonFeed.put("copyright", feed.getCopyright());
+	            
+                    JSONArray jsonEntries = new JSONArray();
+                    for (ListIterator i = feed.getEntries().listIterator(); i.hasNext() && i.nextIndex() < maxStories;) {
+                        SyndEntry entry = (SyndEntry) i.next();
+                        JSONObject jsonEntry = new JSONObject();
+                        jsonEntry.put("link",entry.getLink());
+                        jsonEntry.put("title",entry.getTitle());
+                        jsonEntry.put("description",entry.getDescription().getValue());
+                        jsonEntries.add(jsonEntry);
+                    }
+	            
+                    jsonFeed.put("entries", jsonEntries);
+	            
+                    json.put("feed", jsonFeed);
+                }
             }
-            else {
-	            //turn feed into JSON
-	            JSONObject jsonFeed = new JSONObject();
-	            
-	            jsonFeed.put("link", feed.getLink());
-	            jsonFeed.put("title", feed.getTitle());
-	            jsonFeed.put("author", feed.getAuthor());
-	            jsonFeed.put("copyright", feed.getCopyright());
-	            
-	            JSONArray jsonEntries = new JSONArray();
-	            for (ListIterator i = feed.getEntries().listIterator(); i.hasNext() && i.nextIndex() < maxStories;) {
-	            	SyndEntry entry = (SyndEntry) i.next();
-	            	JSONObject jsonEntry = new JSONObject();
-	            	jsonEntry.put("link",entry.getLink());
-	            	jsonEntry.put("title",entry.getTitle());
-	            	jsonEntry.put("description",entry.getDescription().getValue());
-	            	jsonEntries.add(jsonEntry);
-	            }
-	            
-	            jsonFeed.put("entries", jsonEntries);
-	            
-	            json.put("feed", jsonFeed);
+            else
+            {
+                log.warn("Failed to get feed from adapter.");
+                json.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
             }
             
         } catch (NoSuchBeanDefinitionException ex) {

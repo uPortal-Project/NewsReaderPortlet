@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.owasp.validator.html.*;
 
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +62,13 @@ public class RomeAdapter implements INewsAdapter {
 
         SyndFeed feed = null;
 
+        // Look for an alternative AntiSamy policy file in the portlet preferences. If found, use it
+        // otherwise use the default policyFile being injected into this class via Spring.
+        // Note that a policy file string includes a path starting at the application context.
+        // (e.g. /WEB-INF/antisamy/antisamy-manchester.xml)
+        PortletPreferences prefs = request.getPreferences();
+        String thePolicyFile = prefs.getValue( "antisamyPolicy", this.policyFile );
+
         // get the URL for this feed
         String url = config.getNewsDefinition().getParameters().get("url");
 
@@ -71,7 +79,7 @@ public class RomeAdapter implements INewsAdapter {
 
             log.debug("Cache miss");
 
-            feed = getSyndFeed(url, request.getPortletSession().getPortletContext().getRealPath("/") + policyFile);
+            feed = getSyndFeed(url, request.getPortletSession().getPortletContext().getRealPath("/") + thePolicyFile);
 
             // save the feed to the cache
             cachedElement = new Element(key, feed);
@@ -81,7 +89,7 @@ public class RomeAdapter implements INewsAdapter {
             feed = (SyndFeed) cachedElement.getValue();
         }
 
-        // return the event list
+        // return the event list or null if the feed was not available.
         return feed;
     }
 
@@ -99,6 +107,7 @@ public class RomeAdapter implements INewsAdapter {
         SyndFeedInput input = new SyndFeedInput();
         HttpClient client = new HttpClient();
         GetMethod get = null;
+        SyndFeed feed = null;
 
         try {
 
@@ -114,24 +123,33 @@ public class RomeAdapter implements INewsAdapter {
             // retrieve
             InputStream in = get.getResponseBodyAsStream();
 
-            //parse
-            SyndFeed feed = input.build(new XmlReader(in));
+            // See if we got back any results. If so, then we can work on the results.
+            // Otherwise we'd eat a parse error for trying to parse a null stream.
+            if ( in != null )
+            {
+                //parse
+                feed = input.build(new XmlReader(in));
 
-            //clean
-            AntiSamy as = new AntiSamy();
+                //clean
+                AntiSamy as = new AntiSamy();
 
-            List<SyndEntry> a = feed.getEntries();
-            Policy policy = Policy.getInstance(policyFile);
+                List<SyndEntry> a = feed.getEntries();
+                Policy policy = Policy.getInstance(policyFile);
 
-            for (SyndEntry entry : a) {
-                SyndContent description = entry.getDescription();
-                CleanResults cr = as.scan(description.getValue(), policy);
-                description.setValue(cr.getCleanHTML());
-                entry.setDescription(description);
-                if (log.isDebugEnabled()) {
-                    log.debug("SyndEntry '" + entry.getTitle() + "' cleaned in " 
-                                            + cr.getScanTime() + " seconds");
+                for (SyndEntry entry : a) {
+                    SyndContent description = entry.getDescription();
+                    CleanResults cr = as.scan(description.getValue(), policy);
+                    description.setValue(cr.getCleanHTML());
+                    entry.setDescription(description);
+                    if (log.isDebugEnabled()) {
+                        log.debug("SyndEntry '" + entry.getTitle() + "' cleaned in " 
+                                                + cr.getScanTime() + " seconds");
+                    }
                 }
+            }
+            else
+            {
+                log.warn( "Feed response not available or cannot be read. URL=" + url );
             }
 
             return feed;
