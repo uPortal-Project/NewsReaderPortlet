@@ -17,11 +17,9 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.singlefeed;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -38,19 +36,40 @@ import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
-import org.jasig.web.portlet.mvc.AbstractAjaxController;
+import org.jasig.web.service.AjaxPortletSupportService;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
-public class AjaxSingleFeedNewsController extends AbstractAjaxController {
+@Controller
+@RequestMapping("VIEW")
+public class AjaxSingleFeedNewsController {
 
-	private static Log log = LogFactory.getLog(AjaxSingleFeedNewsController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
-	@Override
-	protected Map<Object, Object> handleAjaxRequestInternal(ActionRequest request,
+    private ApplicationContext applicationContext;
+    
+    @Autowired(required = true)
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+    
+    private AjaxPortletSupportService ajaxPortletSupportService;
+    
+    @Autowired(required = true)
+    public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
+            this.ajaxPortletSupportService = ajaxPortletSupportService;
+    }
+    
+	@RequestMapping(params="action=ajax")
+	public void getJSONFeed(ActionRequest request,
 			ActionResponse response) throws Exception {
 		log.debug("handleAjaxRequestInternal (AjaxNewsController)");
 		
@@ -60,16 +79,16 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
 		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
         boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
 		String className = prefs.getValue("className", null);
-		
-		JSONObject json = new JSONObject();
-		
+
+		Map<String, Object> model = new HashMap<String, Object>();
+
         JSONArray jsonFeeds = new JSONArray();
     	JSONObject item = new JSONObject();
     	item.put("id",1);
     	item.put("name",name);
     	jsonFeeds.add(item);
-        json.put("feeds", jsonFeeds);
-        json.put("activeFeed", 1);
+        model.put("feeds", jsonFeeds);
+        model.put("activeFeed", 1);
         
         NewsDefinition feedDef = new NewsDefinition(new Long(1), className, name);
         feedDef.addParameter("url", url);
@@ -79,12 +98,10 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
         feedConfig.setId(new Long(1));
 		
 		SyndFeed feed = null;
-        ApplicationContext ctx = this.getApplicationContext();
-        List<String> errors = new ArrayList<String>();
         
         try {
             // get an instance of the adapter for this feed
-            INewsAdapter adapter = (INewsAdapter) ctx.getBean(className);
+            INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(className);
             // retrieve the feed from this adaptor
             feed = adapter.getSyndFeed(feedConfig, request);
 
@@ -93,7 +110,7 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
                 log.debug("Got feed from adapter");
 
                 if(feed.getEntries().isEmpty()) {
-                    json.put("message", "<p>No news.</p>");
+                    model.put("message", "<p>No news.</p>");
                 }
                 else {
                     //turn feed into JSON
@@ -110,8 +127,10 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
                     jsonFeed.put("copyright", feed.getCopyright());
 	            
                     JSONArray jsonEntries = new JSONArray();
-                    for (ListIterator i = feed.getEntries().listIterator(); i.hasNext() && i.nextIndex() < maxStories;) {
-                        SyndEntry entry = (SyndEntry) i.next();
+                    @SuppressWarnings("unchecked")
+                    ListIterator<SyndEntry> i = (ListIterator<SyndEntry>) feed.getEntries().listIterator();
+                    while (i.hasNext() && i.nextIndex() < maxStories) {
+                        SyndEntry entry = i.next();
                         JSONObject jsonEntry = new JSONObject();
                         jsonEntry.put("link",entry.getLink());
                         jsonEntry.put("title",entry.getTitle());
@@ -121,34 +140,29 @@ public class AjaxSingleFeedNewsController extends AbstractAjaxController {
 	            
                     jsonFeed.put("entries", jsonEntries);
 	            
-                    json.put("feed", jsonFeed);
+                    model.put("feed", jsonFeed);
                 }
             }
             else
             {
                 log.warn("Failed to get feed from adapter.");
-                json.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+                model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
             }
             
         } catch (NoSuchBeanDefinitionException ex) {
             log.error("News class instance could not be found: " + ex.getMessage());
-            json.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
         } catch (NewsException ex) {
             log.warn(ex);
-            json.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
         } catch (Exception ex) {
             log.error(ex);
-            json.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
         }
 
 		log.debug("forwarding to /ajaxFeedList");
 		
-		Map<Object, Object> model = new HashMap<Object, Object>();
-		model.put("json", json);
-		
-		log.debug(json);
-		
-        return model;
+		ajaxPortletSupportService.redirectAjaxResponse("ajax/jsonView", model, request, response);
 	}
-	
+
 }

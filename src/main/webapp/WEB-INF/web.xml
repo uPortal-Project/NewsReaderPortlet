@@ -59,7 +59,7 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/context/servlet/ajaxResponseServletContext.xml</param-value>
         </init-param>
-        <load-on-startup>3</load-on-startup>
+        <load-on-startup>2</load-on-startup>
     </servlet>
     
     <servlet-mapping>
@@ -69,13 +69,7 @@
 
 	<servlet-mapping>
         <servlet-name>AjaxResponseServlet</servlet-name>
-        <url-pattern>/ajaxResponse</url-pattern>
+        <url-pattern>/ajax/*</url-pattern>
     </servlet-mapping>
-    
-
-    <!-- [INSERT JSPC FRAGMENT HERE] -->
-
-        
-   
     
 </web-app>

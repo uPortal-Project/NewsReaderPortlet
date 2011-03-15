@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
@@ -34,18 +35,42 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.IInitializationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.ParameterizableViewController;
 
 /*
  * @author Anthony Colebourne
  */
-public class NewsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("VIEW")
+public class NewsController {
 
-    private static Log log = LogFactory.getLog(NewsController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
-    public ModelAndView handleRenderRequestInternal(RenderRequest request,
-                                                    RenderResponse response) throws Exception {
+    private NewsStore newsStore;
+    
+    @Autowired(required = true)
+    public void setNewsStore(NewsStore newsStore) {
+        this.newsStore = newsStore;
+    }
+    
+    private int defaultItems = 2;
+    public void setDefaultItems(int defaultItems) {
+        this.defaultItems = defaultItems;
+    }
+
+    private List<IInitializationService> initializationServices;
+    
+    @Resource(name = "initializationServices")
+    public void setInitializationServices(List<IInitializationService> services) {
+        this.initializationServices = services;
+    }
+    
+    @RequestMapping
+    public ModelAndView showMainView(RenderRequest request,
+            RenderResponse response) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
@@ -94,54 +119,7 @@ public class NewsController extends ParameterizableViewController {
         model.put("supportsEdit", request.isPortletModeAllowed(PortletMode.EDIT));
         model.put("isAdmin", session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
         
-        log.debug("forwarding to " + getViewName());
-        return new ModelAndView(getViewName(), model);
+        return new ModelAndView("viewNews", model);
     }
 
-    private NewsStore newsStore;
-    public void setNewsStore(NewsStore newsStore) {
-        this.newsStore = newsStore;
-    }
-    
-    private int defaultItems = 2;
-    public void setDefaultItems(int defaultItems) {
-        this.defaultItems = defaultItems;
-    }
-
-    private List<IInitializationService> initializationServices;
-    public void setInitializationServices(List<IInitializationService> services) {
-        this.initializationServices = services;
-    }
 }
-
-/*
-* NewsController.java
-*
-* Copyright (c) April 17, 2008 The University of Manchester. All rights reserved.
-*
-* THIS SOFTWARE IS PROVIDED "AS IS," AND ANY EXPRESS OR IMPLIED WARRANTIES,
-* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-* FITNESS FOR A PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED. IN NO EVENT SHALL
-* MANCHESER UNIVERSITY OR ITS EMPLOYEES BE LIABLE FOR ANY DIRECT, INDIRECT,
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED, THE COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED IN ADVANCE OF THE POSSIBILITY OF SUCH DAMAGE.
-*
-* Redistribution and use of this software in source or binary forms, with or
-* without modification, are permitted, provided that the following conditions
-* are met.
-*
-* 1. Any redistribution must include the above copyright notice and disclaimer
-* and this list of conditions in any related documentation and, if feasible, in
-* the redistributed software.
-*
-* 2. Any redistribution must include the acknowledgment, "This product includes
-* software developed by The University of Manchester," in any related documentation and, if
-* feasible, in the redistributed software.
-*
-* 3. The names "Manchester University" and "The University of Manchester" must not be used to endorse or
-* promote products derived from this software.
-*/

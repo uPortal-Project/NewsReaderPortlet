@@ -25,10 +25,8 @@ import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
 import javax.portlet.PortletSession;
 import javax.portlet.ReadOnlyException;
-import javax.portlet.RenderRequest;
 import javax.portlet.ValidatorException;
 
 import org.apache.commons.logging.Log;

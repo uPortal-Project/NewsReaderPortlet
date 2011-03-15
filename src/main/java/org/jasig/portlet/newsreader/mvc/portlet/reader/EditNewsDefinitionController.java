@@ -17,20 +17,21 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsDefinitionForm;
-import org.jasig.portlet.newsreader.service.UnsharedNewsSetServiceImpl;
-import org.springframework.validation.BindException;
-import org.springframework.web.portlet.mvc.SimpleFormController;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
@@ -40,19 +41,21 @@ import javax.portlet.PortletRequest;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class EditNewsDefinitionController extends SimpleFormController {
+@Controller
+@RequestMapping("EDIT")
+public class EditNewsDefinitionController {
 
-    private static Log log = LogFactory
-            .getLog(EditNewsDefinitionController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
-    public EditNewsDefinitionController() {
+    private NewsStore newsStore;
+
+    @Autowired(required = true)
+    public void setNewsStore(NewsStore newsStore) {
+        this.newsStore = newsStore;
     }
 
-    /*
-      * (non-Javadoc)
-      * @see org.springframework.web.portlet.mvc.AbstractFormController#formBackingObject(javax.portlet.PortletRequest)
-      */
-    protected Object formBackingObject(PortletRequest request) throws Exception {
+    @ModelAttribute("newsDefinitionForm")
+    public NewsDefinitionForm getNewsForm(PortletRequest request) throws Exception {
         // if we're editing a news, retrieve the news definition from
         // the database and add the information to the form
         String id = request.getParameter("id");
@@ -80,13 +83,15 @@ public class EditNewsDefinitionController extends SimpleFormController {
         }
     }
 
-    @Override
-    protected void onSubmitAction(ActionRequest request,
-                                  ActionResponse response, Object command, BindException errors)
+    @RequestMapping(params = "action=editNewsDefinition")
+    public String getAdminNewsEditView() {
+        return "editNewsDefinition";
+    }
+    
+    @RequestMapping(params = "action=editNewsDefinition")
+    public void onSubmitAction(ActionRequest request,
+                                  ActionResponse response, NewsDefinitionForm form)
             throws Exception {
-
-        // get the form data
-        NewsDefinitionForm form = (NewsDefinitionForm) command;
 
         // construct a news definition from the form data
         PredefinedNewsDefinition definition = null;
@@ -111,12 +116,6 @@ public class EditNewsDefinitionController extends SimpleFormController {
         // send the user back to the main administration page
         response.setRenderParameter("action", "administration");
 
-    }
-
-    private NewsStore newsStore;
-
-    public void setNewsStore(NewsStore newsStore) {
-        this.newsStore = newsStore;
     }
     
 

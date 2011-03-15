@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -33,8 +33,10 @@ import org.jasig.portlet.newsreader.adapter.RomeAdapter;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsListingCommand;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
-import org.springframework.validation.BindException;
-import org.springframework.web.portlet.mvc.SimpleFormController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
@@ -44,20 +46,28 @@ import org.springframework.web.portlet.mvc.SimpleFormController;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class EditUserRomeController extends SimpleFormController {
+@Controller
+@RequestMapping("EDIT")
+public class EditUserRomeController {
 
-    private static Log log = LogFactory.getLog(EditUserRomeController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
+    private NewsStore newsStore;
 
-    public EditUserRomeController() {
+    @Autowired(required = true)
+    public void setNewsStore(NewsStore newsStore) {
+        this.newsStore = newsStore;
     }
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see org.springframework.web.portlet.mvc.AbstractFormController#formBackingObject(javax.portlet.PortletRequest)
-      */
-    protected Object formBackingObject(PortletRequest request) throws Exception {
+    private NewsSetResolvingService setCreationService;
+
+    @Autowired(required = true)
+    public void setSetCreationService(NewsSetResolvingService setCreationService) {
+        this.setCreationService = setCreationService;
+    }
+
+    @ModelAttribute("newsListingCommand")
+    public NewsListingCommand getNewsForm(PortletRequest request) throws Exception {
 
         // if we're editing a news, retrieve the news definition from
         // the database and add the information to the form
@@ -85,13 +95,14 @@ public class EditUserRomeController extends SimpleFormController {
         }
     }
 
-    @Override
-    protected void onSubmitAction(ActionRequest request,
-                                  ActionResponse response, Object command, BindException errors)
-            throws Exception {
-
-        // get the form data
-        NewsListingCommand form = (NewsListingCommand) command;
+    @RequestMapping(params = "action=editUrl")
+    public String getUserEditView(PortletRequest request) {
+        return "editNewsUrl";
+    }
+    
+    @RequestMapping(params = "action=editUrl")
+    public void onSubmitAction(ActionRequest request, ActionResponse response,
+            NewsListingCommand form) throws Exception {
 
         // construct a news definition from the form data
         UserDefinedNewsConfiguration config = null;
@@ -122,7 +133,6 @@ public class EditUserRomeController extends SimpleFormController {
             log.debug("Insert new");
         }
 
-//        log.debug("User defined News configuration is \nUser: " + config.getSubscribeId());
         log.debug("User defined News definition is " + config.getNewsDefinition().getName());
 
         // save the news
@@ -131,17 +141,6 @@ public class EditUserRomeController extends SimpleFormController {
         // send the user back to the main edit page
         response.setRenderParameter("action", "editPreferences");
 
-    }
-
-    private NewsStore newsStore;
-
-    public void setNewsStore(NewsStore newsStore) {
-        this.newsStore = newsStore;
-    }
-
-    private NewsSetResolvingService setCreationService;
-    public void setSetCreationService(NewsSetResolvingService setCreationService) {
-    	this.setCreationService = setCreationService;
     }
 
 }

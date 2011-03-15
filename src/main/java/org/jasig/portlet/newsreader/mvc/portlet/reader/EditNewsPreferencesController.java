@@ -17,16 +17,20 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -39,9 +43,11 @@ import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.dao.NewsStore;
-import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
+import org.jasig.web.service.AjaxPortletSupportService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.AbstractController;
 
 
 /**
@@ -52,13 +58,36 @@ import org.springframework.web.portlet.mvc.AbstractController;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class EditNewsPreferencesController extends AbstractController {
+@Controller
+@RequestMapping("EDIT")
+public class EditNewsPreferencesController {
 
-    private static Log log = LogFactory.getLog(EditNewsPreferencesController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
-    @Override
-    public ModelAndView handleRenderRequestInternal(RenderRequest request,
-                                                    RenderResponse response) throws Exception {
+    private Map<String,String> predefinedEditActions;
+
+    @Resource(name = "predefinedEditActions")
+    public void setPredefinedEditActions(Map<String,String> predefinedEditActions) {
+        this.predefinedEditActions = predefinedEditActions;
+    }
+
+    private NewsStore newsStore;
+
+    @Autowired(required = true)
+    public void setNewsStore(NewsStore newsStore) {
+        this.newsStore = newsStore;
+    }
+
+    private AjaxPortletSupportService ajaxPortletSupportService;
+    
+    @Autowired(required = true)
+    public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
+            this.ajaxPortletSupportService = ajaxPortletSupportService;
+    }
+    
+    @RequestMapping
+    public ModelAndView showPreferencesView(RenderRequest request,
+            RenderResponse response) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -83,6 +112,7 @@ public class EditNewsPreferencesController extends AbstractController {
         model.put("predefinedNewsConfigurations", predefinedNewsConfigurations);
 
         // get the user's role listings
+        @SuppressWarnings("unchecked")
         Set<String> userRoles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
 
         // get a list of predefined feeds the user doesn't
@@ -96,9 +126,9 @@ public class EditNewsPreferencesController extends AbstractController {
         return new ModelAndView("/editNews", "model", model);
     }
 
-    @Override
-    protected void handleActionRequestInternal(ActionRequest request,
-                                               ActionResponse response) throws Exception {
+    @RequestMapping
+    protected void saveNewsPreference(ActionRequest request,
+            ActionResponse response) throws Exception {
         Long id = Long.parseLong(request.getParameter("id"));
         String actionCode = request.getParameter("actionCode");
         PortletSession session = request.getPortletSession();
@@ -133,16 +163,29 @@ public class EditNewsPreferencesController extends AbstractController {
         }
     }
 
+    @RequestMapping(params = "action=saveDisplayPreference")
+    public void saveDisplayPreference(ActionRequest request,
+            ActionResponse response) throws IOException {
 
-    private Map predefinedEditActions;
+        Map<String, ?> model;
+        
+        try {
+            String prefName = request.getParameter("prefName");
+            String prefValue = request.getParameter("prefValue");
+            
+            PortletPreferences prefs = request.getPreferences();
+            prefs.setValue(prefName, prefValue);
+            prefs.store();
 
-    public void setPredefinedEditActions(Map predefinedEditActions) {
-        this.predefinedEditActions = predefinedEditActions;
+            model = Collections.singletonMap("status", "success");
+
+        } catch (Exception e) {
+            log.error("There was an error saving the preferences.", e);
+            model = Collections.singletonMap("status", "failure");
+        }
+
+        this.ajaxPortletSupportService.redirectAjaxResponse("ajax/jsonView", model, request, response);
+
     }
 
-    private NewsStore newsStore;
-
-    public void setNewsStore(NewsStore newsStore) {
-        this.newsStore = newsStore;
-    }
 }

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.controller;
+package org.jasig.portlet.newsreader.mvc.portlet.singlefeed;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,23 +25,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.Preference;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.AbstractController;
 
-public class EditSingleFeedPreferencesController extends AbstractController implements InitializingBean {
+@Controller
+@RequestMapping("EDIT")
+public class EditSingleFeedPreferencesController implements InitializingBean {
 
 	private List<Integer> optionsMaxStories;
 	private Map<String,String> optionsViewTypes;
 	
-	private final Log log = LogFactory.getLog(EditSingleFeedPreferencesController.class);
+    protected final Log log = LogFactory.getLog(getClass());
 		
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -56,8 +63,8 @@ public class EditSingleFeedPreferencesController extends AbstractController impl
         
     }
 
-    @Override
-	protected ModelAndView handleRenderRequestInternal(RenderRequest request, RenderResponse response) throws Exception {
+    @RequestMapping
+	protected ModelAndView showForm(RenderRequest request, RenderResponse response) throws Exception {
 
         log.trace("handleRenderRequestInternal");
 		
@@ -86,5 +93,31 @@ public class EditSingleFeedPreferencesController extends AbstractController impl
 		return new ModelAndView("editSingleFeed", model);
 
     }
+    
+    @RequestMapping
+    public Map<Object, Object> savePreference(ActionRequest request,
+            ActionResponse response) throws Exception {
+
+        try {
+            String prefName = request.getParameter("prefName");
+            String prefValue = request.getParameter("prefValue");
+            
+            PortletPreferences prefs = request.getPreferences();
+            prefs.setValue(prefName, prefValue);
+            prefs.store();
+
+            JSONObject json = new JSONObject();
+            json.put("status", "success");
+
+            Map<Object, Object> model = new HashMap<Object, Object>();
+            model.put("json", json);
+            return model;
+        } catch (Exception e) {
+            log.error("There was an error saving the preferences.", e);
+            throw e;
+        }
+
+    }
+
 
 }

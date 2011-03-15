@@ -54,8 +54,7 @@
        					</a>
 	        		</td>
 	        		<td class="instruction">
-	        			<a href="<portlet:actionURL><portlet:param name="action" value="administration"/>
-	        					<portlet:param name="actionCode" value="delete"/>
+	        			<a href="<portlet:actionURL><portlet:param name="action" value="deletePredefinedFeed"/>
 	        					<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
 	        					title="Delete feed">
 	        				<img alt="delete" src="<c:url value="/images/rss_delete.png"/>"/>

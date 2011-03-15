@@ -36,7 +36,7 @@
 
 		<h3>Edit news feed</h3>
 
-        <form:form name="news" commandName="newsListingCommand" action="${postUrl}" onsubmit="return validateMyForm(this)">
+        <form:form name="news" commandName="newsListingCommand" action="${postUrl}">
         	<form:hidden path="id"/>
 			<p>
 				<label class="portlet-form-field-label">News feed name:</label>

@@ -83,6 +83,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>${jdbc.groupId}</groupId>
+                <artifactId>${jdbc.artifactId}</artifactId>
+                <version>${jdbc.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.googlecode.cernunnos</groupId>
                 <artifactId>cernunnos</artifactId>
                 <version>1.2.1</version>
@@ -90,6 +95,22 @@
                     <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-tx</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -164,7 +185,13 @@
             <dependency>
                 <groupId>org.jasig</groupId>
                 <artifactId>AjaxPortletSupport</artifactId>
-                <version>1.0.4</version>
+                <version>1.0.9</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webmvc</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.jasig.resourceserver</groupId>
@@ -176,12 +203,41 @@
                 <groupId>org.jasig.resourceserver</groupId>
                 <artifactId>resource-server-utils</artifactId>
                 <version>${resource-server.version}</version>            
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.sf.ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-expression</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
                 <version>${spring.version}</version>
                 <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -196,20 +252,13 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc-portlet</artifactId>
+                <artifactId>spring-web</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springmodules</groupId>
-                <artifactId>spring-modules-validation</artifactId>
-                <version>0.8</version>
-                <scope>runtime</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring</artifactId>
-                    </exclusion>                
-                </exclusions>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc-portlet</artifactId>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.owasp</groupId>
@@ -230,6 +279,11 @@
     </dependencyManagement>
     
     <dependencies>
+        <dependency>
+            <groupId>${jdbc.groupId}</groupId>
+            <artifactId>${jdbc.artifactId}</artifactId>
+            <version>${jdbc.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.googlecode.cernunnos</groupId>
             <artifactId>cernunnos</artifactId>
@@ -290,6 +344,18 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
         </dependency>
         <dependency>
@@ -298,11 +364,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc-portlet</artifactId>
+            <artifactId>spring-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springmodules</groupId>
-            <artifactId>spring-modules-validation</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc-portlet</artifactId>
         </dependency>
         <dependency>
             <groupId>org.owasp</groupId>
