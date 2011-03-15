@@ -19,14 +19,15 @@
 
 package org.jasig.portlet.newsreader.adapter;
 
-import com.sun.syndication.feed.synd.SyndContent;
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.io.SyndFeedInput;
-import com.sun.syndication.io.XmlReader;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
@@ -34,13 +35,12 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
-import org.owasp.validator.html.*;
+import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
+import org.owasp.validator.html.PolicyException;
+import org.owasp.validator.html.ScanException;
 
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.io.FeedException;
 
 
 /**
@@ -53,7 +53,13 @@ import java.util.List;
  */
 public class RomeAdapter implements INewsAdapter {
 
-    private static Log log = LogFactory.getLog(RomeAdapter.class);
+    protected final Log log = LogFactory.getLog(getClass());
+    
+    private RomeNewsProcessorImpl processor;
+    
+    public void setProcessor(RomeNewsProcessorImpl processor) {
+        this.processor = processor;
+    }
 
     /* (non-Javadoc)
       * @see org.jasig.portlet.newsreader.adapter.INewsAdapter#getSyndFeed(org.jasig.portlet.newsreader.NewsConfiguration, javax.portlet.PortletRequest)
@@ -67,7 +73,7 @@ public class RomeAdapter implements INewsAdapter {
         // Note that a policy file string includes a path starting at the application context.
         // (e.g. /WEB-INF/antisamy/antisamy-manchester.xml)
         PortletPreferences prefs = request.getPreferences();
-        String thePolicyFile = prefs.getValue( "antisamyPolicy", this.policyFile );
+        String thePolicyFile = prefs.getValue( "antisamyPolicy", null );
 
         // get the URL for this feed
         String url = config.getNewsDefinition().getParameters().get("url");
@@ -101,10 +107,8 @@ public class RomeAdapter implements INewsAdapter {
      * @param policyFile String the cleaning policy
      * @return SyndFeed Feed object
      */
-    @SuppressWarnings("unchecked")
     protected SyndFeed getSyndFeed(String url, String policyFile) throws NewsException {
 
-        SyndFeedInput input = new SyndFeedInput();
         HttpClient client = new HttpClient();
         GetMethod get = null;
         SyndFeed feed = null;
@@ -127,25 +131,7 @@ public class RomeAdapter implements INewsAdapter {
             // Otherwise we'd eat a parse error for trying to parse a null stream.
             if ( in != null )
             {
-                //parse
-                feed = input.build(new XmlReader(in));
-
-                //clean
-                AntiSamy as = new AntiSamy();
-
-                List<SyndEntry> a = feed.getEntries();
-                Policy policy = Policy.getInstance(policyFile);
-
-                for (SyndEntry entry : a) {
-                    SyndContent description = entry.getDescription();
-                    CleanResults cr = as.scan(description.getValue(), policy);
-                    description.setValue(cr.getCleanHTML());
-                    entry.setDescription(description);
-                    if (log.isDebugEnabled()) {
-                        log.debug("SyndEntry '" + entry.getTitle() + "' cleaned in " 
-                                                + cr.getScanTime() + " seconds");
-                    }
-                }
+                feed = processor.getFeed(in);
             }
             else
             {
@@ -175,7 +161,7 @@ public class RomeAdapter implements INewsAdapter {
         }
 
     }
-
+    
     /**
      * Get a cache key for this feed.
      *
@@ -195,10 +181,4 @@ public class RomeAdapter implements INewsAdapter {
         this.cache = cache;
     }
 
-    private String policyFile;
-
-    public void setPolicyFile(String policyFile) {
-        this.policyFile = policyFile;
-	}
-	
 }

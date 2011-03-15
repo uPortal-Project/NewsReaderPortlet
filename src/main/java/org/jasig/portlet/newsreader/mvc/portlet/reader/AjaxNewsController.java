@@ -38,6 +38,7 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.BeansException;
@@ -47,7 +48,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
 @Controller
@@ -157,13 +157,16 @@ public class AjaxNewsController {
                         
                         JSONArray jsonEntries = new JSONArray();
                         @SuppressWarnings("unchecked")
-                        ListIterator<SyndEntry> i = (ListIterator<SyndEntry>) feed.getEntries().listIterator();
+                        ListIterator<NewsFeedItem> i = (ListIterator<NewsFeedItem>) feed.getEntries().listIterator();
                         while (i.hasNext() && i.nextIndex() < maxStories) {
-                            SyndEntry entry = (SyndEntry) i.next();
+                            NewsFeedItem entry = i.next();
                             JSONObject jsonEntry = new JSONObject();
                             jsonEntry.put("link",entry.getLink());
                             jsonEntry.put("title",entry.getTitle());
                             jsonEntry.put("description",entry.getDescription().getValue());
+                            if (entry.getImageUrl() != null) {
+                                jsonEntry.put("image", entry.getImageUrl());
+                            }
                             jsonEntries.add(jsonEntry);
                         }
                         

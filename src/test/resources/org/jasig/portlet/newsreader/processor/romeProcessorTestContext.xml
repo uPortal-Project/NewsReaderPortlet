@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    <!-- EHCache Configuration -->
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation">
+            <value>classpath:ehcache.xml</value>
+        </property>
+    </bean>
+    
+    <bean id="newsCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheManager">
+            <ref local="cacheManager"/>
+        </property>
+        <property name="cacheName">
+            <value>newsCache</value>
+        </property>
+    </bean>
+
+    <util:list id="imageTypes">
+        <value>image/jpeg</value>
+        <value>image/gif</value>
+        <value>image/png</value>
+        <value>image/jpg</value>
+    </util:list>
+    
+    <bean id="romeProcessor" 
+        class="org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl"
+        p:imageTypes-ref="imageTypes"
+        p:titleResource="classpath:/antisamy/antisamy-manchester.xml"
+        p:descriptionResource="classpath:/antisamy/antisamy-textonly.xml"/>
+    
+    <!-- RSS feed adapter -->
+    <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapter" 
+        class="org.jasig.portlet.newsreader.adapter.RomeAdapter"
+        p:processor-ref="romeProcessor" p:cache-ref="newsCache"/>
+            
+</beans>

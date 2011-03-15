@@ -33,20 +33,12 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <!-- EHCache Configuration -->
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation">
-            <value>classpath:ehcache.xml</value>
-        </property>
-    </bean>
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+            p:configLocation="classpath:ehcache.xml"/>
     
-    <bean id="newsCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <property name="cacheManager">
-            <ref local="cacheManager"/>
-        </property>
-        <property name="cacheName">
-            <value>newsCache</value>
-        </property>
-    </bean>
+    <bean id="newsCache" 
+            class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+            p:cacheManager-ref="cacheManager" p:cacheName="newsCache"/>
 
     <!-- Properties configuration -->
     <bean id="propertyConfigurer"
@@ -60,14 +52,28 @@
         </property>
     </bean>
     
+    <util:list id="initializationServices">
+    </util:list>
+    
+    <util:list id="imageTypes">
+        <value>image/jpeg</value>
+        <value>image/gif</value>
+        <value>image/png</value>
+        <value>image/jpg</value>
+    </util:list>
     
     <!-- NEWS ADAPTER REGISTRATIONS -->
     
-    <!-- Rss feed adapter -->
-    <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapter" class="org.jasig.portlet.newsreader.adapter.RomeAdapter">
-        <property name="cache" ref="newsCache"/>
-        <property name="policyFile"><value>/WEB-INF/antisamy/antisamy-manchester.xml</value></property>
-    </bean>
+    <bean id="romeProcessor" 
+        class="org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl"
+        p:imageTypes-ref="imageTypes"
+        p:titleResource="classpath:/antisamy/antisamy-manchester.xml"
+        p:descriptionResource="classpath:/antisamy/antisamy-textonly.xml"/>
+    
+    <!-- RSS feed adapter -->
+    <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapter" 
+        class="org.jasig.portlet.newsreader.adapter.RomeAdapter"
+        p:processor-ref="romeProcessor" p:cache-ref="newsCache"/>
 
 
     <bean id="setCreationService" class="org.jasig.portlet.newsreader.service.SharedNewsSetServiceImpl">
@@ -96,9 +102,6 @@
     </bean>
 
     
-
-    <bean id="modelPasser" class="org.jasig.web.util.DefaultModelPasser"/>
-
     <!-- Abstract Default Exception Handler Bean -->
     <bean id="defaultExceptionHandlerTemplate"
         class="org.springframework.web.portlet.handler.SimpleMappingExceptionResolver"
@@ -114,9 +117,6 @@
     
     <bean class="org.jasig.web.service.AjaxPortletSupportService"/>
 
-    <util:list id="initializationServices">
-    </util:list>
-    
 
     <!-- HIBERNATE CONFIGURATION -->
 
@@ -149,13 +149,13 @@
     </bean>
 
     <bean id="transactionManager"
-        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+        p:sessionFactory-ref="sessionFactory"/>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
+    <bean id="sessionFactory" 
+            class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+            p:dataSource-ref="dataSource" 
+            p:configLocation="classpath:hibernate.cfg.xml">
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
@@ -163,19 +163,11 @@
         </property>
     </bean>
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName">
-            <value>${hibernate.connection.driver_class}</value>
-        </property>
-        <property name="url">
-            <value>${hibernate.connection.url}</value>
-        </property>
-        <property name="username">
-            <value>${hibernate.connection.username}</value>
-        </property>
-        <property name="password">
-            <value>${hibernate.connection.password}</value>
-        </property>
-    </bean>
+    <bean id="dataSource" 
+            class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+            p:driverClassName="${hibernate.connection.driver_class}" 
+            p:url="${hibernate.connection.url}" 
+            p:username="${hibernate.connection.username}" 
+            p:password="${hibernate.connection.password}"/>
 
 </beans>
