@@ -32,6 +32,8 @@
     <context:component-scan base-package="org.jasig.portlet.newsreader.mvc.portlet.singlefeed"/>
     <context:annotation-config/>
 
-    <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="interceptors"><bean class="org.jasig.portlet.newsreader.mvc.MinimizedStateHandlerInterceptor"/></property>
+    </bean>
 
 </beans>

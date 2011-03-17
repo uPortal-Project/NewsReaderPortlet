@@ -39,6 +39,8 @@
         -->
     </util:map>
 
-    <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="interceptors"><bean class="org.jasig.portlet.newsreader.mvc.MinimizedStateHandlerInterceptor"/></property>
+    </bean>
 
 </beans>
