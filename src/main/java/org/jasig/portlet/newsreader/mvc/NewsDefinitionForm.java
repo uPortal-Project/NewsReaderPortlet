@@ -89,7 +89,7 @@ public class NewsDefinitionForm {
 
     public void addParameters(Map<String, String> map) {
         Set<Entry<String, String>> entries = map.entrySet();
-        for (Entry entry : entries) {
+        for (Entry<String,String> entry : entries) {
             this.addParameter(entry);
         }
     }
