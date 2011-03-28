@@ -94,7 +94,7 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
 
     }
     
-    @RequestMapping
+    @RequestMapping(params = "action=saveDisplayPreference")
     public Map<Object, Object> savePreference(ActionRequest request,
             ActionResponse response) throws Exception {
 
