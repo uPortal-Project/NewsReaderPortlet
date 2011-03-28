@@ -89,6 +89,16 @@
         </property>
     </bean>
     
+    <util:list id="mobileRegexes">
+        <value>.*iPhone.*</value>
+        <value>.*Android.*</value>
+        <value>.*Safari.*Pre.*</value>
+        <value>.*Nokia.*AppleWebKit.*</value>
+    </util:list>
+    
+    <bean class="org.jasig.portlet.newsreader.service.ViewResolverImpl"
+        p:mobileDeviceRegexes-ref="mobileRegexes"/>
+    
     <bean class="org.springframework.web.servlet.view.XmlViewResolver"
             p:order="0" p:location="/WEB-INF/context/views.xml"/>
             
