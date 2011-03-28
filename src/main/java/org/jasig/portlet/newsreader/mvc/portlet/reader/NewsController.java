@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.IInitializationService;
+import org.jasig.portlet.newsreader.service.IViewResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,6 +69,13 @@ public class NewsController {
         this.initializationServices = services;
     }
     
+    private IViewResolver viewResolver;
+    
+    @Autowired(required = true)
+    public void setViewResolver(IViewResolver viewResolver) {
+        this.viewResolver = viewResolver;
+    }
+
     @RequestMapping
     public ModelAndView showMainView(RenderRequest request,
             RenderResponse response) throws Exception {
@@ -119,7 +127,8 @@ public class NewsController {
         model.put("supportsEdit", request.isPortletModeAllowed(PortletMode.EDIT));
         model.put("isAdmin", session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
         
-        return new ModelAndView("viewNews", model);
+        String viewName = viewResolver.getReaderView(request);
+        return new ModelAndView(viewName, model);
     }
 
 }
