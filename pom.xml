@@ -112,6 +112,10 @@
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-tx</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>rhino</groupId>
+                        <artifactId>js</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
