@@ -22,46 +22,62 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
+<c:set var="max" value="${ prefs.maxStories > fn:length(feed.entries) ? fn:length(feed.entries)-1 : prefs.maxStories-1 }"/>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.3.2/jquery-1.3.2.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.3/js/fluid-all-1.1.3.min.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/scripts/news-feed-view.js"/>"></script>
 
 <style>
     ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
 </style>
     
-<c:set var="storyView">${renderRequest.preferences.map['storyView'][0]}</c:set>
-<script type="text/javascript">
-    var ${n} = ${n} || {};
-    ${n}.jQuery = jQuery.noConflict(true);
-    ${n}.fluid = fluid;
-    fluid = null;
-    fluid_1_1 = null;
-
-    ${n}.jQuery(function() {
-
-        var $ = ${n}.jQuery;
-
-        var options = {
-            url: '<portlet:actionURL><portlet:param name="action" value="ajax"/></portlet:actionURL>',
-            namespace: '${n}',
-            feedView: "${renderRequest.preferences.map['feedView'][0]}",
-            summaryView: "${prefs.summaryView}",
-            newWindow: ${prefs.newWindow},
-            scrolling: "${renderRequest.preferences.map['scrolling'][0]}"
-        };
-        newsreader.FeedView("#${n}newsContainer", options);
-
-    });
-</script>
-
 <div class="org-jasig-portlet-newsreader">
-    <div id="${n}newsContainer">Loading . . . </div>
+    <div id="${n}newsContainer">
+        <h2><a href="${ feed.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h2>
+        <div class="news-items-container">
+            <c:choose>
+                <c:when test="${ prefs.summaryView == 'titleAndAbstract' }">
+                    <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
+                        <h3>
+                            <a class="news-items" href="${ entry.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+                        </h3>
+                        <p>${ entry.description.value }</p>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <ul class="news-list">
+                        <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
+                            <li>
+                                <a class="news-item" href="${ entry.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+                                <c:if test="${ prefs.summaryView == 'flyout' }"><span style="display:none">${ entry.description.value }</span></c:if>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
     <br />
 
     <c:if test="${supportsEdit}">
         <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
     </c:if>
 </div>
+
+<c:if test="${ prefs.summaryView == 'flyout' }">
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.3.2/jquery-1.3.2.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.3/js/fluid-all-1.1.3.min.js"/>"></script>
+    <script type="text/javascript">
+        var ${n} = ${n} || {};
+        ${n}.jQuery = jQuery.noConflict(true);
+        ${n}.fluid = fluid;
+        fluid = null;
+        fluid_1_1 = null;
+
+        ${n}.jQuery("#${n}newsContainer .news-item").tooltip({
+            bodyHandler: function() { 
+                return ${n}.jQuery(this).next().html(); 
+            },
+            showURL: false
+        });
+    </script>
+</c:if>
