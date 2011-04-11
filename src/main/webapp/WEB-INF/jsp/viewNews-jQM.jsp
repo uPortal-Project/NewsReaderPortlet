@@ -42,7 +42,7 @@ $("[data-role=page]").live('pagebeforecreate',function(event){
 		<div id="${n}">
 		    
 		    <div class="news-reader-feed-list">
-		        <ul data-role="listview">
+		        <ul data-role="listview" class="feed">
 		            <li class="news-reader-feed">
 		                <a class="news-reader-feed-link" href="#">
 		                    <span class="news-reader-feed-title"></span>
@@ -55,7 +55,7 @@ $("[data-role=page]").live('pagebeforecreate',function(event){
 		            <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
 		            <h2 class="news-reader-feed-title">News</h2>
 		        </div>
-		        <ul data-role="listview">
+		        <ul data-role="listview" class="feed">
 		            <li class="news-reader-story">
 		                <img class="news-reader-story-image"/>
 		                <h3><a class="news-reader-story-link" href="#"></a></h3>

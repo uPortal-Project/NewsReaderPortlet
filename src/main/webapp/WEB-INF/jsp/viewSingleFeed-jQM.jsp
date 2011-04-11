@@ -24,11 +24,11 @@
 <div class="portlet ptl-newsreader view-news">
 	<div data-role="content" class="portlet-content">
 		
-		<ul data-role="listview">
+		<ul data-role="listview" class="feed">
 		    <c:forEach items="${ feed.entries }" var="entry">
 		        <li>
 		            <c:if test="${ not empty entry.imageUrl }"><img src="${ entry.imageUrl }"/></c:if>
-		            <h3><a href="${ entry.link }">${ entry.title }</a></h3>
+		            <h3 class="title"><a href="${ entry.link }">${ entry.title }</a></h3>
 		            <p>
 		                ${ entry.description.value }
 		            </p>
