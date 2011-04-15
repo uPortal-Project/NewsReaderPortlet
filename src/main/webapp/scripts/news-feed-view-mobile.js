@@ -72,7 +72,7 @@ var newsreader = newsreader || {};
                         ID: "link",
                         decorators: [
                             { type: "jQuery", func: "click", args: function () {
-                                    return that.showFeed(feed.id); 
+                                    return that.showFeed(feed); 
                                 } 
                             }
                         ]
@@ -81,8 +81,9 @@ var newsreader = newsreader || {};
             });
         });
         
-        that.showFeed = function (feedId) {
-            var feedResult = retrieveFeed(that, feedId);
+        that.showFeed = function (feed) {
+            var feedResult = retrieveFeed(that, feed.id);
+            feedResult.feed.title = feed.name;
             that.views.storyList.showFeed(feedResult.feed);
             return false;
         };
@@ -130,11 +131,18 @@ var newsreader = newsreader || {};
                 that.state.storyTemplates = fluid.selfRender($(that.locate("storyList")), tree, { cutpoints: storyCutpoints });
             }
 
+            $(feed.entries).each(function (idx, story) {
+                if (!story.image) {
+                    that.locate("storyList").find("li:eq(" + idx + ")").removeClass("ui-li-has-thumb");
+                }
+            });
+
             if (overallThat.options.selectors.feedList) {
                 $(overallThat.locate("feedList")).hide();
                 $(overallThat.locate("backBar")).show();
             }
             $(that.locate("storyList")).show();
+            $(overallThat.locate("backLink")).click(that.showList);
 
         };
 
@@ -146,7 +154,6 @@ var newsreader = newsreader || {};
                 $(overallThat.locate("feedList")).show();
             };
             
-            $(overallThat.locate("backBar")).click(that.showList);
         }
 
         return that;
