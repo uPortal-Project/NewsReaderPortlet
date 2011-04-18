@@ -30,12 +30,8 @@ public interface NewsSetResolvingService {
 	 * 
 	 * Returned NewsSets are 'initalised' (loaded with pushed feeds).
 	 * 
-	 * The returned NewsSet is assocoiated with the calling portelt via a PortletPreference.
+	 * The returned NewsSet is associated with the calling portlel via a PortletPreference.
 	 */
-	public NewsSet getNewsSet(Long id, ActionRequest request);
-	
-	//public NewsSet createNewsSet(ActionRequest request, Set<String> roles);
-	
-	//public NewsSet getTemplateNewsSet(RenderRequest request, Set<String> roles);
+	public NewsSet getNewsSet(String fname, ActionRequest request);
 
 }

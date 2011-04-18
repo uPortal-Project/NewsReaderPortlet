@@ -126,6 +126,7 @@ public class NewsController {
         model.put("supportsHelp", request.isPortletModeAllowed(PortletMode.HELP));
         model.put("supportsEdit", request.isPortletModeAllowed(PortletMode.EDIT));
         model.put("isAdmin", session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
+        model.put("isGuest", request.getRemoteUser() == null);
         
         String viewName = viewResolver.getReaderView(request);
         return new ModelAndView(viewName, model);

@@ -27,6 +27,7 @@ import javax.portlet.PortletSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
+import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.UserDefinedNewsDefinition;
 import org.jasig.portlet.newsreader.adapter.RomeAdapter;
@@ -127,9 +128,9 @@ public class EditUserRomeController {
             config = new UserDefinedNewsConfiguration();
             config.setNewsDefinition(definition);
             config.setDisplayed(form.isDisplayed());
-            PortletSession session = request.getPortletSession();
-            Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
-            config.setNewsSet(setCreationService.getNewsSet(setId, request));
+
+            String setName = request.getPreferences().getValue("newsSetName", "default");
+            config.setNewsSet(setCreationService.getNewsSet(setName, request));
             log.debug("Insert new");
         }
 

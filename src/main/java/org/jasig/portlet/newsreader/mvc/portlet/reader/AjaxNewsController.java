@@ -91,8 +91,8 @@ public class AjaxNewsController {
 		
         Map<String, Object> model = new HashMap<String, Object>();
 		
-		Long setId = Long.parseLong(request.getPreferences().getValue("newsSetId", "-1"));
-        NewsSet set = setCreationService.getNewsSet(setId, request);
+        String setName = request.getPreferences().getValue("newsSetName", "default");
+        NewsSet set = setCreationService.getNewsSet(setName, request);
         Set<NewsConfiguration> feeds = set.getNewsConfigurations();
         
         JSONArray jsonFeeds = new JSONArray();
