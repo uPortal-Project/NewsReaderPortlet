@@ -19,10 +19,12 @@
 
 package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -93,14 +95,18 @@ public class AjaxNewsController {
 		
         String setName = request.getPreferences().getValue("newsSetName", "default");
         NewsSet set = setCreationService.getNewsSet(setName, request);
-        Set<NewsConfiguration> feeds = set.getNewsConfigurations();
+        List<NewsConfiguration> feeds = new ArrayList<NewsConfiguration>();
+        feeds.addAll(set.getNewsConfigurations());
+        Collections.sort(feeds);
         
         JSONArray jsonFeeds = new JSONArray();
         for(NewsConfiguration feed : feeds) {
-        	JSONObject jsonFeed = new JSONObject();
-        	jsonFeed.put("id",feed.getId());
-        	jsonFeed.put("name",feed.getNewsDefinition().getName());
-        	jsonFeeds.add(jsonFeed);
+            if (feed.isDisplayed()) {
+            	JSONObject jsonFeed = new JSONObject();
+            	jsonFeed.put("id",feed.getId());
+            	jsonFeed.put("name",feed.getNewsDefinition().getName());
+            	jsonFeeds.add(jsonFeed);
+            }
         }
         model.put("feeds", jsonFeeds);
        	

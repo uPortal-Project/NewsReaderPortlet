@@ -19,6 +19,8 @@
 
 package org.jasig.portlet.newsreader;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
+
 /**
  * NewsConfiguration represents a user-specific registration and configuration
  * for a NewsDefinition.
@@ -26,7 +28,7 @@ package org.jasig.portlet.newsreader;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class NewsConfiguration {
+public class NewsConfiguration implements Comparable<NewsConfiguration> {
 
     private Long id = new Long(-1);
     private NewsDefinition newsDefinition;
@@ -115,4 +117,12 @@ public class NewsConfiguration {
 		this.newsSet = newsSet;
 	}
 	
+    @Override
+    public int compareTo(NewsConfiguration config) {
+        return new CompareToBuilder()
+            .append(this.getNewsDefinition().getName(), config.getNewsDefinition().getName())
+            .append(this.id, config.getId())
+            .toComparison();
+    }
+	    
 }

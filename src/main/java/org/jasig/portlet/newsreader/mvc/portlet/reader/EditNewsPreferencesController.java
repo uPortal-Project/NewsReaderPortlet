@@ -107,6 +107,8 @@ public class EditNewsPreferencesController {
         		predefinedNewsConfigurations.add((PredefinedNewsConfiguration) configuration);
         	}
         }
+        Collections.sort(myNewsConfigurations);
+        Collections.sort(predefinedNewsConfigurations);
         
         model.put("myNewsConfigurations", myNewsConfigurations);
         model.put("predefinedNewsConfigurations", predefinedNewsConfigurations);

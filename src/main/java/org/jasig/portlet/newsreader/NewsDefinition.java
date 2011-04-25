@@ -22,6 +22,9 @@ package org.jasig.portlet.newsreader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+
 /**
  * NewsDefinition represents the base class for news registrations.
  * Information required to retrieve the news, such as the news's URL
@@ -33,7 +36,7 @@ import java.util.Map;
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class NewsDefinition {
+public class NewsDefinition implements Comparable<NewsDefinition> {
 
     private Long id = new Long(-1);
     private String className;
@@ -147,9 +150,20 @@ public class NewsDefinition {
 	
 	@Override
 	public String toString() {
-		return "id: " + this.id + ", class: " + this.className + ", name: " + this.name;
+	    return new EqualsBuilder()
+	        .append("id", this.id)
+            .append("name", this.name)
+	        .append("class", this.className)
+	        .toString();
 	}
-	
 
+    @Override
+    public int compareTo(NewsDefinition def) {
+        return new CompareToBuilder()
+            .append(this.name, def.getName())
+            .append(this.id, def.getId())
+            .toComparison();
+    }
+	
 	
 }

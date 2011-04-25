@@ -22,12 +22,10 @@ package org.jasig.portlet.newsreader.mvc.portlet.reader;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
-import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.UserDefinedNewsDefinition;
 import org.jasig.portlet.newsreader.adapter.RomeAdapter;
@@ -112,7 +110,7 @@ public class EditUserRomeController {
         if (form.getId() > -1) {
 
             config = (UserDefinedNewsConfiguration) newsStore.getNewsConfiguration(form.getId());
-            definition = config.getNewsDefinition();
+            definition = (UserDefinedNewsDefinition) config.getNewsDefinition();
             definition.addParameter("url", form.getUrl());
             definition.setName(form.getName());
             log.debug("Updating");

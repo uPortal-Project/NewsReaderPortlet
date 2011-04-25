@@ -31,29 +31,11 @@ package org.jasig.portlet.newsreader;
  */
 public class UserDefinedNewsConfiguration extends NewsConfiguration {
 
-    private UserDefinedNewsDefinition newsDefinition;
-
     /**
      * Default Constructor
      */
     public UserDefinedNewsConfiguration() {
         super();
-    }
-
-    /*
-      * (non-Javadoc)
-      * @see edu.yale.its.tp.portlets.news.NewsConfiguration#getNewsDefinition()
-      */
-    public UserDefinedNewsDefinition getNewsDefinition() {
-        return newsDefinition;
-    }
-
-    /*
-      * (non-Javadoc)
-      * @see edu.yale.its.tp.portlets.news.NewsConfiguration#setNewsDefinition(edu.yale.its.tp.portlets.news.NewsDefinition)
-      */
-    public void setNewsDefinition(UserDefinedNewsDefinition newsDefinition) {
-        this.newsDefinition = newsDefinition;
     }
 
 }
