@@ -43,6 +43,7 @@ import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.service.IViewResolver;
 import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -84,7 +85,14 @@ public class EditNewsPreferencesController {
     public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
             this.ajaxPortletSupportService = ajaxPortletSupportService;
     }
+
+    private IViewResolver viewResolver;
     
+    @Autowired(required = true)
+    public void setViewResolver(IViewResolver viewResolver) {
+        this.viewResolver = viewResolver;
+    }
+
     @RequestMapping
     public ModelAndView showPreferencesView(RenderRequest request,
             RenderResponse response) throws Exception {
@@ -125,7 +133,8 @@ public class EditNewsPreferencesController {
         model.put("predefinedEditActions", predefinedEditActions);
 
         // return the edit view
-        return new ModelAndView("/editNews", "model", model);
+        String viewName = viewResolver.getPreferencesView(request);
+        return new ModelAndView(viewName, "model", model);
     }
 
     @RequestMapping

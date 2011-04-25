@@ -30,5 +30,7 @@ public interface IViewResolver {
     public String getSingleFeedView(PortletRequest request);
     
     public String getReaderView(PortletRequest request);
+    
+    public String getPreferencesView(PortletRequest request);
 
 }

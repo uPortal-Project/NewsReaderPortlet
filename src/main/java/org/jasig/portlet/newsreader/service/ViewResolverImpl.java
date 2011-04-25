@@ -62,6 +62,14 @@ public class ViewResolverImpl implements IViewResolver {
         }
     }
     
+    public String getPreferencesView(PortletRequest request) {
+        if (isMobile(request)) {
+            return "editNews-jQM";
+        } else {
+            return "editNews";
+        }
+    }
+    
     protected boolean isMobile(PortletRequest request) {
         
         String userAgent = request.getProperty("user-agent");
