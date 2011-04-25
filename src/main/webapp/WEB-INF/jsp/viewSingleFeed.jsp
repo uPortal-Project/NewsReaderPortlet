@@ -63,15 +63,15 @@
 </div>
 
 <c:if test="${ prefs.summaryView == 'flyout' }">
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.3.2/jquery-1.3.2.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.1.3/js/fluid-all-1.1.3.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.3/js/fluid-all-1.3.min.js"/>"></script>
     <script type="text/javascript">
         var ${n} = ${n} || {};
         ${n}.jQuery = jQuery.noConflict(true);
         ${n}.fluid = fluid;
         fluid = null;
-        fluid_1_1 = null;
+        fluid_1_3 = null;
 
         ${n}.jQuery("#${n}newsContainer .news-item").tooltip({
             bodyHandler: function() { 
