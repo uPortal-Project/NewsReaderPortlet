@@ -65,6 +65,7 @@ var newsreader = newsreader || {};
                 $(document.createElement('a')).append(
                     $(document.createElement('span')).text(feedResult.feeds[i].name)
                 ).attr('href', '#' + that.options.namespace + 'feed' + feedResult.feeds[i].id)
+                .attr('title', feedResults.feeds[i].name)
             );
             tabs.append(li);
             that.container.append($(document.createElement('div')).attr('id', that.options.namespace + 'feed' + feedResult.feeds[i].id));
@@ -210,17 +211,14 @@ var newsreader = newsreader || {};
         var html = '';
         for (var i = 0; i < feed.entries.length; i++) {
             var entry = feed.entries[i];
-            html += '<li><a class="news-item" href="'+entry.link+'" rel="popup"' + targetAttribute + '>'+entry.title+'</a>';
+            html += '<li><a title="' + entry.description + '" class="news-item" href="'+entry.link+'" rel="popup"' + targetAttribute + '>'+entry.title+'</a>';
             html += '<span style="display:none">'+entry.description+'</span></li>';
         }
         list.html(html);
         
         // initialize the tooltips
         storyContainer.find(".news-item").tooltip({
-            bodyHandler: function() { 
-                return $(this).next().html(); 
-            },
-            showURL: false
+            position: { offset: "15 15" }
         });
         
     };
@@ -269,7 +267,7 @@ var newsreader = newsreader || {};
     // start of creator function
     
     newsreader.FeedView = function(container, options) {
-        var that = fluid.initView("newsreader.MultipleFeedView", container, options);
+        var that = fluid.initView("newsreader.FeedView", container, options);
         
         /**
          * Initialization method
@@ -333,4 +331,4 @@ var newsreader = newsreader || {};
 
     // end of defaults
 
-})(jQuery, fluid_1_1);
+})(jQuery, fluid_1_3);
