@@ -64,6 +64,12 @@
     
 </div>
 
+<c:if test="${supportsEdit && !isGuest}">
+    <p>
+        <a href="<portlet:renderURL portletMode='edit'/>">Preferences</a>
+    </p>
+</c:if>
+
 <script type="text/javascript"><rs:compressJs>
     var newsReaderPortlet = newsReaderPortlet || {};
     newsReaderPortlet.jQuery = jQuery.noConflict(true);
