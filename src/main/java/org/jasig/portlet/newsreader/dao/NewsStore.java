@@ -136,7 +136,7 @@ public interface NewsStore {
      *
      * @param definition definition to be removed
      */
-    public void deleteNewsDefinition(NewsDefinition definition);
+    public void deleteNewsDefinition(PredefinedNewsDefinition definition);
 
     /**
      * Initialize news subscriptions for a given portlet subscription and role.

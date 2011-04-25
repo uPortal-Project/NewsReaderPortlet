@@ -22,7 +22,7 @@
 
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping default-lazy="true" default-cascade="all-delete-orphan">
+<hibernate-mapping default-lazy="true" default-cascade="none">
 
     <class name="org.jasig.portlet.newsreader.NewsDefinition" table="NEWS_DEFINITION">
         
@@ -50,7 +50,7 @@
         </property>
         
         <!-- news definition parameters -->
-        <map name="parameters" lazy="false" table="NEWS_PARAMETER" cascade="all-delete-orphan">
+        <map name="parameters" lazy="false" table="NEWS_PARAMETER" cascade="all, delete-orphan">
             <key column="NEWS_ID"/>
             <index column="NEWS_PARAMETER_NAME" type="string"/>
             <element type="string" column="NEWS_PARAMETER_VALUE" not-null="true"/>
@@ -59,32 +59,32 @@
         
         <!-- SUBCLASSES -->
 
-        <!-- user-defined newss and their configurations -->
+        <!-- user-defined news and their configurations -->
         <subclass name="org.jasig.portlet.newsreader.UserDefinedNewsDefinition"
             discriminator-value="UD">
             
             <!-- configuration for this user-defined news -->
             <one-to-one name="userConfiguration" class="org.jasig.portlet.newsreader.UserDefinedNewsConfiguration"
-                property-ref="newsDefinition">
+                property-ref="newsDefinition" cascade="all">
             </one-to-one>
             
         </subclass>
         
 
-        <!-- admin-defined, system-wide newss -->
+        <!-- admin-defined, system-wide news -->
         <subclass name="org.jasig.portlet.newsreader.PredefinedNewsDefinition"
             discriminator-value="PD">
         
-            <!-- user configurations and preferences for pre-defined newss
-                these allow users to hide default system newss and potentially
+            <!-- user configurations and preferences for pre-defined news
+                these allow users to hide default system news and potentially
                 set user-specific parameters -->
-            <set name="userConfigurations" inverse="true" cascade="delete">
+            <set name="userConfigurations" inverse="true" cascade="all, delete-orphan" lazy="true">
                 <key column="NEWS_ID"/>
                 <one-to-many
                     class="org.jasig.portlet.newsreader.PredefinedNewsConfiguration"/>
             </set>
             
-            <set name="defaultRoles" lazy="true" table="NEWS_ROLE" cascade="all-delete-orphan"> 
+            <set name="defaultRoles" lazy="true" table="NEWS_ROLE" cascade="all, delete-orphan"> 
                 <key column="NEWS_ID"/> 
                 <element type="string" column="ROLE_NAME" not-null="true"/> 
             </set> 

@@ -22,7 +22,7 @@
 
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping default-lazy="false" default-cascade="all-delete-orphan">
+<hibernate-mapping default-lazy="false" default-cascade="none">
     
     <class name="org.jasig.portlet.newsreader.NewsConfiguration" table="NEWS_CONFIGURATION">
         
@@ -53,12 +53,12 @@
             name="newsSet" 
             class="org.jasig.portlet.newsreader.NewsSet"
             column="SET_ID" 
-            cascade="none" lazy="false"/> 
+            cascade="merge, persist, refresh" lazy="false"/> 
         
         
         <!-- SUBCLASSES -->
         
-        <!-- user-defined newss and their configurations -->
+        <!-- user-defined news and their configurations -->
         <subclass name="org.jasig.portlet.newsreader.PredefinedNewsConfiguration"
             discriminator-value="PD">
             
@@ -66,10 +66,10 @@
                 name="newsDefinition" 
                 class="org.jasig.portlet.newsreader.PredefinedNewsDefinition"
                 column="NEWS_ID" 
-                cascade="none" lazy="false"/> 
+                cascade="merge, persist, refresh" lazy="false"/> 
             
             <!-- other user-specific preferences -->
-            <map name="preferences" lazy="false" table="NEWS_PREFERENCE" cascade="all-delete-orphan"> 
+            <map name="preferences" lazy="false" table="NEWS_PREFERENCE" cascade="all, delete-orphan"> 
                 <key column="NEWS_CONFIGURATION_ID"/>
                 <index column="NEWS_PREFERENCE_NAME" type="string"/>
                 <element type="string" column="NEWS_PREFERENCE_VALUE" not-null="true"/> 
@@ -78,7 +78,7 @@
         </subclass>
         
         
-        <!-- admin-defined, system-wide newss -->
+        <!-- admin-defined, system-wide news -->
         <subclass name="org.jasig.portlet.newsreader.UserDefinedNewsConfiguration"
             discriminator-value="UD">
             

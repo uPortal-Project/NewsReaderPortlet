@@ -22,7 +22,7 @@
 
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping default-lazy="false" default-cascade="all-delete-orphan">
+<hibernate-mapping default-lazy="false" default-cascade="none">
     
     <class name="org.jasig.portlet.newsreader.NewsSet" table="NEWS_SET">
         
@@ -42,7 +42,7 @@
             <column name="USER_ID" length="50"/>
         </property>
 
-        <set name="newsConfigurations" inverse="true" cascade="all">
+        <set name="newsConfigurations" inverse="true" cascade="all, delete-orphan">
             <key column="SET_ID"/>
             <one-to-many
                 class="org.jasig.portlet.newsreader.NewsConfiguration"/>
