@@ -27,11 +27,13 @@
 		<ul data-role="listview" class="feed">
 		    <c:forEach items="${ feed.entries }" var="entry">
 		        <li>
-		            <c:if test="${ not empty entry.imageUrl }"><img src="${ entry.imageUrl }"/></c:if>
-		            <h3 class="title"><a href="${ entry.link }">${ entry.title }</a></h3>
-		            <p>
-		                ${ entry.description.value }
-		            </p>
+		        	<a href="${ entry.link }">
+			            <c:if test="${ not empty entry.imageUrl }"><img src="${ entry.imageUrl }"/></c:if>
+			            <h3 class="title">${ entry.title }</h3>
+			            <p>
+			                ${ entry.description.value }
+			            </p>
+		            </a>
 		        </li>
 		    </c:forEach>
 		</ul>
