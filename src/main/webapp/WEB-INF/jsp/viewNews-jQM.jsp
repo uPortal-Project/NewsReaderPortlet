@@ -53,9 +53,11 @@
             <div data-role="content" class="portlet-content">
                 <ul data-role="listview" class="feed">
                     <li class="news-reader-story">
-                        <img class="news-reader-story-image"/>
-                        <h3><a class="news-reader-story-link" href="#"></a></h3>
-                        <p class="news-reader-story-summary"></p>
+                        <a class="news-reader-story-link">
+                            <img class="news-reader-story-image"/>
+                            <h3 class="news-reader-story-title"></h3>
+                            <p class="news-reader-story-summary"></p>
+                        </a>
                     </li>
                 </ul>
             </div>

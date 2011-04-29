@@ -116,7 +116,7 @@ var newsreader = newsreader || {};
                     children: [
                         { ID: "title", value: story.title },
                         { ID: "summary", markup: story.description },
-                        { ID: "link", target: story.link, linktext: story.title },
+                        { ID: "link", target: story.link },
                         { 
                             ID: "image", 
                             decorators: [{ type: "attrs", attributes: { src: story.image } }]
