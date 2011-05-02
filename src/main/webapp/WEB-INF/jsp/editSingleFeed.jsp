@@ -34,7 +34,7 @@
     
         var $ = ${n}.jQuery;
 
-        var savePrefUrl = '<portlet:actionURL><portlet:param name="action" value="saveDisplayPreference"/></portlet:actionURL>';
+        var savePrefUrl = '<portlet:actionURL/>';
 
     	var $p = $("#news-single-preference");	//find the root element of the protlet to scope dom seraches
     	$p.find("#max").change(function(e){
