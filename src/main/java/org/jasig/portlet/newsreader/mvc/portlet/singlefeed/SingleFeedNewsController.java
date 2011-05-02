@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.portlet.ActionRequest;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
@@ -77,6 +78,11 @@ public class SingleFeedNewsController {
         this.viewResolver = viewResolver;
     }
 
+    @RequestMapping
+    public void defaultAction(ActionRequest request) {
+        // do nothing
+    }
+    
     @RequestMapping
     public ModelAndView showFeed(RenderRequest request, RenderResponse response) throws Exception {
 

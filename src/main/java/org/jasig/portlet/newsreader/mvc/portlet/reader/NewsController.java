@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.portlet.ActionRequest;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
@@ -76,6 +77,11 @@ public class NewsController {
         this.viewResolver = viewResolver;
     }
 
+    @RequestMapping
+    public void defaultAction(ActionRequest request) {
+        // do nothing
+    }
+    
     @RequestMapping
     public ModelAndView showMainView(RenderRequest request,
             RenderResponse response) throws Exception {
