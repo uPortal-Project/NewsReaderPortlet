@@ -34,43 +34,47 @@
 <div id="${n}">
     <div class="news-reader-feed-list portlet ptl-newsreader view-news">
         <div data-role="content" class="portlet-content">
-	        <ul data-role="listview" class="feed">
+        	<!-- List of available feeds. -->
+	        <ul data-role="listview">
 	            <li class="news-reader-feed">
 	                <a class="news-reader-feed-link" href="#">
 	                    <span class="news-reader-feed-title"></span>
 	                </a>
 	            </li>
 	        </ul>
+	        
+	        <c:if test="${supportsEdit && !isGuest}">
+			    <div class="utilities">
+			        <a data-role="button" href="<portlet:renderURL portletMode='edit'/>">Preferences</a>
+			    </div>
+			</c:if>
+	        
         </div>
     </div>
     
-    <div class="news-reader-story-list" style="display:none;">
-        <div data-role="header" class="news-reader-back-bar titlebar portlet-titlebar">
-            <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
-            <h2 class="news-reader-feed-title">News</h2>
-        </div>
-        <div class="portlet ptl-newsreader view-news">
-            <div data-role="content" class="portlet-content">
-                <ul data-role="listview" class="feed">
-                    <li class="news-reader-story">
-                        <a class="news-reader-story-link">
-                            <img class="news-reader-story-image"/>
-                            <h3 class="news-reader-story-title"></h3>
-                            <p class="news-reader-story-summary"></p>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <!-- Individual feed view. -->
+    <div class="portlet ptl-newsreader view-news">
+	    <div class="news-reader-story-list" style="display:none;">
+	        <div data-role="header" class="news-reader-back-bar titlebar portlet-titlebar">
+	            <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
+	            <h2 class="title news-reader-feed-title">News</h2>
+	        </div>
+	        
+	            <div data-role="content" class="portlet-content">
+	                <ul data-role="listview" class="feed">
+	                    <li class="news-reader-story">
+	                        <a class="news-reader-story-link">
+	                            <img class="news-reader-story-image"/>
+	                            <h3 class="title news-reader-story-title"></h3>
+	                            <p class="news-reader-story-summary"></p>
+	                        </a>
+	                    </li>
+	                </ul>
+	            </div>
+	        </div>
+	    </div>
     </div>
-    
 </div>
-
-<c:if test="${supportsEdit && !isGuest}">
-    <p>
-        <a href="<portlet:renderURL portletMode='edit'/>">Preferences</a>
-    </p>
-</c:if>
 
 <script type="text/javascript"><rs:compressJs>
     var newsReaderPortlet = newsReaderPortlet || {};

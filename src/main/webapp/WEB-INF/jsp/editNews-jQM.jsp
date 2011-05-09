@@ -29,23 +29,23 @@
 
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.js"/>"></script>
 
-<div id="${n}" class="portlet-content" data-role="content">
-    <h2>News Feeds</h2>
-    
-    <div data-role="fieldcontain">
-        <fieldset data-role="controlgroup">
-            <c:forEach items="${ model.predefinedNewsConfigurations }" var="feed">
-                <input type="checkbox" name="${ feed.id }" id="${n}${ feed.id }" ${ feed.displayed ? 'checked' : '' } />
-                <label feedId="${ feed.id }" included="${ feed.displayed }" for="${n}${ feed.id }">${ feed.newsDefinition.name }</label>
-            </c:forEach>
-        </fieldset>
-    </div>
-    
-    <div class="utilities">
-        <a data-role="button" href="<portlet:renderURL portletMode="view"/>">Done</a>
-    </div>
+<div class="portlet ptl-newsreader view-editnews">
+	<div id="${n}" class="portlet-content" data-role="content">
+	    <div data-role="fieldcontain">
+	        <fieldset data-role="controlgroup">
+	        	<legend>Which feeds should be displayed?</legend>
+	            <c:forEach items="${ model.predefinedNewsConfigurations }" var="feed">
+	                <input type="checkbox" name="${ feed.id }" id="${n}${ feed.id }" ${ feed.displayed ? 'checked' : '' } />
+	                <label feedId="${ feed.id }" included="${ feed.displayed }" for="${n}${ feed.id }">${ feed.newsDefinition.name }</label>
+	            </c:forEach>
+	        </fieldset>
+	    </div>
+	    
+	    <div class="utilities">
+	        <a data-role="button" href="<portlet:renderURL portletMode="view"/>">Done</a>
+	    </div>
+	</div>
 </div>
-
 <script type="text/javascript"><rs:compressJs>
     var newsReaderPortlet = newsReaderPortlet || {};
     newsReaderPortlet.jQuery = jQuery.noConflict(true);

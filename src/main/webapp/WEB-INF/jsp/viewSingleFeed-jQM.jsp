@@ -21,7 +21,7 @@
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 
-<div class="portlet ptl-newsreader view-news">
+<div class="portlet ptl-newsreader view-singlefeed">
 	<div data-role="content" class="portlet-content">
 		
 		<ul data-role="listview" class="feed">
