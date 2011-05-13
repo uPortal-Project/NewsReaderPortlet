@@ -27,6 +27,19 @@
 
 <style>
     ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
+    ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
+    .ui-tooltip {
+        padding:8px;
+        position:absolute;
+        z-index:9999;
+        -o-box-shadow: 0 0 5px #aaa;
+        -moz-box-shadow: 0 0 5px #aaa;
+        -webkit-box-shadow: 0 0 5px #aaa;
+        box-shadow: 0 0 5px #aaa;
+        max-width: 400px;
+    }
+    * html .ui-tooltip { background-image: none; }
+    body .ui-tooltip { border-width:2px; }
 </style>
     
 <div class="org-jasig-portlet-newsreader">
@@ -46,7 +59,7 @@
                     <ul class="news-list">
                         <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
                             <li>
-                                <a class="news-item" href="${ entry.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+                                <a class="news-item" href="${ entry.link }" rel="popup" title="${ entry.description.value }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
                                 <c:if test="${ prefs.summaryView == 'flyout' }"><span style="display:none">${ entry.description.value }</span></c:if>
                             </li>
                         </c:forEach>
