@@ -25,7 +25,7 @@
 
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.3/js/fluid-all-1.3.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4-bea0041/js/fluid-all-1.4-bea0041.min.js"/>"></script>
 
 <script type="text/javascript" src="<c:url value="/scripts/news-feed-view.min.js"/>"></script>
 
@@ -54,7 +54,7 @@
     newsReaderPortlet.jQuery = jQuery.noConflict(true);
     newsReaderPortlet.fluid = fluid;
     fluid = null;
-    fluid_1_3 = null;
+    fluid_1_4 = null;
     newsReaderPortlet.jQuery(function(){
         var $ = newsReaderPortlet.jQuery;
 

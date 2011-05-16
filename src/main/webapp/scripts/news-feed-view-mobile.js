@@ -193,4 +193,4 @@ var newsreader = newsreader || {};
 
     // end of defaults
 
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);
