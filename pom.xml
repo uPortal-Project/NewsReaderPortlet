@@ -441,6 +441,8 @@
                     <excludes>
                         <exclude>target/**</exclude>
                         <exclude>bin/**</exclude>
+                        <exclude>pom.xml.*</exclude>
+                        <exclude>release.properties</exclude>
                         <exclude>**/NOTICE</exclude>
                         <exclude>NOTICE.template</exclude>
                         <exclude>README</exclude>
