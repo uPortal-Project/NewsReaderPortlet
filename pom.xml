@@ -56,10 +56,17 @@
     </distributionManagement>
 
     <repositories>
-       <repository>
-          <id>java.net repository</id>
-          <url>http://download.java.net/maven/2</url>
-       </repository>
+        <repository>
+            <id>java.net repository</id>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <id>jasig-3rd-party</id>
+            <name>Jasig 3rd Party Repository</name>
+            <url>http://developer.jasig.org/repo/content/repositories/3rd-party</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -430,16 +437,22 @@
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <configuration>
+                    <aggregate>true</aggregate>
                     <excludes>
                         <exclude>target/**</exclude>
-                        <exclude>otherlicenses/**</exclude>
+                        <exclude>bin/**</exclude>
+                        <exclude>**/NOTICE</exclude>
+                        <exclude>README</exclude>
+                        <exclude>LICENSE</exclude>
                         <exclude>src/main/webapp/rs/**</exclude>
-                        <exclude>src/main/webapp/WEB-INF/antisamy/**</exclude>
+                        <exclude>src/main/resources/antisamy/**</exclude>
                         <exclude>src/main/webapp/WEB-INF/dtd/**</exclude>
                         <exclude>src/main/webapp/WEB-INF/validator-rules.xml</exclude>
                     </excludes>
                     <mapping>
+                        <channel>XML_STYLE</channel>
                         <crn>XML_STYLE</crn>
+                        <tag>DYNASCRIPT_STYLE</tag>
                     </mapping>
                 </configuration>
             </plugin>
