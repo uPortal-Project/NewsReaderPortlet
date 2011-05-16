@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -42,13 +42,14 @@ import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
-import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 
@@ -80,15 +81,8 @@ public class AjaxNewsController {
         this.applicationContext = applicationContext;
     }
     
-    private AjaxPortletSupportService ajaxPortletSupportService;
-    
-    @Autowired(required = true)
-    public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
-            this.ajaxPortletSupportService = ajaxPortletSupportService;
-    }
-    
-	@RequestMapping(params = "action=ajax")
-	public void getJSONFeeds(ActionRequest request, ActionResponse response) throws Exception {
+    @ResourceMapping
+	public ModelAndView getJSONFeeds(ResourceRequest request, ResourceResponse response) throws Exception {
 		log.debug("handleAjaxRequestInternal (AjaxNewsController)");
 		
         Map<String, Object> model = new HashMap<String, Object>();
@@ -212,7 +206,7 @@ public class AjaxNewsController {
 
 		log.debug("forwarding to /ajaxFeedList");
 		
-		this.ajaxPortletSupportService.redirectAjaxResponse("ajax/jsonView", model, request, response);
+		return new ModelAndView("json", model);
 	}
 
 }

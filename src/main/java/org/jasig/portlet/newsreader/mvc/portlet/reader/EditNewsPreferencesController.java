@@ -34,6 +34,8 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,11 +46,12 @@ import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.IViewResolver;
-import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.bind.annotation.ActionMapping;
+import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 
 /**
@@ -77,13 +80,6 @@ public class EditNewsPreferencesController {
     @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
-    }
-
-    private AjaxPortletSupportService ajaxPortletSupportService;
-    
-    @Autowired(required = true)
-    public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
-            this.ajaxPortletSupportService = ajaxPortletSupportService;
     }
 
     private IViewResolver viewResolver;
@@ -137,7 +133,7 @@ public class EditNewsPreferencesController {
         return new ModelAndView(viewName, "model", model);
     }
 
-    @RequestMapping
+    @ActionMapping
     protected void saveNewsPreference(ActionRequest request,
             ActionResponse response) throws Exception {
         Long id = Long.parseLong(request.getParameter("id"));
@@ -174,9 +170,9 @@ public class EditNewsPreferencesController {
         }
     }
 
-    @RequestMapping(params = "action=saveDisplayPreference")
-    public void saveDisplayPreference(ActionRequest request,
-            ActionResponse response) throws IOException {
+    @ResourceMapping
+    public ModelAndView saveDisplayPreference(ResourceRequest request,
+            ResourceResponse response) throws IOException {
 
         Map<String, ?> model;
         
@@ -195,7 +191,7 @@ public class EditNewsPreferencesController {
             model = Collections.singletonMap("status", "failure");
         }
 
-        this.ajaxPortletSupportService.redirectAjaxResponse("ajax/jsonView", model, request, response);
+        return new ModelAndView("json", model);
 
     }
 

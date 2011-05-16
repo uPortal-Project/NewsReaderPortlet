@@ -40,7 +40,7 @@
 
         var $ = ${n}.jQuery;
     
-        var savePrefUrl = '<portlet:actionURL><portlet:param name="action" value="saveDisplayPreference"/></portlet:actionURL>';
+        var savePrefUrl = '<portlet:resourceURL/>';
     
         $('#${n}maxStories').change(function(){
             $.post(savePrefUrl, { prefName: 'maxStories', prefValue: $('#${n}maxStories').val() }, null, 'json');

@@ -119,8 +119,6 @@
         </property>
     </bean>
     
-    <bean class="org.jasig.web.service.AjaxPortletSupportService"/>
-
 
     <!-- HIBERNATE CONFIGURATION -->
 

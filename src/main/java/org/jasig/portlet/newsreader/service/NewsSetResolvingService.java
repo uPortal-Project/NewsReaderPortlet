@@ -19,7 +19,7 @@
 
 package org.jasig.portlet.newsreader.service;
 
-import javax.portlet.ActionRequest;
+import javax.portlet.PortletRequest;
 
 import org.jasig.portlet.newsreader.NewsSet;
 
@@ -32,6 +32,6 @@ public interface NewsSetResolvingService {
 	 * 
 	 * The returned NewsSet is associated with the calling portlel via a PortletPreference.
 	 */
-	public NewsSet getNewsSet(String fname, ActionRequest request);
+	public NewsSet getNewsSet(String fname, PortletRequest request);
 
 }

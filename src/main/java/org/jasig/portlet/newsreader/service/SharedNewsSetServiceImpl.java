@@ -21,7 +21,7 @@ package org.jasig.portlet.newsreader.service;
 
 import java.util.Set;
 
-import javax.portlet.ActionRequest;
+import javax.portlet.PortletRequest;
 import javax.portlet.PortletSession;
 
 import org.apache.commons.logging.Log;
@@ -39,7 +39,7 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 	 * 
 	 * Initalise the NewsSet  
 	 */
-	public NewsSet getNewsSet(String fname, ActionRequest request) {
+	public NewsSet getNewsSet(String fname, PortletRequest request) {
 
 		PortletSession session = request.getPortletSession();
 
