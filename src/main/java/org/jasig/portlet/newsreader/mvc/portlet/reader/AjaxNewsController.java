@@ -124,6 +124,13 @@ public class AjaxNewsController {
 
         // only bother to fetch the active feed
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
+        
+        // if the current active feed no longer exists in the news set, unset it
+        if (!jsonFeeds.contains(activeFeed)) {
+            activeFeed = null;
+        }
+        
+        // if no active feed is currently set, use the first feed in the list
         if (activeFeed == null && jsonFeeds.size() > 0) {
         	activeFeed = ((JSONObject) jsonFeeds.get(0)).getString("id");
 			prefs.setValue("activeFeed", activeateNews);
