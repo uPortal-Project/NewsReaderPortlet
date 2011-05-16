@@ -442,6 +442,7 @@
                         <exclude>target/**</exclude>
                         <exclude>bin/**</exclude>
                         <exclude>**/NOTICE</exclude>
+                        <exclude>NOTICE.template</exclude>
                         <exclude>README</exclude>
                         <exclude>LICENSE</exclude>
                         <exclude>src/main/webapp/rs/**</exclude>
