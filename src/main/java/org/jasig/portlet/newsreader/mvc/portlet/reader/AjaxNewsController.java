@@ -94,12 +94,14 @@ public class AjaxNewsController {
         Collections.sort(feeds);
         
         JSONArray jsonFeeds = new JSONArray();
+        List<String> knownFeeds = new ArrayList<String>();
         for(NewsConfiguration feed : feeds) {
             if (feed.isDisplayed()) {
             	JSONObject jsonFeed = new JSONObject();
             	jsonFeed.put("id",feed.getId());
             	jsonFeed.put("name",feed.getNewsDefinition().getName());
             	jsonFeeds.add(jsonFeed);
+            	knownFeeds.add(String.valueOf(feed.getId()));
             }
         }
         model.put("feeds", jsonFeeds);
@@ -120,7 +122,7 @@ public class AjaxNewsController {
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
         
         // if the current active feed no longer exists in the news set, unset it
-        if (!jsonFeeds.contains(activeFeed)) {
+        if (!knownFeeds.contains(activeFeed)) {
             activeFeed = null;
         }
         
