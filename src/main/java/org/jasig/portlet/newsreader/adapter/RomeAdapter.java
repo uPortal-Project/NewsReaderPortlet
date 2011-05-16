@@ -73,7 +73,8 @@ public class RomeAdapter implements INewsAdapter {
         // Note that a policy file string includes a path starting at the application context.
         // (e.g. /WEB-INF/antisamy/antisamy-manchester.xml)
         PortletPreferences prefs = request.getPreferences();
-        String thePolicyFile = prefs.getValue( "antisamyPolicy", null );
+        String titlePolicy = prefs.getValue( "titlePolicy", "antisamy-textonly");
+        String descriptionPolicy = prefs.getValue( "descriptionPolicy", "antisamy-textonly");
 
         // get the URL for this feed
         String url = config.getNewsDefinition().getParameters().get("url");
@@ -85,7 +86,7 @@ public class RomeAdapter implements INewsAdapter {
 
             log.debug("Cache miss");
 
-            feed = getSyndFeed(url, request.getPortletSession().getPortletContext().getRealPath("/") + thePolicyFile);
+            feed = getSyndFeed(url, titlePolicy, descriptionPolicy);
 
             // save the feed to the cache
             cachedElement = new Element(key, feed);
@@ -107,7 +108,7 @@ public class RomeAdapter implements INewsAdapter {
      * @param policyFile String the cleaning policy
      * @return SyndFeed Feed object
      */
-    protected SyndFeed getSyndFeed(String url, String policyFile) throws NewsException {
+    protected SyndFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
 
         HttpClient client = new HttpClient();
         GetMethod get = null;
@@ -131,7 +132,7 @@ public class RomeAdapter implements INewsAdapter {
             // Otherwise we'd eat a parse error for trying to parse a null stream.
             if ( in != null )
             {
-                feed = processor.getFeed(in);
+                feed = processor.getFeed(in, titlePolicy, descriptionPolicy);
             }
             else
             {

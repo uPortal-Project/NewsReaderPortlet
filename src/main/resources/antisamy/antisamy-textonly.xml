@@ -129,7 +129,7 @@ Slashdot allowed tags taken from "Reply" page:
         <tag name="blockquote" action="validate"/>
         <tag name="tt" action="validate"/>
         
-        <tag name="br" action="truncate"/>
+        <tag name="br" action="remove"/>
 
                         
         <!-- Anchor and anchor related tags -->

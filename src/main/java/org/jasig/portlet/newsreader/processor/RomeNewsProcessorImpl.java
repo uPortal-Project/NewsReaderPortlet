@@ -22,7 +22,9 @@ package org.jasig.portlet.newsreader.processor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -33,8 +35,6 @@ import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.core.io.Resource;
 
 import com.sun.syndication.feed.module.Module;
@@ -48,13 +48,13 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
-public class RomeNewsProcessorImpl implements InitializingBean {
+public class RomeNewsProcessorImpl {
     
     protected final Log log = LogFactory.getLog(getClass());
 
     private List<String> imageTypes;
     
-    public SyndFeed getFeed(InputStream in) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
+    public SyndFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
                 
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
@@ -67,7 +67,7 @@ public class RomeNewsProcessorImpl implements InitializingBean {
         @SuppressWarnings("unchecked")
         List<SyndEntry> entries =  (List<SyndEntry>) feed.getEntries();
         for (SyndEntry entry : entries) {
-            NewsFeedItem item = getNewsFeedItem(entry);
+            NewsFeedItem item = getNewsFeedItem(entry, titlePolicy, descriptionPolicy);
             newEntries.add(item);
         }
         feed.setEntries(newEntries);
@@ -75,7 +75,7 @@ public class RomeNewsProcessorImpl implements InitializingBean {
         return feed;
     }
 
-    protected NewsFeedItem getNewsFeedItem(SyndEntry entry) throws PolicyException, ScanException {
+    protected NewsFeedItem getNewsFeedItem(SyndEntry entry, String titlePolicy, String descriptionPolicy) throws PolicyException, ScanException {
         NewsFeedItem item = new NewsFeedItem();
         item.copyFrom(entry);
 
@@ -83,12 +83,12 @@ public class RomeNewsProcessorImpl implements InitializingBean {
         CleanResults cr = null;
         double scanTime = 0;
         if (item.getDescription() != null && item.getDescription().getValue() != null) {
-            cr = as.scan(item.getDescription().getValue(), descriptionPolicy);
+            cr = as.scan(item.getDescription().getValue(), policies.get(descriptionPolicy));
             item.getDescription().setValue(cr.getCleanHTML());
             scanTime += cr.getScanTime();
         }
         if (item.getTitle() != null) {
-            cr = as.scan(item.getTitle(), titlePolicy);
+            cr = as.scan(item.getTitle(), policies.get(titlePolicy));
             item.setTitle(cr.getCleanHTML());
             scanTime += cr.getScanTime();
         }
@@ -133,38 +133,16 @@ public class RomeNewsProcessorImpl implements InitializingBean {
         return item;
     }
 
-    private Resource titleResource;
+    private Map<String, Policy> policies = new HashMap<String, Policy>();
     
-    @javax.annotation.Resource(name = "titlePolicyFile")
-    @Required
-    public void setTitleResource(Resource titleResource) {
-        this.titleResource = titleResource;
+    public void setPolicies(Map<String, Resource> policies) throws PolicyException, IOException {
+        for (Map.Entry<String, Resource> policy : policies.entrySet()) {
+            InputStream policyStream = policy.getValue().getInputStream();
+            this.policies.put(policy.getKey(), Policy.getInstance(policyStream));
+            policyStream.close();
+        }
     }
 
-    private Resource descriptionResource;
-    
-    @javax.annotation.Resource(name = "descriptionPolicyFile")
-    @Required
-    public void setDescriptionResource(Resource descriptionResource) {
-        this.descriptionResource = descriptionResource;
-    }
-
-    private Policy titlePolicy;
-    
-    private Policy descriptionPolicy;
-
-    public void afterPropertiesSet() throws Exception {
-        // create an AntiSamy policy object from the configured policy file
-        InputStream titleStream = titleResource.getInputStream();
-        this.titlePolicy = Policy.getInstance(titleStream);
-        titleStream.close();
-        
-        InputStream descriptionStream = descriptionResource.getInputStream();
-        this.descriptionPolicy = Policy.getInstance(descriptionStream);
-        descriptionStream.close();
-    }
-    
-    
     public void setImageTypes(List<String> imageTypes) {
         this.imageTypes = imageTypes;
     }
