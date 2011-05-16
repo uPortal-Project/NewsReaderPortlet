@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.jasig.portlet.newsreader.mvc.servlet;
 
 import java.util.Map;
@@ -23,6 +24,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,26 +34,44 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * @author Jen Bourey, jbourey@unicon.net
+ * AjaxJspViewController 
+ * 
+ * @author Jen Bourey
  * @version $Revision$
  */
 @Controller
-@RequestMapping("/json")
-public class JsonResponseController {
+@RequestMapping("/jsonView")
+public class AjaxJsonViewController {
 
-    @Autowired(required = true)
-    private AjaxPortletSupportService ajaxPortletSupportService;
+	protected final Log log = LogFactory.getLog(this.getClass());
 
-    public void setAjaxPortletSupportService(
-            AjaxPortletSupportService ajaxPortletSupportService) {
-        this.ajaxPortletSupportService = ajaxPortletSupportService;
-    }
+	private AjaxPortletSupportService ajaxPortletSupportService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getJsonResponse(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-        Map<String, ?> model = ajaxPortletSupportService.getAjaxModel(request,
-                response);
-        return new ModelAndView("jsonView", model);
-    }
+	@Autowired(required = true)
+	public void setAjaxPortletSupportService(
+			AjaxPortletSupportService ajaxPortletSupportService) {
+		this.ajaxPortletSupportService = ajaxPortletSupportService;
+	}
+
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView get(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		try {
+
+			// get the ModelAndView object associated with this AJAX request
+			Map<String, ?> model = (Map<String, ?>) ajaxPortletSupportService.getAjaxModel(
+					request, response);
+			String view = (String) model.get("viewName");
+			assert view != null;
+
+			return new ModelAndView(view, model);
+
+		} catch (Exception e) {
+			log.error("Exception occurred while performing AJAX response", e);
+			// TODO: create consistent error behavior
+			return new ModelAndView();
+		}
+	}
+
 }

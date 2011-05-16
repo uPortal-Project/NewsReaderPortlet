@@ -19,12 +19,12 @@
 
 package org.jasig.portlet.newsreader.mvc.portlet.singlefeed;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.portlet.ActionRequest;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
@@ -33,36 +33,58 @@ import javax.portlet.RenderResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.newsreader.NewsConfiguration;
+import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.Preference;
-import org.jasig.portlet.newsreader.mvc.IViewSelector;
+import org.jasig.portlet.newsreader.adapter.INewsAdapter;
+import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.service.IInitializationService;
+import org.jasig.portlet.newsreader.service.IViewResolver;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
+
+import com.sun.syndication.feed.synd.SyndFeed;
 
 @Controller
 @RequestMapping("VIEW")
 public class SingleFeedNewsController {
 
     protected final Log log = LogFactory.getLog(getClass());
-    
-    private List<IInitializationService> initializationServices = Collections.emptyList();
 
-    @Resource(name="initializationServices")
+    private ApplicationContext applicationContext;
+    
+    @Autowired(required = true)
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    private List<IInitializationService> initializationServices;
+
+    @Resource(name = "initializationServices")
     public void setInitializationServices(List<IInitializationService> services) {
         this.initializationServices = services;
     }
 
-    private IViewSelector viewSelector;
+    private IViewResolver viewResolver;
     
     @Autowired(required = true)
-    public void setViewSelector(IViewSelector viewSelector) {
-        this.viewSelector = viewSelector;
+    public void setViewResolver(IViewResolver viewResolver) {
+        this.viewResolver = viewResolver;
+    }
+
+    @RequestMapping
+    public void defaultAction(ActionRequest request) {
+        // do nothing
     }
     
     @RequestMapping
-    public ModelAndView getSingleFeedView(RenderRequest request, RenderResponse response) throws Exception {
+    public ModelAndView showFeed(RenderRequest request, RenderResponse response) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
@@ -81,6 +103,40 @@ public class SingleFeedNewsController {
             // mark this session as initialized
             session.setAttribute("initialized", "true");
         }
+
+        PortletPreferences prefs = request.getPreferences();
+        
+        NewsConfiguration feedConfig = getFeedConfiguration(prefs);
+        
+        SyndFeed feed = null;
+        
+        try {
+            // get an instance of the adapter for this feed
+            INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName(), INewsAdapter.class);
+            // retrieve the feed from this adaptor
+            feed = adapter.getSyndFeed(feedConfig, request);
+
+            if ( feed != null )
+            {
+                log.debug("Got feed from adapter");
+                model.put("feed", feed);
+            }
+            else
+            {
+                log.warn("Failed to get feed from adapter.");
+                model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+            }
+            
+        } catch (NoSuchBeanDefinitionException ex) {
+            log.error("News class instance could not be found: " + ex.getMessage());
+            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+        } catch (NewsException ex) {
+            log.warn(ex);
+            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+        } catch (Exception ex) {
+            log.error(ex);
+            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+        }
         
         PortletPreferences portletPrefs = request.getPreferences();
         Map<String, Object> preferences = new HashMap<String, Object>();
@@ -93,9 +149,22 @@ public class SingleFeedNewsController {
         boolean supportsEdit = request.isPortletModeAllowed(PortletMode.EDIT);
         model.put("supportsEdit", supportsEdit);
 
-        String viewName = viewSelector.getSingleFeedViewName(request);
-        log.debug("forwarding to " + viewName);
+        String viewName = viewResolver.getSingleFeedView(request);
         return new ModelAndView(viewName, model);
+    }
+    
+    protected NewsConfiguration getFeedConfiguration(PortletPreferences prefs) {
+        String url = prefs.getValue("url", null);
+        String name = prefs.getValue("name", "portlet preference 'name' not set");
+        String className = prefs.getValue("className", null);
+
+        NewsDefinition feedDef = new NewsDefinition(new Long(1), className, name);
+        feedDef.addParameter("url", url);
+        
+        NewsConfiguration feedConfig = new NewsConfiguration();
+        feedConfig.setNewsDefinition(feedDef);
+        feedConfig.setId(new Long(1));
+        return feedConfig;
     }
 
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<%--
 
     Licensed to Jasig under one or more contributor license
     agreements. See the NOTICE file distributed with this work
@@ -18,20 +17,26 @@
     specific language governing permissions and limitations
     under the License.
 
--->
+--%>
 
-<!DOCTYPE form-validation PUBLIC
-  "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN"
-  "http://jakarta.apache.org/commons/dtd/validator_1_1.dtd">
-<form-validation>
-    <formset>
-        <form name="newsListingCommand">
-            <field property="name" depends="required">
-                <arg0 key="portlet.news.form.name"/>
-            </field>
-            <field property="url" depends="required">
-                <arg0 key="portlet.news.form.url"/>
-            </field>
-        </form>
-    </formset>
-</form-validation>
+<jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+
+<div class="portlet ptl-newsreader view-singlefeed">
+	<div data-role="content" class="portlet-content">
+		
+		<ul data-role="listview" class="feed">
+		    <c:forEach items="${ feed.entries }" var="entry">
+		        <li>
+		        	<a href="${ entry.link }">
+			            <c:if test="${ not empty entry.imageUrl }"><img src="${ entry.imageUrl }"/></c:if>
+			            <h3 class="title">${ entry.title }</h3>
+			            <p>
+			                ${ entry.description.value }
+			            </p>
+		            </a>
+		        </li>
+		    </c:forEach>
+		</ul>
+		
+	</div>
+</div>

@@ -22,7 +22,6 @@ package org.jasig.portlet.newsreader.mvc.portlet.reader;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +34,6 @@ import org.jasig.portlet.newsreader.mvc.NewsListingCommand;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -52,19 +50,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class EditUserRomeController {
 
     protected final Log log = LogFactory.getLog(getClass());
-    
-    @RequestMapping(params="action=editUrl")
-    public String showEditForm(PortletRequest request) {
-        return "editNewsUrl";
+
+    private NewsStore newsStore;
+
+    @Autowired(required = true)
+    public void setNewsStore(NewsStore newsStore) {
+        this.newsStore = newsStore;
     }
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see org.springframework.web.portlet.mvc.AbstractFormController#formBackingObject(javax.portlet.PortletRequest)
-      */
-    @ModelAttribute("form")
-    protected Object formBackingObject(PortletRequest request) throws Exception {
+    private NewsSetResolvingService setCreationService;
+
+    @Autowired(required = true)
+    public void setSetCreationService(NewsSetResolvingService setCreationService) {
+        this.setCreationService = setCreationService;
+    }
+
+    @ModelAttribute("newsListingCommand")
+    public NewsListingCommand getNewsForm(PortletRequest request) throws Exception {
 
         // if we're editing a news, retrieve the news definition from
         // the database and add the information to the form
@@ -92,13 +94,14 @@ public class EditUserRomeController {
         }
     }
 
-    @RequestMapping(params="action=editPreferences")
-    protected void onSubmitAction(ActionRequest request,
-                ActionResponse response, Object command, BindException errors)
-            throws Exception {
-
-        // get the form data
-        NewsListingCommand form = (NewsListingCommand) command;
+    @RequestMapping(params = "action=editUrl")
+    public String getUserEditView(PortletRequest request) {
+        return "editNewsUrl";
+    }
+    
+    @RequestMapping(params = "action=editUrl")
+    public void onSubmitAction(ActionRequest request, ActionResponse response,
+            NewsListingCommand form) throws Exception {
 
         // construct a news definition from the form data
         UserDefinedNewsConfiguration config = null;
@@ -107,7 +110,7 @@ public class EditUserRomeController {
         if (form.getId() > -1) {
 
             config = (UserDefinedNewsConfiguration) newsStore.getNewsConfiguration(form.getId());
-            definition = config.getNewsDefinition();
+            definition = (UserDefinedNewsDefinition) config.getNewsDefinition();
             definition.addParameter("url", form.getUrl());
             definition.setName(form.getName());
             log.debug("Updating");
@@ -123,13 +126,12 @@ public class EditUserRomeController {
             config = new UserDefinedNewsConfiguration();
             config.setNewsDefinition(definition);
             config.setDisplayed(form.isDisplayed());
-            PortletSession session = request.getPortletSession();
-            Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
-            config.setNewsSet(setCreationService.getNewsSet(setId, request));
+
+            String setName = request.getPreferences().getValue("newsSetName", "default");
+            config.setNewsSet(setCreationService.getNewsSet(setName, request));
             log.debug("Insert new");
         }
 
-//        log.debug("User defined News configuration is \nUser: " + config.getSubscribeId());
         log.debug("User defined News definition is " + config.getNewsDefinition().getName());
 
         // save the news
@@ -138,20 +140,6 @@ public class EditUserRomeController {
         // send the user back to the main edit page
         response.setRenderParameter("action", "editPreferences");
 
-    }
-
-    private NewsStore newsStore;
-
-    @Autowired(required = true)
-    public void setNewsStore(NewsStore newsStore) {
-        this.newsStore = newsStore;
-    }
-
-    private NewsSetResolvingService setCreationService;
-    
-    @Autowired(required = true)
-    public void setSetCreationService(NewsSetResolvingService setCreationService) {
-    	this.setCreationService = setCreationService;
     }
 
 }

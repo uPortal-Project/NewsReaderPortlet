@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.portlet.ActionRequest;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
@@ -34,8 +35,8 @@ import javax.portlet.RenderResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.dao.NewsStore;
-import org.jasig.portlet.newsreader.mvc.IViewSelector;
 import org.jasig.portlet.newsreader.service.IInitializationService;
+import org.jasig.portlet.newsreader.service.IViewResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,29 +59,32 @@ public class NewsController {
     }
     
     private int defaultItems = 2;
-    
     public void setDefaultItems(int defaultItems) {
         this.defaultItems = defaultItems;
     }
 
     private List<IInitializationService> initializationServices;
     
-    @Resource(name="initializationServices")
+    @Resource(name = "initializationServices")
     public void setInitializationServices(List<IInitializationService> services) {
         this.initializationServices = services;
     }
-
-    private IViewSelector viewSelector;
     
-    @Autowired(required=true)
-    public void setViewSelector(IViewSelector viewSelector) {
-        this.viewSelector = viewSelector;
+    private IViewResolver viewResolver;
+    
+    @Autowired(required = true)
+    public void setViewResolver(IViewResolver viewResolver) {
+        this.viewResolver = viewResolver;
     }
 
-
     @RequestMapping
-    public ModelAndView showNewsView(RenderRequest request,
-                RenderResponse response) throws Exception {
+    public void defaultAction(ActionRequest request) {
+        // do nothing
+    }
+    
+    @RequestMapping
+    public ModelAndView showMainView(RenderRequest request,
+            RenderResponse response) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
@@ -128,42 +132,10 @@ public class NewsController {
         model.put("supportsHelp", request.isPortletModeAllowed(PortletMode.HELP));
         model.put("supportsEdit", request.isPortletModeAllowed(PortletMode.EDIT));
         model.put("isAdmin", session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
+        model.put("isGuest", request.getRemoteUser() == null);
         
-        String viewName = viewSelector.getMultiFeedViewName(request);
-        log.debug("forwarding to " + viewName);
+        String viewName = viewResolver.getReaderView(request);
         return new ModelAndView(viewName, model);
     }
 
 }
-
-/*
-* NewsController.java
-*
-* Copyright (c) April 17, 2008 The University of Manchester. All rights reserved.
-*
-* THIS SOFTWARE IS PROVIDED "AS IS," AND ANY EXPRESS OR IMPLIED WARRANTIES,
-* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-* FITNESS FOR A PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED. IN NO EVENT SHALL
-* MANCHESER UNIVERSITY OR ITS EMPLOYEES BE LIABLE FOR ANY DIRECT, INDIRECT,
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED, THE COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED IN ADVANCE OF THE POSSIBILITY OF SUCH DAMAGE.
-*
-* Redistribution and use of this software in source or binary forms, with or
-* without modification, are permitted, provided that the following conditions
-* are met.
-*
-* 1. Any redistribution must include the above copyright notice and disclaimer
-* and this list of conditions in any related documentation and, if feasible, in
-* the redistributed software.
-*
-* 2. Any redistribution must include the acknowledgment, "This product includes
-* software developed by The University of Manchester," in any related documentation and, if
-* feasible, in the redistributed software.
-*
-* 3. The names "Manchester University" and "The University of Manchester" must not be used to endorse or
-* promote products derived from this software.
-*/

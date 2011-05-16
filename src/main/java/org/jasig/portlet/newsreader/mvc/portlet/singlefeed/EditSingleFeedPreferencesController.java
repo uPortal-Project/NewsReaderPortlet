@@ -25,10 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,19 +39,18 @@ import org.jasig.portlet.newsreader.Preference;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 @Controller
 @RequestMapping("EDIT")
 public class EditSingleFeedPreferencesController implements InitializingBean {
 
+	private List<Integer> optionsMaxStories;
+	private Map<String,String> optionsViewTypes;
+	
     protected final Log log = LogFactory.getLog(getClass());
-
-    private List<Integer> optionsMaxStories;
-    private Map<String,String> optionsViewTypes;    
-
+		
+    @Override
     public void afterPropertiesSet() throws Exception {
 
         Map<String,String> m = new HashMap<String,String>();
@@ -62,7 +64,7 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
     }
 
     @RequestMapping
-	protected ModelAndView showEditForm(RenderRequest request, RenderResponse response) throws Exception {
+	protected ModelAndView showForm(RenderRequest request, RenderResponse response) throws Exception {
 
         log.trace("handleRenderRequestInternal");
 		
@@ -92,23 +94,29 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
 
     }
     
-    @ResourceMapping
-    public ModelAndView saveDisplayPreference(@RequestParam String prefName, 
-            @RequestParam String prefValue, PortletRequest request) throws Exception {
+    @RequestMapping
+    public Map<Object, Object> savePreference(ActionRequest request,
+            ActionResponse response) throws Exception {
 
         try {
+            String prefName = request.getParameter("prefName");
+            String prefValue = request.getParameter("prefValue");
             
             PortletPreferences prefs = request.getPreferences();
             prefs.setValue(prefName, prefValue);
             prefs.store();
 
-            return new ModelAndView("jsonView", Collections.singletonMap("status", "success"));
-            
+            JSONObject json = new JSONObject();
+            json.put("status", "success");
+
+            Map<Object, Object> model = new HashMap<Object, Object>();
+            model.put("json", json);
+            return model;
         } catch (Exception e) {
             log.error("There was an error saving the preferences.", e);
-            return new ModelAndView("jsonView", Collections.singletonMap("status", "error"));
+            throw e;
         }
-        
+
     }
 
 

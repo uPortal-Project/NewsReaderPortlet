@@ -22,58 +22,75 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
+<c:set var="max" value="${ prefs.maxStories > fn:length(feed.entries) ? fn:length(feed.entries)-1 : prefs.maxStories-1 }"/>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.4.2/jquery-1.4.2.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.2.1/js/fluid-all-1.2.1-v2.min.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/scripts/news-feed-view.min.js"/>"></script>
 
 <style>
     ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
+    ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
+    .ui-tooltip {
+        padding:8px;
+        position:absolute;
+        z-index:9999;
+        -o-box-shadow: 0 0 5px #aaa;
+        -moz-box-shadow: 0 0 5px #aaa;
+        -webkit-box-shadow: 0 0 5px #aaa;
+        box-shadow: 0 0 5px #aaa;
+        max-width: 400px;
+    }
+    * html .ui-tooltip { background-image: none; }
+    body .ui-tooltip { border-width:2px; }
 </style>
-
+    
 <div class="org-jasig-portlet-newsreader">
-    <div id="${n}newsContainer">Loading . . . </div>
-    <br />
-
-    <div id="${n}feed">
-        <h2>
-            <a href="" target="" class="up-newsreader-feed-name" rel="popup"></a>
-        </h2>
-        <div class="up-newsreader-story ${ renderRequest.preferences.map['scrolling'][0] == 'true' ? 'portlet-rss-scrollable-content' : ''}">
-            <a class="up-newsreader-story-name"></a>
-            <p class="up-newsreader-story-summary"></p>
+    <div id="${n}newsContainer">
+        <h2><a href="${ feed.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h2>
+        <div class="news-items-container">
+            <c:choose>
+                <c:when test="${ prefs.summaryView == 'titleAndAbstract' }">
+                    <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
+                        <h3>
+                            <a class="news-items" href="${ entry.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+                        </h3>
+                        <p>${ entry.description.value }</p>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <ul class="news-list">
+                        <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
+                            <li>
+                                <a class="news-item" href="${ entry.link }" rel="popup" title="${ entry.description.value }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+                                <c:if test="${ prefs.summaryView == 'flyout' }"><span style="display:none">${ entry.description.value }</span></c:if>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
+    <br />
 
     <c:if test="${supportsEdit}">
         <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
     </c:if>
 </div>
-    
-<c:set var="storyView">${renderRequest.preferences.map['storyView'][0]}</c:set>
-<script type="text/javascript">
-    var ${n} = ${n} || {};
-    ${n}.jQuery = jQuery.noConflict(true);
-    ${n}.fluid = fluid;
-    fluid = null;
-    fluid_1_1 = null;
 
-    ${n}.jQuery(function() {
+<c:if test="${ prefs.summaryView == 'flyout' }">
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.3/js/fluid-all-1.3.min.js"/>"></script>
+    <script type="text/javascript">
+        var ${n} = ${n} || {};
+        ${n}.jQuery = jQuery.noConflict(true);
+        ${n}.fluid = fluid;
+        fluid = null;
+        fluid_1_3 = null;
 
-        var $ = ${n}.jQuery;
-        var fluid = ${n}.fluid;
-
-        var options = {
-            url: '<portlet:resourceURL/>',
-            namespace: '${n}',
-            feedView: "${renderRequest.preferences.map['feedView'][0]}",
-            summaryView: "${prefs.summaryView}",
-            newWindow: ${prefs.newWindow},
-            scrolling: "${renderRequest.preferences.map['scrolling'][0]}"
-        };
-        newsreader.FeedView("#${n}newsContainer", options);
-
-    });
-</script>
-
+        ${n}.jQuery("#${n}newsContainer .news-item").tooltip({
+            bodyHandler: function() { 
+                return ${n}.jQuery(this).next().html(); 
+            },
+            showURL: false
+        });
+    </script>
+</c:if>

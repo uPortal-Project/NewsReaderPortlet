@@ -17,28 +17,18 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc;
+package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
-import javax.portlet.PortletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-/**
- * IViewSelector assists the Calendar Portlet in choosing appropriate JSP views
- * for the main calendar view.  Views may be chosen based on variables like the 
- * portlet window state or the browser's user agent string.
- * 
- * @author Jen Bourey, jbourey@unicon.net
- * @version $Revision$
- */
-public interface IViewSelector {
-	
-	/**
-	 * Return the JSP view name of the main calendar view for this request.
-	 * 
-	 * @param request
-	 * @return
-	 */
-	public String getMultiFeedViewName(PortletRequest request);
+@Controller
+@RequestMapping("HELP")
+public class HelpController {
 
-    public String getSingleFeedViewName(PortletRequest request);
-
+    @RequestMapping
+    public String getHelpView() {
+        return "help";
+    }
+    
 }

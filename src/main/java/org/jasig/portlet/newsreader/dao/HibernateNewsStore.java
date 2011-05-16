@@ -32,6 +32,7 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
+import org.jasig.portlet.newsreader.UserDefinedNewsDefinition;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 
@@ -244,8 +245,16 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
         }
     }
 
-    public void deleteNewsDefinition(NewsDefinition definition) {
+    public void deleteNewsDefinition(PredefinedNewsDefinition definition) {
         try {
+            
+            String query = "from NewsConfiguration config "
+                + "where config.newsDefinition.id = ? and "
+                + "config.class = PredefinedNewsConfiguration";
+
+            List<PredefinedNewsConfiguration> configs = (List<PredefinedNewsConfiguration>) getHibernateTemplate()
+                    .find(query, definition.getId());
+            getHibernateTemplate().deleteAll(configs);
 
             getHibernateTemplate().delete(definition);
             getHibernateTemplate().flush();

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.portlet.RenderRequest;
-import javax.portlet.ResourceRequest;
+import javax.portlet.RenderResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,34 +45,35 @@ import org.springframework.web.portlet.ModelAndView;
  * @author Jen Bourey
  */
 @Controller
-@RequestMapping("CONFIG")
+@RequestMapping("EDIT")
 public class AdminNewsController {
 
     protected final Log log = LogFactory.getLog(getClass());
-
-    @RequestMapping(params="action=administration")
-    public ModelAndView showAdminInterface(RenderRequest request) throws Exception {
-
-        Map<String, Object> model = new HashMap<String, Object>();
-
-        // get a list of all predefined news
-        model.put("feeds", newsStore.getPredefinedNewsConfigurations());
-
-        return new ModelAndView("/adminNews", "model", model);
-
-    }
-
-    @RequestMapping(params="action=deleteDefinition")
-    public void deleteDefinition(@RequestParam Long id, ResourceRequest request) throws Exception {
-        PredefinedNewsDefinition def = newsStore.getPredefinedNewsDefinition(id);
-        newsStore.deleteNewsDefinition(def);
-    }
 
     private NewsStore newsStore;
 
     @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
+    }
+
+    @RequestMapping(params="action=administration")
+    public ModelAndView getAdminView(RenderRequest request,
+            RenderResponse response) {
+
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        // get a list of all predefined newss
+        model.put("feeds", newsStore.getPredefinedNewsConfigurations());
+
+        return new ModelAndView("/adminNews", "model", model);
+
+    }
+
+    @RequestMapping(params="action=deletePredefinedFeed")
+    public void deleteFeed(@RequestParam("id") Long id) {
+        PredefinedNewsDefinition def = newsStore.getPredefinedNewsDefinition(id);
+        newsStore.deleteNewsDefinition(def);
     }
 
 }

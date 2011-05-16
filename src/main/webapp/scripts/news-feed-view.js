@@ -32,12 +32,12 @@ var newsreader = newsreader || {};
         var feedResult;
         $.ajax({
             url: that.options.url,
-            type: "GET",
+            type: "POST",
             dataType: "json",
             async: false,
             data: data,
             success: function(response, textStatus){
-                feedResult = response.json;
+                feedResult = response;
             }
         });
         return feedResult;
@@ -65,6 +65,7 @@ var newsreader = newsreader || {};
                 $(document.createElement('a')).append(
                     $(document.createElement('span')).text(feedResult.feeds[i].name)
                 ).attr('href', '#' + that.options.namespace + 'feed' + feedResult.feeds[i].id)
+                .attr('title', feedResults.feeds[i].name)
             );
             tabs.append(li);
             that.container.append($(document.createElement('div')).attr('id', that.options.namespace + 'feed' + feedResult.feeds[i].id));
@@ -161,7 +162,7 @@ var newsreader = newsreader || {};
             targetAttribute = ' target="_new"';
         }
         var header = '<h2><a href="'+feed.link+'" rel="popup"' + targetAttribute + '>'+feed.title+'</a>'
-        if (feed.author != undefined) header += feed.author;
+        if (feed.author != undefined) header += " by " + feed.author;
         header +='</h2>';
         storyContainer.html(header);
         
@@ -210,17 +211,14 @@ var newsreader = newsreader || {};
         var html = '';
         for (var i = 0; i < feed.entries.length; i++) {
             var entry = feed.entries[i];
-            html += '<li><a class="news-item" href="'+entry.link+'" rel="popup"' + targetAttribute + '>'+entry.title+'</a>';
+            html += '<li><a title="' + entry.description + '" class="news-item" href="'+entry.link+'" rel="popup"' + targetAttribute + '>'+entry.title+'</a>';
             html += '<span style="display:none">'+entry.description+'</span></li>';
         }
         list.html(html);
         
         // initialize the tooltips
         storyContainer.find(".news-item").tooltip({
-            bodyHandler: function() { 
-                return $(this).next().html(); 
-            },
-            showURL: false
+            position: { offset: "15 15" }
         });
         
     };
@@ -269,7 +267,7 @@ var newsreader = newsreader || {};
     // start of creator function
     
     newsreader.FeedView = function(container, options) {
-        var that = fluid.initView("newsreader.MultipleFeedView", container, options);
+        var that = fluid.initView("newsreader.FeedView", container, options);
         
         /**
          * Initialization method
@@ -333,4 +331,4 @@ var newsreader = newsreader || {};
 
     // end of defaults
 
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);

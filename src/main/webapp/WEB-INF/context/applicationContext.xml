@@ -22,28 +22,23 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:ehcache="http://www.springmodules.org/schema/ehcache"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"       
-    xmlns:context="http://www.springframework.org/schema/context" 
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <!-- EHCache Configuration -->
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation">
-            <value>classpath:ehcache.xml</value>
-        </property>
-    </bean>
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+            p:configLocation="classpath:ehcache.xml"/>
     
-    <bean id="newsCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <property name="cacheManager">
-            <ref local="cacheManager"/>
-        </property>
-        <property name="cacheName">
-            <value>newsCache</value>
-        </property>
-    </bean>
+    <bean id="newsCache" 
+            class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+            p:cacheManager-ref="cacheManager" p:cacheName="newsCache"/>
 
     <!-- Properties configuration -->
     <bean id="propertyConfigurer"
@@ -57,14 +52,30 @@
         </property>
     </bean>
     
+    <util:list id="initializationServices">
+    </util:list>
+    
+    <util:list id="imageTypes">
+        <value>image/jpeg</value>
+        <value>image/gif</value>
+        <value>image/png</value>
+        <value>image/jpg</value>
+    </util:list>
+
+    <util:map id="antisamyPolicies">
+        <entry key="antisamy-textonly" value="classpath:/antisamy/antisamy-textonly.xml"/>
+    </util:map>
     
     <!-- NEWS ADAPTER REGISTRATIONS -->
     
-    <!-- Rss feed adapter -->
-    <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapter" class="org.jasig.portlet.newsreader.adapter.RomeAdapter">
-        <property name="cache" ref="newsCache"/>
-        <property name="policyFile"><value>/WEB-INF/antisamy/antisamy-manchester.xml</value></property>
-    </bean>
+    <bean id="romeProcessor" 
+        class="org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl"
+        p:imageTypes-ref="imageTypes" p:policies-ref="antisamyPolicies"/>
+    
+    <!-- RSS feed adapter -->
+    <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapter" 
+        class="org.jasig.portlet.newsreader.adapter.RomeAdapter"
+        p:processor-ref="romeProcessor" p:cache-ref="newsCache"/>
 
 
     <bean id="setCreationService" class="org.jasig.portlet.newsreader.service.SharedNewsSetServiceImpl">
@@ -80,9 +91,11 @@
         </property>
     </bean>
     
+    <bean class="org.jasig.portlet.newsreader.service.ThemeNameViewResolverImpl"/>
+    
     <bean class="org.springframework.web.servlet.view.XmlViewResolver"
             p:order="0" p:location="/WEB-INF/context/views.xml"/>
-
+            
     <!-- Default View Resolver -->
     <bean id="viewResolver"
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -93,9 +106,6 @@
     </bean>
 
     
-
-    <bean class="org.jasig.web.service.AjaxPortletSupportService"/>
-
     <!-- Abstract Default Exception Handler Bean -->
     <bean id="defaultExceptionHandlerTemplate"
         class="org.springframework.web.portlet.handler.SimpleMappingExceptionResolver"
@@ -108,19 +118,9 @@
             </props>
         </property>
     </bean>
-
-    <bean id="viewSelector" class="org.jasig.portlet.newsreader.mvc.ViewSelectorDefaultImpl">
-        <property name="mobileDeviceRegexes">
-            <!-- Regexes of mobile device user agents -->
-            <util:list id="mobileDeviceRegexes">
-                <value>.*iPhone.*</value>
-                <value>.*Android.*</value>
-                <value>.*Safari.*Pre.*</value>
-                <value>.*Nokia.*AppleWebKit.*</value>
-            </util:list>    
-        </property>
-    </bean>
     
+    <bean class="org.jasig.web.service.AjaxPortletSupportService"/>
+
 
     <!-- HIBERNATE CONFIGURATION -->
 
@@ -130,7 +130,7 @@
 
     <bean id="newsStoreTarget"
         class="org.jasig.portlet.newsreader.dao.HibernateNewsStore"
-        parent="abstractHibernateTemplate"> </bean>
+        parent="abstractHibernateTemplate" autowire-candidate="false"/>
 
     <bean id="abstractStoreTransactionProxy"
         class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
@@ -153,33 +153,19 @@
     </bean>
 
     <bean id="transactionManager"
-        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+        p:sessionFactory-ref="sessionFactory"/>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-            </props>
-        </property>
-    </bean>
+    <bean id="sessionFactory" 
+            class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+            p:dataSource-ref="dataSource" 
+            p:configLocation="classpath:hibernate.cfg.xml"/>
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName">
-            <value>${hibernate.connection.driver_class}</value>
-        </property>
-        <property name="url">
-            <value>${hibernate.connection.url}</value>
-        </property>
-        <property name="username">
-            <value>${hibernate.connection.username}</value>
-        </property>
-        <property name="password">
-            <value>${hibernate.connection.password}</value>
-        </property>
-    </bean>
+    <bean id="dataSource" 
+            class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+            p:driverClassName="${hibernate.connection.driver_class}" 
+            p:url="${hibernate.connection.url}" 
+            p:username="${hibernate.connection.username}" 
+            p:password="${hibernate.connection.password}"/>
 
 </beans>

@@ -19,9 +19,6 @@
 
 package org.jasig.portlet.newsreader;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,9 +33,6 @@ import java.util.Map;
  */
 public class PredefinedNewsConfiguration extends NewsConfiguration {
 
-    private static Log log = LogFactory.getLog(PredefinedNewsConfiguration.class);
-
-    private PredefinedNewsDefinition newsDefinition;
     private Map<String, String> preferences = new HashMap<String, String>();
 
     /**
@@ -46,7 +40,7 @@ public class PredefinedNewsConfiguration extends NewsConfiguration {
      */
     public PredefinedNewsConfiguration() {
         super();
-        this.newsDefinition = new PredefinedNewsDefinition();
+        this.setNewsDefinition(new PredefinedNewsDefinition());
     }
 
     /**
@@ -77,20 +71,4 @@ public class PredefinedNewsConfiguration extends NewsConfiguration {
         this.preferences.put(name, value);
     }
 
-    /*
-      * (non-Javadoc)
-      * @see edu.yale.its.tp.portlets.news.NewsConfiguration#getNewsDefinition()
-      */
-    public PredefinedNewsDefinition getNewsDefinition() {
-        return newsDefinition;
-    }
-
-    /*
-      * (non-Javadoc)
-      * @see edu.yale.its.tp.portlets.news.NewsConfiguration#setNewsDefinition(edu.yale.its.tp.portlets.news.NewsDefinition)
-      */
-    public void setNewsDefinition(PredefinedNewsDefinition definition) {
-        this.newsDefinition = definition;
-	}
-	
 }

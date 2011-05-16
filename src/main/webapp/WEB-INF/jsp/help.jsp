@@ -21,7 +21,7 @@
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 
-<p>The news feeds area allows you to subcribe to your favourite websites' news feeds, updates and notifications. As an example, a few useful new feeds have been selected for you. To view a feed, please use the drop down list.</p>
+<p>The news feeds area allows you to subscribe to your favourite websites' news feeds, updates and notifications. As an example, a few useful new feeds have been selected for you. To view a feed, please use the drop down list.</p>
 
 <p>News feeds are commonly called RSS Feeds.</p>
 

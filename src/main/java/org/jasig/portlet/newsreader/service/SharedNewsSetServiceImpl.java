@@ -19,16 +19,10 @@
 
 package org.jasig.portlet.newsreader.service;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import javax.portlet.ActionRequest;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
 import javax.portlet.PortletSession;
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,63 +34,33 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 	private static Log log = LogFactory.getLog(SharedNewsSetServiceImpl.class);
 
 	/*
-	 * Create and store a new news set 
-	 */
-	private NewsSet createNewsSet(ActionRequest request) {
-		NewsSet set = new NewsSet();
-		set.setUserId(request.getRemoteUser());
-		newsStore.storeNewsSet(set);
-		return set;
-	}
-
-	/*
 	 * Get the news set from the ID or search the dataabse for a suitable set or create a new
 	 * set if one cannot be found.
 	 * 
 	 * Initalise the NewsSet  
 	 */
-	public NewsSet getNewsSet(Long id, PortletRequest request) {
-		NewsSet set = null;
+	public NewsSet getNewsSet(String fname, ActionRequest request) {
 
 		PortletSession session = request.getPortletSession();
-		
-		
-		if (id < 0) { // No preference set, need to find a set or create a new one
-			List<NewsSet> sets = newsStore.getNewsSetsForUser(request.getRemoteUser());
-			if (!sets.isEmpty()) {
-				set = sets.get(0);
-				log.debug("Found existing set ("+set.getId()+") for user, returning this for shared use.");
-			}
-			else {
-				log.debug("No existing set found, creating and saving new set.");
-//				set = createNewsSet(request);
-			}
-			
-			// now we have a set, assocoiate it with this portlet instance.
-//			PortletPreferences preferences = request.getPreferences();
-//			try {
-//				preferences.setValue("newsSetId", String.valueOf(set.getId()));
-//				preferences.store();
-//			} catch (ReadOnlyException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (ValidatorException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
-		} else { // preference already set, just fetch this news
-			log.debug("Retrieving news set " + id);
-			set = newsStore.getNewsSet(id);
-		}
 
-		// Persistant set is now loaded but may still need re-initalising since last use.
-		// by adding setId to session, we signal that initaisation has taken place.
+		// get the user id associated with the current user, or use the configured
+		// guest username if no user is authenticated
+		String userId = request.getRemoteUser();
+		if (userId == null) {
+		    userId = "guest";
+		}
 		
+		NewsSet set = newsStore.getNewsSet(userId, fname);
+		if (set == null) {
+			log.debug("No existing set found, creating and saving new set.");
+	        set = new NewsSet();
+	        set.setUserId(userId);
+	        set.setName(fname);
+	        newsStore.storeNewsSet(set);
+		}
 		
+		// Persistent set is now loaded but may still need re-initalising since last use.
+		// by adding setId to session, we signal that initialisation has taken place.
 		if (session.getAttribute("setId") == null) {
 			Set<String> roles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
 			

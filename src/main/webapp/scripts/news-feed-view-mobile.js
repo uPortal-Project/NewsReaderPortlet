@@ -32,12 +32,12 @@ var newsreader = newsreader || {};
         var feedResult;
         $.ajax({
             url: that.options.url,
-            type: "GET",
+            type: "POST",
             dataType: "json",
             async: false,
             data: data,
             success: function(response, textStatus){
-                feedResult = response.json;
+                feedResult = response;
             }
         });
         return feedResult;
@@ -71,15 +71,19 @@ var newsreader = newsreader || {};
                     {
                         ID: "link",
                         decorators: [
-                            { type: "jQuery", func: "click", args: function () { return that.showFeed(feed.id); } }
+                            { type: "jQuery", func: "click", args: function () {
+                                    return that.showFeed(feed); 
+                                } 
+                            }
                         ]
                     }
                 ]
             });
         });
         
-        that.showFeed = function (feedId) {
-            var feedResult = retrieveFeed(that, feedId);
+        that.showFeed = function (feed) {
+            var feedResult = retrieveFeed(that, feed.id);
+            feedResult.feed.title = feed.name;
             that.views.storyList.showFeed(feedResult.feed);
             return false;
         };
@@ -89,19 +93,6 @@ var newsreader = newsreader || {};
         return that;
     };
 
-    newsreader.MobileSingleFeedView = function(container, options) {
-        var that = fluid.initView("newsreader.MobileSingleFeedView", container, options);
-        that.views = {};
-        that.state = {};
-
-        that.views.storyList = fluid.initSubcomponent(that, "storyListView", [container, that, fluid.COMPONENT_OPTIONS]);        
-
-        var feedResult = retrieveFeed(that);
-        that.views.storyList.showFeed(feedResult.feed);
-        
-        return that;
-    };
-    
     newsreader.MobileStoryListView = function(container, overallThat, options) {
         var that = fluid.initView("newsreader.MobileStoryListView", container, options);
         that.state = {};
@@ -111,7 +102,8 @@ var newsreader = newsreader || {};
             { id: "feedTitle", selector: that.options.selectors.feedTitle },
             { id: "title", selector: that.options.selectors.title },
             { id: "summary", selector: that.options.selectors.summary },
-            { id: "link", selector: that.options.selectors.link }
+            { id: "link", selector: that.options.selectors.link },
+            { id: "image", selector: that.options.selectors.image }
         ];
 
         that.showFeed = function (feed) {
@@ -125,6 +117,10 @@ var newsreader = newsreader || {};
                         { ID: "title", value: story.title },
                         { ID: "summary", markup: story.description },
                         { ID: "link", target: story.link },
+                        { 
+                            ID: "image", 
+                            decorators: [{ type: "attrs", attributes: { src: story.image } }]
+                        }
                     ]
                 });
             });
@@ -135,11 +131,18 @@ var newsreader = newsreader || {};
                 that.state.storyTemplates = fluid.selfRender($(that.locate("storyList")), tree, { cutpoints: storyCutpoints });
             }
 
+            $(feed.entries).each(function (idx, story) {
+                if (!story.image) {
+                    that.locate("storyList").find("li:eq(" + idx + ")").removeClass("ui-li-has-thumb");
+                }
+            });
+
             if (overallThat.options.selectors.feedList) {
                 $(overallThat.locate("feedList")).hide();
                 $(overallThat.locate("backBar")).show();
             }
             $(that.locate("storyList")).show();
+            $(overallThat.locate("backLink")).click(that.showList);
 
         };
 
@@ -151,7 +154,6 @@ var newsreader = newsreader || {};
                 $(overallThat.locate("feedList")).show();
             };
             
-            $(overallThat.locate("backBar")).click(that.showList);
         }
 
         return that;
@@ -161,16 +163,6 @@ var newsreader = newsreader || {};
     
     
     //start of defaults
-
-    fluid.defaults("newsreader.MobileSingleFeedView", {
-        url: null,
-        storyListView: {
-            type: "newsreader.MobileStoryListView"
-        },
-        selectors: {
-            
-        }
-    });
 
     fluid.defaults("newsreader.MobileFeedListView", {
         url: null,
@@ -194,7 +186,8 @@ var newsreader = newsreader || {};
             feedTitle: ".news-reader-feed-title",
             title: ".news-reader-story-title",
             summary: ".news-reader-story-summary",
-            link: ".news-reader-story-link"
+            link: ".news-reader-story-link",
+            image: ".news-reader-story-image"
         }
     });
 

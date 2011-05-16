@@ -22,37 +22,18 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"       
-    xmlns:context="http://www.springframework.org/schema/context" 
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <context:component-scan base-package="org.jasig.portlet.newsreader.mvc.portlet.singlefeed"/>
     <context:annotation-config/>
 
-    <!-- Properties configuration -->
-    <bean id="propertyConfigurer"
-        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-        lazy-init="false">
-        <property name="locations">
-            <list>
-                <value>classpath:configuration.properties</value>
-            </list>
-        </property>
+    <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="interceptors"><bean class="org.jasig.portlet.newsreader.mvc.MinimizedStateHandlerInterceptor"/></property>
     </bean>
 
-    <util:list id="initializationServices">
-        <!-- CAS proxy ticket example
-            <bean class="edu.yale.its.tp.portlets.news.service.CasProxyInitializationService">
-            <property name="proxyTicketService" ref="casService"/>
-            </bean>
-        -->
-    </util:list>
-    
-    <!-- Handler Mapping -->
-    
-    <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
-    
 </beans>

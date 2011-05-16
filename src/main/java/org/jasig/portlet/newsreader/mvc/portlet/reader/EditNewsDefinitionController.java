@@ -30,7 +30,6 @@ import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsDefinitionForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -43,17 +42,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Jen Bourey
  */
 @Controller
-@RequestMapping("CONFIG")
+@RequestMapping("EDIT")
 public class EditNewsDefinitionController {
 
     protected final Log log = LogFactory.getLog(getClass());
 
-    /*
-      * (non-Javadoc)
-      * @see org.springframework.web.portlet.mvc.AbstractFormController#formBackingObject(javax.portlet.PortletRequest)
-      */
-    @ModelAttribute("form")
-    protected Object formBackingObject(PortletRequest request) throws Exception {
+    private NewsStore newsStore;
+
+    @Autowired(required = true)
+    public void setNewsStore(NewsStore newsStore) {
+        this.newsStore = newsStore;
+    }
+
+    @ModelAttribute("newsDefinitionForm")
+    public NewsDefinitionForm getNewsForm(PortletRequest request) throws Exception {
         // if we're editing a news, retrieve the news definition from
         // the database and add the information to the form
         String id = request.getParameter("id");
@@ -81,13 +83,15 @@ public class EditNewsDefinitionController {
         }
     }
 
-    @RequestMapping
-    protected void updateNewsDefinition(ActionRequest request,
-                ActionResponse response, Object command, BindException errors)
+    @RequestMapping(params = "action=editNewsDefinition")
+    public String getAdminNewsEditView() {
+        return "editNewsDefinition";
+    }
+    
+    @RequestMapping(params = "action=editNewsDefinition")
+    public void onSubmitAction(ActionRequest request,
+                                  ActionResponse response, NewsDefinitionForm form)
             throws Exception {
-
-        // get the form data
-        NewsDefinitionForm form = (NewsDefinitionForm) command;
 
         // construct a news definition from the form data
         PredefinedNewsDefinition definition = null;
@@ -112,13 +116,6 @@ public class EditNewsDefinitionController {
         // send the user back to the main administration page
         response.setRenderParameter("action", "administration");
 
-    }
-
-    private NewsStore newsStore;
-
-    @Autowired(required = true)
-    public void setNewsStore(NewsStore newsStore) {
-        this.newsStore = newsStore;
     }
     
 
