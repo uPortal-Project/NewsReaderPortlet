@@ -33,7 +33,7 @@
 
 
 <style>
-    ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
+    ul.news-list li { padding-bottom:0.5em; list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');  }
     .ui-tooltip {
         padding:8px;
         position:absolute;
@@ -49,7 +49,7 @@
 </style>
     
 <c:set var="storyView">${renderRequest.preferences.map['storyView'][0]}</c:set>
-<script type="text/javascript">
+<script type="text/javascript"><rs:compressJs>
     var newsReaderPortlet = newsReaderPortlet || {};
     newsReaderPortlet.jQuery = jQuery.noConflict(true);
     newsReaderPortlet.fluid = fluid;
@@ -71,7 +71,7 @@
         });
 
     });
-</script>
+</rs:compressJs></script>
 
 <div class="org-jasig-portlet-newsreader">
 
