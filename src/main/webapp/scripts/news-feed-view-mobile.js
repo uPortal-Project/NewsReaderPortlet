@@ -18,8 +18,8 @@
  */
 
 var newsreader = newsreader || {};
-
-(function($, fluid) {
+if (!newsreader.init) {
+    newsreader.init = function ($, fluid) {
     
     // start of private methods
 
@@ -193,4 +193,6 @@ var newsreader = newsreader || {};
 
     // end of defaults
 
-})(jQuery, fluid_1_4);
+    newsreader.initialized = true;
+};
+}

@@ -24,11 +24,6 @@
 <c:set var="n"><portlet:namespace/></c:set>
 <portlet:resourceURL var="feedUrl"/>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4-bea0041/js/fluid-all-1.4-bea0041.min.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.min.js"/>"></script>
-
 <div id="${n}">
     <div class="news-reader-feed-list portlet ptl-newsreader view-news">
         <div data-role="content" class="portlet-content">
@@ -58,31 +53,48 @@
 	            <h2 class="title news-reader-feed-title">News</h2>
 	        </div>
 	        
-	            <div data-role="content" class="portlet-content">
-	                <ul data-role="listview" class="feed">
-	                    <li class="news-reader-story">
-	                        <a class="news-reader-story-link">
-	                            <img class="news-reader-story-image"/>
-	                            <h3 class="title news-reader-story-title"></h3>
-	                            <p class="news-reader-story-summary"></p>
-	                        </a>
-	                    </li>
-	                </ul>
-	            </div>
-	        </div>
+            <div data-role="content" class="portlet-content">
+                <ul data-role="listview" class="feed">
+                    <li class="news-reader-story">
+                        <a class="news-reader-story-link">
+                            <img class="news-reader-story-image"/>
+                            <h3 class="title news-reader-story-title"></h3>
+                            <p class="news-reader-story-summary"></p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
 	    </div>
     </div>
 </div>
 
+<c:if test="${ !usePortalJsLibs }">
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4-bea0041/js/fluid-all-1.4-bea0041.min.js"/>"></script>
+</c:if>
+<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.js"/>"></script>
+
 <script type="text/javascript"><rs:compressJs>
-    var newsReaderPortlet = newsReaderPortlet || {};
-    newsReaderPortlet.jQuery = jQuery.noConflict(true);
-    newsReaderPortlet.fluid = fluid;
-    fluid = null;
-    fluid_1_4 = null;
-    newsReaderPortlet.jQuery(function(){
-        var $ = newsReaderPortlet.jQuery;
-        var fluid = newsReaderPortlet.fluid;
+    var ${n} = ${n} || {};
+    <c:choose>
+        <c:when test="${!usePortalJsLibs}">
+            ${n}.jQuery = jQuery.noConflict(true);
+            ${n}.fluid = fluid;
+            fluid = null; 
+            fluid_1_4 = null;
+        </c:when>
+        <c:otherwise>
+            ${n}.jQuery = ${ portalJsNamespace }${not empty portalJsNamespace ? '.' : ''}jQuery;
+            ${n}.fluid = ${ portalJsNamespace }${not empty portalJsNamespace ? '.' : ''}fluid;
+        </c:otherwise>
+    </c:choose>
+    if (!newsreader.initialized) newsreader.init(${n}.jQuery, ${n}.fluid);
+    ${n}.newsreader = newsreader;
+
+    ${n}.jQuery(function(){
+        var $ = ${n}.jQuery;
+        var fluid = ${n}.fluid;
         
         $(document).ready(function () {
             newsreader.MobileFeedListView(
