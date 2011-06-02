@@ -82,7 +82,7 @@
         <c:if test="${supportsHelp}">
             <a href="<portlet:renderURL portletMode='help'/>">Help</a>
         </c:if>
-        <c:if test="${supportsEdit}">
+        <c:if test="${supportsEdit && !isGuest}">
             &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>">Edit news feeds</a>
         </c:if>
         <c:if test="${isAdmin}">
