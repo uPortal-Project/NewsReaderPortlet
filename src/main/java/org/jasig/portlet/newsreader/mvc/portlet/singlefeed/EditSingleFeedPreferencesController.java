@@ -19,6 +19,7 @@
 
 package org.jasig.portlet.newsreader.mvc.portlet.singlefeed;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +37,9 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.Preference;
+import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
@@ -50,6 +53,13 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
 	
     protected final Log log = LogFactory.getLog(getClass());
 		
+    private AjaxPortletSupportService ajaxPortletSupportService;
+    
+    @Autowired(required = true)
+    public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
+            this.ajaxPortletSupportService = ajaxPortletSupportService;
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
 
@@ -95,8 +105,9 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
     }
     
     @RequestMapping
-    public Map<Object, Object> savePreference(ActionRequest request,
-            ActionResponse response) throws Exception {
+    public void savePreference(ActionRequest request, ActionResponse response) throws IOException {
+
+        Map<String, ?> model;
 
         try {
             String prefName = request.getParameter("prefName");
@@ -106,16 +117,14 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
             prefs.setValue(prefName, prefValue);
             prefs.store();
 
-            JSONObject json = new JSONObject();
-            json.put("status", "success");
+            model = Collections.singletonMap("status", "success");
 
-            Map<Object, Object> model = new HashMap<Object, Object>();
-            model.put("json", json);
-            return model;
         } catch (Exception e) {
             log.error("There was an error saving the preferences.", e);
-            throw e;
+            model = Collections.singletonMap("status", "failure");
         }
+        
+        this.ajaxPortletSupportService.redirectAjaxResponse("ajax/jsonView", model, request, response);
 
     }
 
