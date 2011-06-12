@@ -16,7 +16,7 @@ Slashdot allowed tags taken from "Reply" page:
     <directives>
         <directive name="omitXmlDeclaration" value="true"/>
         <directive name="omitDoctypeDeclaration" value="true"/>
-        <directive name="maxInputSize" value="5000"/>
+        <directive name="maxInputSize" value="100000"/>
         <directive name="useXHTML" value="true"/>
         
         <directive name="embedStyleSheets" value="false"/>
@@ -118,29 +118,27 @@ Slashdot allowed tags taken from "Reply" page:
 
         <!-- All reasonable formatting tags -->
         
-        <tag name="p" action="validate">
-            <attribute name="align"/>
-        </tag>
+        <tag name="p" action="filter"/>
 
-        <tag name="div" action="validate"/>     
-        <tag name="i" action="validate"/>
-        <tag name="b" action="validate"/>
-        <tag name="em" action="validate"/>
-        <tag name="blockquote" action="validate"/>
-        <tag name="tt" action="validate"/>
+        <tag name="div" action="filter"/>     
+        <tag name="i" action="filter"/>
+        <tag name="b" action="filter"/>
+        <tag name="em" action="filter"/>
+        <tag name="blockquote" action="filter"/>
+        <tag name="tt" action="filter"/>
         
         <tag name="br" action="remove"/>
 
                         
         <!-- Anchor and anchor related tags -->
         
-        <tag name="a" action="remove"/>
+        <tag name="a" action="filter"/>
 
         <!-- List tags -->
 
-        <tag name="ul" action="validate"/>
-        <tag name="ol" action="validate"/>
-        <tag name="li" action="validate"/>
+        <tag name="ul" action="filter"/>
+        <tag name="ol" action="filter"/>
+        <tag name="li" action="filter"/>
         
     </tag-rules>
 

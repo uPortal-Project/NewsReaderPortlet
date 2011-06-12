@@ -40,6 +40,7 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.BeansException;
@@ -50,8 +51,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
-
-import com.sun.syndication.feed.synd.SyndFeed;
 
 @Controller
 @RequestMapping("VIEW")
@@ -116,7 +115,7 @@ public class AjaxNewsController {
 		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
 		boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
 		
-		SyndFeed feed = null;
+		NewsFeed feed = null;
 
         // only bother to fetch the active feed
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
@@ -152,36 +151,8 @@ public class AjaxNewsController {
                     }
                     else {
                         //turn feed into JSON
-                        JSONObject jsonFeed = new JSONObject();
-                        
-                        jsonFeed.put("link", feed.getLink());
-                        jsonFeed.put("title", feed.getTitle());
-
-                        if ( showAuthor == true )
-                        {
-                            jsonFeed.put("author", feed.getAuthor());
-                        }
-
-                        jsonFeed.put("copyright", feed.getCopyright());
-                        
-                        JSONArray jsonEntries = new JSONArray();
-                        @SuppressWarnings("unchecked")
-                        ListIterator<NewsFeedItem> i = (ListIterator<NewsFeedItem>) feed.getEntries().listIterator();
-                        while (i.hasNext() && i.nextIndex() < maxStories) {
-                            NewsFeedItem entry = i.next();
-                            JSONObject jsonEntry = new JSONObject();
-                            jsonEntry.put("link",entry.getLink());
-                            jsonEntry.put("title",entry.getTitle());
-                            jsonEntry.put("description",entry.getDescription().getValue());
-                            if (entry.getImageUrl() != null) {
-                                jsonEntry.put("image", entry.getImageUrl());
-                            }
-                            jsonEntries.add(jsonEntry);
-                        }
-                        
-                        jsonFeed.put("entries", jsonEntries);
-                        
-                        model.put("feed", jsonFeed);
+                        model.put("feed", feed);
+                        model.put("entries", feed.getEntries());
                     }
                 }
                 else

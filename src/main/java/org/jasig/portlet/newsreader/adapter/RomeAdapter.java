@@ -35,11 +35,11 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
+import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
 
-import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 
 
@@ -64,9 +64,9 @@ public class RomeAdapter implements INewsAdapter {
     /* (non-Javadoc)
       * @see org.jasig.portlet.newsreader.adapter.INewsAdapter#getSyndFeed(org.jasig.portlet.newsreader.NewsConfiguration, javax.portlet.PortletRequest)
       */
-    public SyndFeed getSyndFeed(NewsConfiguration config, PortletRequest request) throws NewsException {
+    public NewsFeed getSyndFeed(NewsConfiguration config, PortletRequest request) throws NewsException {
 
-        SyndFeed feed = null;
+        NewsFeed feed = null;
 
         // Look for an alternative AntiSamy policy file in the portlet preferences. If found, use it
         // otherwise use the default policyFile being injected into this class via Spring.
@@ -93,7 +93,7 @@ public class RomeAdapter implements INewsAdapter {
             cache.put(cachedElement);
         } else {
             log.debug("Cache hit");
-            feed = (SyndFeed) cachedElement.getValue();
+            feed = (NewsFeed) cachedElement.getValue();
         }
 
         // return the event list or null if the feed was not available.
@@ -108,11 +108,11 @@ public class RomeAdapter implements INewsAdapter {
      * @param policyFile String the cleaning policy
      * @return SyndFeed Feed object
      */
-    protected SyndFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
+    protected NewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
 
         HttpClient client = new HttpClient();
         GetMethod get = null;
-        SyndFeed feed = null;
+        NewsFeed feed = null;
 
         try {
 

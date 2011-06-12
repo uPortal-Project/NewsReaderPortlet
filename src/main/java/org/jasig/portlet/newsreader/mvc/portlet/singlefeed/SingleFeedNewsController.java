@@ -38,6 +38,7 @@ import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.Preference;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
+import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.service.IInitializationService;
 import org.jasig.portlet.newsreader.service.IViewResolver;
 import org.springframework.beans.BeansException;
@@ -47,8 +48,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-
-import com.sun.syndication.feed.synd.SyndFeed;
 
 @Controller
 @RequestMapping("VIEW")
@@ -108,7 +107,7 @@ public class SingleFeedNewsController {
         
         NewsConfiguration feedConfig = getFeedConfiguration(prefs);
         
-        SyndFeed feed = null;
+        NewsFeed feed = null;
         
         try {
             // get an instance of the adapter for this feed

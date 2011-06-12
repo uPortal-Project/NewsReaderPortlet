@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,7 +59,7 @@ public class RomeNewsProcessorImplTest {
     @Test
     public void testParsing() throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
         InputStream in = testFeed.getInputStream();
-        SyndFeed feed = processor.getFeed(in, "antisamy-textonly", "antisamy-textonly");
+        NewsFeed feed = processor.getFeed(in, "antisamy-textonly", "antisamy-textonly");
         
         assertEquals(20, feed.getEntries().size());
         NewsFeedItem item = (NewsFeedItem) feed.getEntries().get(0);

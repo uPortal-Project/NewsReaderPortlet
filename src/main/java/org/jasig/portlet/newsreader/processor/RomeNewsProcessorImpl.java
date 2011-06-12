@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
@@ -41,6 +42,7 @@ import com.sun.syndication.feed.module.Module;
 import com.sun.syndication.feed.module.mediarss.MediaEntryModule;
 import com.sun.syndication.feed.module.mediarss.types.MediaContent;
 import com.sun.syndication.feed.module.mediarss.types.MediaGroup;
+import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndEnclosure;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -54,14 +56,20 @@ public class RomeNewsProcessorImpl {
 
     private List<String> imageTypes;
     
-    public SyndFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
+    public NewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
                 
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(reader);
 
-        List<SyndEntry> newEntries = new ArrayList<SyndEntry>();
+        NewsFeed newsFeed = new NewsFeed();
+        newsFeed.setAuthor(feed.getAuthor());
+        newsFeed.setLink(feed.getLink());
+        newsFeed.setTitle(feed.getTitle());
+        newsFeed.setCopyright(feed.getCopyright());
+        
+        List<NewsFeedItem> newEntries = new ArrayList<NewsFeedItem>();
 
         // translate the default entries into our implementation
         @SuppressWarnings("unchecked")
@@ -70,25 +78,41 @@ public class RomeNewsProcessorImpl {
             NewsFeedItem item = getNewsFeedItem(entry, titlePolicy, descriptionPolicy);
             newEntries.add(item);
         }
-        feed.setEntries(newEntries);
+        newsFeed.setEntries(newEntries);
 
-        return feed;
+        return newsFeed;
     }
 
     protected NewsFeedItem getNewsFeedItem(SyndEntry entry, String titlePolicy, String descriptionPolicy) throws PolicyException, ScanException {
         NewsFeedItem item = new NewsFeedItem();
-        item.copyFrom(entry);
+        item.setAuthors(entry.getAuthors());
+        if (entry.getContents() != null) {
+            for (SyndContent content : (List<SyndContent>) entry.getContents()) {
+                if ("html".equals(content.getType())) {
+                    item.setContent(content.getValue());
+                }
+            }
+        }
 
         AntiSamy as = new AntiSamy();
         CleanResults cr = null;
         double scanTime = 0;
-        if (item.getDescription() != null && item.getDescription().getValue() != null) {
-            cr = as.scan(item.getDescription().getValue(), policies.get(descriptionPolicy));
-            item.getDescription().setValue(cr.getCleanHTML());
+        if (entry.getDescription() != null && entry.getDescription().getValue() != null) {
+            cr = as.scan(entry.getDescription().getValue(), policies.get(descriptionPolicy));
+            item.setDescription(cr.getCleanHTML());
+            scanTime += cr.getScanTime();
+        } else if (item.getContent() != null) {
+            cr = as.scan(item.getContent(), policies.get(descriptionPolicy));
+            String desc = cr.getCleanHTML();
+            if (desc.length() > 200) {
+                desc = desc.substring(0, 197).concat("...");
+            }
+            item.setDescription(desc);
             scanTime += cr.getScanTime();
         }
-        if (item.getTitle() != null) {
-            cr = as.scan(item.getTitle(), policies.get(titlePolicy));
+        
+        if (entry.getTitle() != null) {
+            cr = as.scan(entry.getTitle(), policies.get(titlePolicy));
             item.setTitle(cr.getCleanHTML());
             scanTime += cr.getScanTime();
         }
