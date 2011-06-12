@@ -58,7 +58,7 @@
             var link, url;
             link = $(this);
             url = (link.attr("included") == 'true') ? hideUrl : showUrl;
-            window.location = url.replace('ID', link.attr("feedId"));
+            window.location = url.replace('ID', link.attr("feedId")).replace('&amp;', '&');
         };
         
         $(document).ready(function () {
