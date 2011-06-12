@@ -1,8 +1,9 @@
 package org.jasig.portlet.newsreader.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class NewsFeed {
+public class NewsFeed implements Serializable {
 
     private List<NewsFeedItem> entries;
     private String author;

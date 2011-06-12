@@ -42,6 +42,7 @@ import com.sun.syndication.feed.module.Module;
 import com.sun.syndication.feed.module.mediarss.MediaEntryModule;
 import com.sun.syndication.feed.module.mediarss.types.MediaContent;
 import com.sun.syndication.feed.module.mediarss.types.MediaGroup;
+import com.sun.syndication.feed.module.mediarss.types.Thumbnail;
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndEnclosure;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -86,6 +87,9 @@ public class RomeNewsProcessorImpl {
     protected NewsFeedItem getNewsFeedItem(SyndEntry entry, String titlePolicy, String descriptionPolicy) throws PolicyException, ScanException {
         NewsFeedItem item = new NewsFeedItem();
         item.setAuthors(entry.getAuthors());
+        item.setLink(entry.getLink());
+        item.setUri(entry.getUri());
+        
         if (entry.getContents() != null) {
             for (SyndContent content : (List<SyndContent>) entry.getContents()) {
                 if ("html".equals(content.getType())) {
@@ -142,7 +146,11 @@ public class RomeNewsProcessorImpl {
                     String type = mc.getType();
                     if (StringUtils.isNotBlank(type) && imageTypes.contains(type)) {
                         item.setImageUrl(mc.getReference().toString());
+                        break;
                     }
+                }
+                if (item.getImageUrl() == null && mg.getMetadata().getThumbnail().length != 0) {
+                    item.setImageUrl(mg.getMetadata().getThumbnail()[0].getUrl().toString());
                 }
             }
             
@@ -150,6 +158,7 @@ public class RomeNewsProcessorImpl {
                 String type = mc.getType();
                 if (StringUtils.isNotBlank(type) && imageTypes.contains(type)) {
                     item.setImageUrl(mc.getReference().toString());
+                    break;
                 }
             }
         }
