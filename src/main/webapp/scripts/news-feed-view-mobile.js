@@ -54,6 +54,7 @@ if (!newsreader.init) {
         that.state = {};
 
         that.views.storyList = fluid.initSubcomponent(that, "storyListView", [container, that, fluid.COMPONENT_OPTIONS]);        
+        that.views.storyContent = fluid.initSubcomponent(that, "storyContentView", [container, that, fluid.COMPONENT_OPTIONS]);        
 
         var cutpoints = [
             { id: "feed:", selector: that.options.selectors.feed },
@@ -116,7 +117,14 @@ if (!newsreader.init) {
                     children: [
                         { ID: "title", value: story.title },
                         { ID: "summary", markup: story.description },
-                        { ID: "link", target: story.link },
+                        { ID: "link", target: "javascript:;",
+                            decorators: [
+                                 { type: "jQuery", func: "click", args: function () {
+                                         return overallThat.views.storyContent.showContent(story); 
+                                     } 
+                                 }
+                             ]
+                        },
                         { 
                             ID: "image", 
                             decorators: [{ type: "attrs", attributes: { src: story.image } }]
@@ -139,10 +147,10 @@ if (!newsreader.init) {
 
             if (overallThat.options.selectors.feedList) {
                 $(overallThat.locate("feedList")).hide();
-                $(overallThat.locate("backBar")).show();
+                $(that.locate("backBar")).show();
             }
             $(that.locate("storyList")).show();
-            $(overallThat.locate("backLink")).click(that.showList);
+            $(that.locate("backLink")).click(that.showList);
 
         };
 
@@ -150,11 +158,46 @@ if (!newsreader.init) {
             
             that.showList = function () {
                 $(that.locate("storyList")).hide();
-                $(overallThat.locate("backBar")).hide();
+                $(that.locate("backBar")).hide();
                 $(overallThat.locate("feedList")).show();
+                return false;
             };
             
         }
+
+        return that;
+    };
+
+    newsreader.MobileStoryContentView = function(container, overallThat, options) {
+        var that = fluid.initView("newsreader.MobileStoryContentView", container, options);
+        that.state = {};
+
+        that.showContent = function (story) {
+            if (story.videoUrl) {
+                $(that.locate("contentContainer")).append(
+                    $(document.createElement("video")).append(
+                        $(document.createElement("source"))
+                            .attr("src", story.videoUrl).attr("type", 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"')
+                    ).attr("controls", "controls").attr("autoplay", "autoplay")
+                );
+            } else if (story.content) {
+                $(that.locate("content")).html(story.content);
+            } else {
+                window.location = story.link;
+            }
+            $(that.locate("contentContainer")).show();
+            $(overallThat.views.storyList.locate("storyList")).hide();
+            return false;
+        };
+        
+        that.hideContent = function () {
+            $(that.locate("contentContainer")).find("video").remove();
+            $(that.locate("contentContainer")).hide();
+            $(overallThat.views.storyList.locate("storyList")).show();
+            return false;
+        };
+
+        $(that.locate("backLink")).click(that.hideContent);
 
         return that;
     };
@@ -169,9 +212,10 @@ if (!newsreader.init) {
         storyListView: {
             type: "newsreader.MobileStoryListView"
         },
+        storyContentView: {
+            type: "newsreader.MobileStoryContentView"
+        },
         selectors: {
-            backBar: ".news-reader-back-bar",
-            backLink: ".news-reader-back-link",
             feedList: ".news-reader-feed-list",
             feed: ".news-reader-feed",
             title: ".news-reader-feed-title",
@@ -181,6 +225,8 @@ if (!newsreader.init) {
 
     fluid.defaults("newsreader.MobileStoryListView", {
         selectors: {
+            backBar: ".news-reader-back-bar",
+            backLink: ".news-reader-back-link",
             storyList: ".news-reader-story-list",
             story: ".news-reader-story",
             feedTitle: ".news-reader-feed-title",
@@ -188,6 +234,15 @@ if (!newsreader.init) {
             summary: ".news-reader-story-summary",
             link: ".news-reader-story-link",
             image: ".news-reader-story-image"
+        }
+    });
+
+    fluid.defaults("newsreader.MobileStoryContentView", {
+        selectors: {
+            backBar: ".news-reader-back-bar",
+            backLink: ".news-reader-back-link",
+            contentContainer: ".news-reader-story-container",
+            content: ".news-reader-story-content",
         }
     });
 
