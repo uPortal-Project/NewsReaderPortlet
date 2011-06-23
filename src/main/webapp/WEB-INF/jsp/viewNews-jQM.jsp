@@ -66,6 +66,17 @@
             </div>
 	    </div>
     </div>
+    
+    <div class="portlet news-reader-story-container" style="display:none;">
+        <div data-role="header" class="news-reader-back-bar titlebar portlet-titlebar">
+            <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
+            <h2 class="title news-reader-feed-title">News</h2>
+        </div>
+        
+        <div data-role="content" class="portlet-content news-reader-story-content">
+        </div>
+    </div>
+    
 </div>
 
 <c:if test="${ !usePortalJsLibs }">
@@ -73,7 +84,7 @@
     <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
     <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4-bea0041/js/fluid-all-1.4-bea0041.min.js"/>"></script>
 </c:if>
-<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.min.js"/>"></script>
 
 <script type="text/javascript"><rs:compressJs>
     var ${n} = ${n} || {};

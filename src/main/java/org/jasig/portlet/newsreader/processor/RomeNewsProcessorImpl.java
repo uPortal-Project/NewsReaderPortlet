@@ -42,7 +42,6 @@ import com.sun.syndication.feed.module.Module;
 import com.sun.syndication.feed.module.mediarss.MediaEntryModule;
 import com.sun.syndication.feed.module.mediarss.types.MediaContent;
 import com.sun.syndication.feed.module.mediarss.types.MediaGroup;
-import com.sun.syndication.feed.module.mediarss.types.Thumbnail;
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndEnclosure;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -56,7 +55,17 @@ public class RomeNewsProcessorImpl {
     protected final Log log = LogFactory.getLog(getClass());
 
     private List<String> imageTypes;
+
+    public void setImageTypes(List<String> imageTypes) {
+        this.imageTypes = imageTypes;
+    }
     
+    private List<String> videoTypes;
+
+    public void setVideoTypes(List<String> videoTypes) {
+        this.videoTypes = videoTypes;
+    }
+
     public NewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
                 
         // get a vanilla SyndFeed from the input stream
@@ -131,11 +140,14 @@ public class RomeNewsProcessorImpl {
         List<SyndEnclosure> enclosures = entry.getEnclosures();
         for(SyndEnclosure enclosure: enclosures) {
             String type = enclosure.getType();
-            if(StringUtils.isNotBlank(type) && imageTypes.contains(type)){
+            if(StringUtils.isNotBlank(type) && videoTypes.contains(type)){
+                item.setVideoUrl(enclosure.getUrl());
+                break;
+            } else if(StringUtils.isNotBlank(type) && imageTypes.contains(type)){
                 item.setImageUrl(enclosure.getUrl());
                 break;
             }
-        }
+        }   
         
         Module mediaModule = entry.getModule(MediaEntryModule.URI);
         if (mediaModule!=null && mediaModule instanceof MediaEntryModule ){
@@ -144,7 +156,10 @@ public class RomeNewsProcessorImpl {
             for (MediaGroup mg : mentry.getMediaGroups()) {
                 for (MediaContent mc : mg.getContents()) {
                     String type = mc.getType();
-                    if (StringUtils.isNotBlank(type) && imageTypes.contains(type)) {
+                    if (StringUtils.isNotBlank(type) && videoTypes.contains(type)) {
+                        item.setVideoUrl(mc.getReference().toString());
+                        break;
+                    } else if (StringUtils.isNotBlank(type) && imageTypes.contains(type)) {
                         item.setImageUrl(mc.getReference().toString());
                         break;
                     }
@@ -156,7 +171,10 @@ public class RomeNewsProcessorImpl {
             
             for (MediaContent mc : mentry.getMediaContents()) {
                 String type = mc.getType();
-                if (StringUtils.isNotBlank(type) && imageTypes.contains(type)) {
+                if (StringUtils.isNotBlank(type) && videoTypes.contains(type)) {
+                    item.setVideoUrl(mc.getReference().toString());
+                    break;
+                } else if (StringUtils.isNotBlank(type) && imageTypes.contains(type)) {
                     item.setImageUrl(mc.getReference().toString());
                     break;
                 }
@@ -174,10 +192,6 @@ public class RomeNewsProcessorImpl {
             this.policies.put(policy.getKey(), Policy.getInstance(policyStream));
             policyStream.close();
         }
-    }
-
-    public void setImageTypes(List<String> imageTypes) {
-        this.imageTypes = imageTypes;
     }
 
 }
