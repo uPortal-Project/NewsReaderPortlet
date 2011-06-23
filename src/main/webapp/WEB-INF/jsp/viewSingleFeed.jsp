@@ -52,15 +52,15 @@
                         <h3>
                             <a class="news-items" href="${ entry.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
                         </h3>
-                        <p>${ entry.description.value }</p>
+                        <p>${ entry.description }</p>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>
                     <ul class="news-list">
                         <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
                             <li>
-                                <a class="news-item" href="${ entry.link }" rel="popup" title="${ entry.description.value }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
-                                <c:if test="${ prefs.summaryView == 'flyout' }"><span style="display:none">${ entry.description.value }</span></c:if>
+                                <a class="news-item" href="${ entry.link }" rel="popup" title="${ entry.description }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+                                <c:if test="${ prefs.summaryView == 'flyout' }"><span style="display:none">${ entry.description }</span></c:if>
                             </li>
                         </c:forEach>
                     </ul>
