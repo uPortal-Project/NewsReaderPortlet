@@ -84,7 +84,7 @@
     <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
     <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4-bea0041/js/fluid-all-1.4-bea0041.min.js"/>"></script>
 </c:if>
-<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.js"/>"></script>
 
 <script type="text/javascript"><rs:compressJs>
     var ${n} = ${n} || {};
@@ -108,7 +108,7 @@
         var fluid = ${n}.fluid;
         
         $(document).ready(function () {
-            newsreader.MobileFeedListView(
+            ${n}.newsreader.MobileFeedListView(
                 $("#${n}"),
                 {
                     url: "${feedUrl}"
