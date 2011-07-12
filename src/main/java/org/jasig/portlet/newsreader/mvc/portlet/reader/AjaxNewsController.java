@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import javax.portlet.PortletPreferences;
@@ -41,7 +40,6 @@ import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.model.NewsFeed;
-import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -115,8 +113,6 @@ public class AjaxNewsController {
 		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
 		boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
 		
-		NewsFeed feed = null;
-
         // only bother to fetch the active feed
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
         
@@ -140,23 +136,20 @@ public class AjaxNewsController {
 	            // get an instance of the adapter for this feed
 	            INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
 	            // retrieve the feed from this adaptor
-	            feed = adapter.getSyndFeed(feedConfig, request);
-
-                if ( feed != null )
-                {
-                    log.debug("Got feed from adapter");
-	
-                    if(feed.getEntries().isEmpty()) {
-                        model.put("message", "<p>No news.</p>");
+                NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, request);
+                if (sharedFeed != null) {
+                    if (sharedFeed.getEntries().size() > maxStories) {
+                        NewsFeed limitedFeed = new NewsFeed();
+                        limitedFeed.setAuthor(sharedFeed.getAuthor());
+                        limitedFeed.setCopyright(sharedFeed.getCopyright());
+                        limitedFeed.setLink(sharedFeed.getLink());
+                        limitedFeed.setTitle(sharedFeed.getTitle());
+                        limitedFeed.setEntries(sharedFeed.getEntries().subList(0, maxStories-1));
+                        model.put("feed", limitedFeed);
+                    } else {
+                        model.put("feed", sharedFeed);
                     }
-                    else {
-                        //turn feed into JSON
-                        model.put("feed", feed);
-                        model.put("entries", feed.getEntries());
-                    }
-                }
-                else
-                {
+                } else {
                     log.warn("Failed to get feed from adapter.");
                     model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
                 }
