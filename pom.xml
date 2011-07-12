@@ -81,9 +81,9 @@
         <resource-server.version>1.0.16</resource-server.version>
         
         <!-- The JDBC Driver used by the portlet -->
-        <jdbc.groupId>hsqldb</jdbc.groupId>
+        <jdbc.groupId>org.hsqldb</jdbc.groupId>
         <jdbc.artifactId>hsqldb</jdbc.artifactId>
-        <jdbc.version>1.8.0.7</jdbc.version>
+        <jdbc.version>2.2.4</jdbc.version>
     </properties>
     
     <dependencyManagement>
