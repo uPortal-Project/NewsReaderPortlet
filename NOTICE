@@ -45,7 +45,7 @@ This project includes:
   groovy-engine under BSD License
   Guava (Google Common Libraries) under The Apache Software License, Version 2.0
   Hibernate under GNU LESSER GENERAL PUBLIC LICENSE
-  HSQLDB under HSQLDB License
+  HSQLDB Database under HSQLDB License, a BSD open source license
   HttpClient under Apache License
   icu4j under MIT License
   Jackson under The Apache Software License, Version 2.0
