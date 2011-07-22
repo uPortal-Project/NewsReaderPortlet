@@ -69,6 +69,8 @@ public interface NewsStore {
      */
     public PredefinedNewsDefinition getPredefinedNewsDefinition(Long id);
 
+    public PredefinedNewsDefinition getPredefinedNewsDefinitionByName(String fname);
+
     /**
      * Save or update a news configuration.
      *

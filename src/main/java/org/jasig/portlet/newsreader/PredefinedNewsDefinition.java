@@ -33,6 +33,7 @@ import java.util.Set;
  */
 public class PredefinedNewsDefinition extends NewsDefinition {
 
+    private String fname;
     private Set<PredefinedNewsConfiguration> userConfigurations = new HashSet<PredefinedNewsConfiguration>();
     private Set<String> defaultRoles;
 
@@ -108,5 +109,13 @@ public class PredefinedNewsDefinition extends NewsDefinition {
 	public void addDefaultRole(String role) {
 		this.defaultRoles.add(role);
 	}
-	
+
+    public String getFname() {
+        return fname;
+    }
+
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
 }
