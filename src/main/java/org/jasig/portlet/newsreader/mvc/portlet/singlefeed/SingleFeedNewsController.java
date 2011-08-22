@@ -128,13 +128,13 @@ public class SingleFeedNewsController {
             }
             
         } catch (NoSuchBeanDefinitionException ex) {
-            log.error("News class instance could not be found: " + ex.getMessage());
+            log.error("News class instance could not be found", ex);
             model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
         } catch (NewsException ex) {
-            log.warn(ex);
+            log.warn(ex.getMessage(), ex);
             model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
         } catch (Exception ex) {
-            log.error(ex);
+            log.error(ex.getMessage(), ex);
             model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
         }
         
