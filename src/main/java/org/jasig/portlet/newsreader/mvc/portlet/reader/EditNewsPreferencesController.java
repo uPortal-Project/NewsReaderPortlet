@@ -46,6 +46,7 @@ import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.IViewResolver;
+import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,6 +83,13 @@ public class EditNewsPreferencesController {
         this.newsStore = newsStore;
     }
 
+    private NewsSetResolvingService setCreationService;
+    
+    @Autowired(required = true)
+    public void setSetCreationService(NewsSetResolvingService setCreationService) {
+        this.setCreationService = setCreationService;
+    }
+    
     private IViewResolver viewResolver;
     
     @Autowired(required = true)
@@ -96,8 +104,8 @@ public class EditNewsPreferencesController {
         Map<String, Object> model = new HashMap<String, Object>();
 
         PortletSession session = request.getPortletSession();
-        Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
-        NewsSet set = newsStore.getNewsSet(setId);
+        String setName = request.getPreferences().getValue("newsSetName", "default");
+        NewsSet set = setCreationService.getNewsSet(setName, request);
         Set<NewsConfiguration> configurations = set.getNewsConfigurations();
         
         // divide the configurations into user-defined and pre-defined
@@ -123,7 +131,7 @@ public class EditNewsPreferencesController {
 
         // get a list of predefined feeds the user doesn't
         // currently have configured
-        List<PredefinedNewsDefinition> definitions = newsStore.getHiddenPredefinedNewsDefinitions(setId, userRoles);
+        List<PredefinedNewsDefinition> definitions = newsStore.getHiddenPredefinedNewsDefinitions(set.getId(), userRoles);
         model.put("hiddenFeeds", definitions);
 
         model.put("predefinedEditActions", predefinedEditActions);

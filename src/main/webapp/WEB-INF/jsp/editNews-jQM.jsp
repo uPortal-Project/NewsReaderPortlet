@@ -22,9 +22,11 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
-<portlet:actionURL var="hideUrl"><portlet:param name="actionCode" value="hide"/>
+<portlet:actionURL var="hideUrl" escapeXml="false"><portlet:param name="actionCode" value="hide"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
-<portlet:actionURL var="showUrl"><portlet:param name="actionCode" value="show"/>
+<portlet:actionURL var="showUrl" escapeXml="false"><portlet:param name="actionCode" value="show"/>
+    <portlet:param name="id" value="ID"/></portlet:actionURL>
+<portlet:actionURL var="newUrl" escapeXml="false"><portlet:param name="actionCode" value="showNew"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
 
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
@@ -40,10 +42,17 @@
 	    <div data-role="fieldcontain">
 	        <fieldset data-role="controlgroup">
 	        	<legend>Which feeds should be displayed?</legend>
-	            <c:forEach items="${ model.predefinedNewsConfigurations }" var="feed">
-	                <input type="checkbox" name="${ feed.id }" id="${n}${ feed.id }" ${ feed.displayed ? 'checked' : '' } />
-	                <label feedId="${ feed.id }" included="${ feed.displayed }" for="${n}${ feed.id }">${ feed.newsDefinition.name }</label>
+                <c:set var="count" value="0"/>
+	            <c:forEach items="${ model.predefinedNewsConfigurations }" var="feed" varStatus="status">
+	                <input type="checkbox" name="${ feed.id }" id="${n}${ count }" ${ feed.displayed ? 'checked' : '' } />
+	                <label feedId="${ feed.id }" included="${ feed.displayed }" for="${n}${ count }">${ feed.newsDefinition.name }</label>
+                    <c:set var="count" value="${ count+1 }"/>
 	            </c:forEach>
+                <c:forEach items="${ model.hiddenFeeds }" var="feed">
+                    <input type="checkbox" name="${ feed.id }" id="${n}${ count }" />
+                    <label feedId="${ feed.id }" included="new" for="${n}${ count }">${ feed.name }</label>
+                    <c:set var="count" value="${ count+1 }"/>
+                </c:forEach>
 	        </fieldset>
 	    </div>
 	</div>
@@ -54,14 +63,22 @@
     newsReaderPortlet.jQuery = jQuery.noConflict(true);
     newsReaderPortlet.jQuery(function(){
         var $ = newsReaderPortlet.jQuery;
+        var newUrl = '${ newUrl }';
         var showUrl = '${ showUrl }';
         var hideUrl = '${ hideUrl }';
 
         var updateNewsItem = function () {
-            var link, url;
+            var link, url, included;
             link = $(this);
-            url = (link.attr("included") == 'true') ? hideUrl : showUrl;
-            window.location = url.replace('ID', link.attr("feedId")).replace('&amp;', '&');
+            included = link.attr("included");
+            if (included == 'new') {
+                url = newUrl;
+            } else if (included == 'true') {
+                url = hideUrl;
+            } else {
+                url = showUrl;
+            }
+            window.location = url.replace('ID', link.attr("feedId"));
         };
         
         $(document).ready(function () {
