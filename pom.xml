@@ -42,9 +42,9 @@
     
 
     <scm>
-        <connection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/trunk</connection>
-        <developerConnection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/trunk</developerConnection>
-        <url>http://developer.jasig.org/source/browse/jasigsvn/portlets/NewsReaderPortlet/trunk</url>
+        <connection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/branches/rel-2-patches</connection>
+        <developerConnection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/branches/rel-2-patches</developerConnection>
+        <url>http://developer.jasig.org/source/browse/jasigsvn/portlets/NewsReaderPortlet/branches/rel-2-patches</url>
     </scm>
 
     <distributionManagement>
