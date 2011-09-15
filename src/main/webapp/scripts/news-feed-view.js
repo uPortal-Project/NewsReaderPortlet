@@ -65,7 +65,7 @@ if (!newsreader.init) {
                 $(document.createElement('a')).append(
                     $(document.createElement('span')).text(feedResult.feeds[i].name)
                 ).attr('href', '#' + that.options.namespace + 'feed' + feedResult.feeds[i].id)
-                .attr('title', feedResults.feeds[i].name)
+                .attr('title', feedResult.feeds[i].name)
             );
             tabs.append(li);
             that.container.append($(document.createElement('div')).attr('id', that.options.namespace + 'feed' + feedResult.feeds[i].id));
