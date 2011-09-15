@@ -1,0 +1,94 @@
+<!--
+
+    Licensed to Jasig under one or more contributor license
+    agreements. See the NOTICE file distributed with this work
+    for additional information regarding copyright ownership.
+    Jasig licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file
+    except in compliance with the License. You may obtain a
+    copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on
+    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+<spring-beans context="${groovy(new File('.').toURI().toURL().toExternalForm())}" location="src/main/webapp/WEB-INF/context/applicationContext.xml">
+
+	
+	<file-iterator dir="${$1}" includes="**/*-news.xml">
+		<echo-ln>Importing news:  ${Attributes.LOCATION}</echo-ln>
+		<with>
+			<attribute key="Attributes.NODE">${parseXml()}</attribute>
+	
+			<subtasks>
+				
+				<groovy>
+					<script>
+						import org.jasig.portlet.newsreader.NewsSet;
+                        	
+						NewsSet newsSet = new NewsSet();
+						newsSet.setName(Attributes.NODE.valueOf('/news-set/name'));
+						newsSet.setUserId(Attributes.NODE.valueOf('/news-set/owner'));
+	
+						ScriptAttributes.RESPONSE.setAttribute('newsSet', newsSet);
+					</script>
+		 <subtasks>
+					<node-iterator xpath="/news-set/news-configuration">
+					
+                	<groovy>
+                        <script>
+                            import org.jasig.portlet.newsreader.NewsSet;
+                        	import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
+                        	import org.jasig.portlet.newsreader.UserDefinedNewsDefinition;
+                        	
+                        	// create new configuration
+                            UserDefinedNewsConfiguration newsConf = new UserDefinedNewsConfiguration();
+                            
+                            // make bidirectional associations
+                            newsSet.addNewsConfiguration(newsConf);
+                            newsConf.setNewsSet(newsSet);
+                            
+                            
+                            newsConf.setActive(false);
+                            newsConf.setDisplayed(false);
+
+							// create new definition
+							UserDefinedNewsDefinition newsDef = new UserDefinedNewsDefinition();
+							// make association 
+							newsConf.setNewsDefinition(newsDef);
+
+							// set the data							
+							newsDef.setClassName(Attributes.NODE.valueOf('@class'));
+							newsDef.setName(Attributes.NODE.valueOf('@name'));
+							
+							// currently only supports one parameter
+							newsDef.addParameter(
+									Attributes.NODE.valueOf('parameter/@key'),
+									Attributes.NODE.valueOf('parameter/@value'));
+							
+							
+                            // persist ... erm something!
+                            newsStore.storeNewsSet(newsSet);
+                            
+                        </script>
+					</groovy>
+
+        		</node-iterator> 
+			 </subtasks>		
+			
+				</groovy>
+				
+				
+             
+                
+			</subtasks>
+		</with>
+	</file-iterator>
+</spring-beans>

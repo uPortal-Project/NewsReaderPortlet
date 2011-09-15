@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to Jasig under one or more contributor license
+    agreements. See the NOTICE file distributed with this work
+    for additional information regarding copyright ownership.
+    Jasig licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file
+    except in compliance with the License. You may obtain a
+    copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on
+    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
+	                    http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+	version="1.0">
+
+    <portlet>
+        <portlet-name>news</portlet-name>
+        <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+        <init-param>
+            <name>contextConfigLocation</name>
+            <value>/WEB-INF/context/portlet/news.xml</value>
+        </init-param>
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+            <portlet-mode>edit</portlet-mode>
+            <portlet-mode>help</portlet-mode>
+        </supports>
+        <portlet-info>
+            <title>My news</title>
+        </portlet-info>
+        <portlet-preferences>
+            <preference>
+                <name>maxStories</name>
+                <value>10</value>
+            </preference>
+            <preference>
+                <name>storyView</name>
+                <value>select</value>
+            </preference>
+            <preference>
+                <name>newWindow</name>
+                <value>false</value>
+            </preference>
+            <preference>
+                <name>feedView</name>
+                <value>scroll-summaries</value>
+            </preference>
+        </portlet-preferences>
+        <security-role-ref>
+            <role-name>everyone</role-name>
+            <role-link>local.0</role-link>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>newsAdmin</role-name>
+            <role-link>local.2</role-link>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>student</role-name>
+            <role-link>local.34</role-link>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>staff</role-name>
+            <role-link>local.33</role-link>
+        </security-role-ref>
+    </portlet>
+
+    <portlet>
+        <portlet-name>single-feed-news</portlet-name>
+        <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+        <init-param>
+            <name>contextConfigLocation</name>
+            <value>/WEB-INF/context/portlet/single-feed.xml</value>
+        </init-param>
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+           <portlet-mode>edit</portlet-mode>
+         </supports>
+        <portlet-info>
+            <title>RSS Feed</title>
+        </portlet-info>
+        <portlet-preferences>
+            <preference>
+                <name>summaryView</name>
+                <value>titleAndAbstract</value>
+            </preference>
+            <preference>
+                <name>maxStories</name>
+                <value>10</value>
+            </preference>
+            <preference>
+                <name>newWindow</name>
+                <value>false</value>
+            </preference>
+            <preference>
+                <name>className</name>
+                <value>org.jasig.portlet.newsreader.adapter.RomeAdapter</value>
+            </preference>
+        </portlet-preferences>
+    </portlet>
+    
+    <user-attribute>
+        <name>username</name>
+    </user-attribute>
+    <user-attribute>
+        <name>password</name>
+    </user-attribute>
+    <user-attribute>
+        <name>user.name</name>
+    </user-attribute>
+    <user-attribute>
+        <name>user.name.full</name>
+    </user-attribute>
+    <user-attribute>
+        <name>contentGroup</name>
+    </user-attribute>
+
+</portlet-app>

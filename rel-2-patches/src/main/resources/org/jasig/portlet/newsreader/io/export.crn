@@ -1,0 +1,78 @@
+<!--
+
+    Licensed to Jasig under one or more contributor license
+    agreements. See the NOTICE file distributed with this work
+    for additional information regarding copyright ownership.
+    Jasig licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file
+    except in compliance with the License. You may obtain a
+    copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on
+    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+<spring-beans context="${groovy(new File('.').toURI().toURL().toExternalForm())}" location="src/main/webapp/WEB-INF/context/applicationContext.xml">
+
+	
+
+	<!-- Got newsStore loaded from application context -->
+	
+	<sql-query data-source="${groovy(dataSource)}"> 
+		<sql>select distinct SUBSCRIBE_ID from news_configuration where NEWS_CONFIGURATION_TYPE = 'UD'</sql>
+			
+		<subtasks>
+			<groovy>
+				<script>
+					List feeds = newsStore.getUserDefinedNewsConfigurations("${req(SUBSCRIBE_ID)}",false);
+					ScriptAttributes.RESPONSE.setAttribute('feeds', feeds);
+				</script>
+				
+				<subtasks>
+					<with-attribute key="Attributes.NODE" value="${newDoc(news-set)}">
+						<append-node>
+							<name>default set</name>
+						</append-node>	
+							
+						<!-- Establish basic structure of the document... -->
+						<for-each items="${feeds}" attribute-name="feed">
+							<append-node>
+                                    <news-configuration
+                                    	name="${groovy(feed.newsDefinition.name)}"
+										class="${groovy(feed.newsDefinition.className)}">
+                                    </news-configuration>
+							</append-node>	
+							
+							<for-each items="${groovy(feed.newsDefinition.parameters.entrySet())}" attribute-name="parameterEntry">
+								<append-node parent="${singleNode(news-configuration[position() = last()])}">
+	                                    <parameter key="${groovy(parameterEntry.key)}" value="${groovy(parameterEntry.value)}"/>
+								</append-node>
+							</for-each>
+							
+						</for-each>
+					 
+						<write-document file="${$1}/${req(SUBSCRIBE_ID)}-news.xml"/> 
+					</with-attribute>
+				
+				
+					
+				</subtasks>
+				
+			</groovy>
+		
+			
+			
+		</subtasks> 
+		
+		  
+	</sql-query> 
+ 	 
+
+</spring-beans>
