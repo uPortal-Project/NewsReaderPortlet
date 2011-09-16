@@ -23,11 +23,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -39,17 +40,17 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
-import org.jasig.portlet.newsreader.model.NewsFeed;
+import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
+import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.bind.annotation.ResourceMapping;
+
+import com.sun.syndication.feed.synd.SyndFeed;
 
 @Controller
 @RequestMapping("VIEW")
@@ -79,8 +80,15 @@ public class AjaxNewsController {
         this.applicationContext = applicationContext;
     }
     
-    @ResourceMapping
-	public ModelAndView getJSONFeeds(ResourceRequest request, ResourceResponse response) throws Exception {
+    private AjaxPortletSupportService ajaxPortletSupportService;
+    
+    @Autowired(required = true)
+    public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
+            this.ajaxPortletSupportService = ajaxPortletSupportService;
+    }
+    
+	@RequestMapping(params = "action=ajax")
+	public void getJSONFeeds(ActionRequest request, ActionResponse response) throws Exception {
 		log.debug("handleAjaxRequestInternal (AjaxNewsController)");
 		
         Map<String, Object> model = new HashMap<String, Object>();
@@ -92,14 +100,12 @@ public class AjaxNewsController {
         Collections.sort(feeds);
         
         JSONArray jsonFeeds = new JSONArray();
-        List<String> knownFeeds = new ArrayList<String>();
         for(NewsConfiguration feed : feeds) {
             if (feed.isDisplayed()) {
             	JSONObject jsonFeed = new JSONObject();
             	jsonFeed.put("id",feed.getId());
             	jsonFeed.put("name",feed.getNewsDefinition().getName());
             	jsonFeeds.add(jsonFeed);
-            	knownFeeds.add(String.valueOf(feed.getId()));
             }
         }
         model.put("feeds", jsonFeeds);
@@ -114,11 +120,13 @@ public class AjaxNewsController {
 		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
 		boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
 		
+		SyndFeed feed = null;
+
         // only bother to fetch the active feed
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
         
         // if the current active feed no longer exists in the news set, unset it
-        if (!knownFeeds.contains(activeFeed)) {
+        if (!jsonFeeds.contains(activeFeed)) {
             activeFeed = null;
         }
         
@@ -137,20 +145,51 @@ public class AjaxNewsController {
 	            // get an instance of the adapter for this feed
 	            INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
 	            // retrieve the feed from this adaptor
-                NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, request);
-                if (sharedFeed != null) {
-                    if (sharedFeed.getEntries().size() > maxStories) {
-                        NewsFeed limitedFeed = new NewsFeed();
-                        limitedFeed.setAuthor(sharedFeed.getAuthor());
-                        limitedFeed.setCopyright(sharedFeed.getCopyright());
-                        limitedFeed.setLink(sharedFeed.getLink());
-                        limitedFeed.setTitle(sharedFeed.getTitle());
-                        limitedFeed.setEntries(sharedFeed.getEntries().subList(0, maxStories-1));
-                        model.put("feed", limitedFeed);
-                    } else {
-                        model.put("feed", sharedFeed);
+	            feed = adapter.getSyndFeed(feedConfig, request);
+
+                if ( feed != null )
+                {
+                    log.debug("Got feed from adapter");
+	
+                    if(feed.getEntries().isEmpty()) {
+                        model.put("message", "<p>No news.</p>");
                     }
-                } else {
+                    else {
+                        //turn feed into JSON
+                        JSONObject jsonFeed = new JSONObject();
+                        
+                        jsonFeed.put("link", feed.getLink());
+                        jsonFeed.put("title", feed.getTitle());
+
+                        if ( showAuthor == true )
+                        {
+                            jsonFeed.put("author", feed.getAuthor());
+                        }
+
+                        jsonFeed.put("copyright", feed.getCopyright());
+                        
+                        JSONArray jsonEntries = new JSONArray();
+                        @SuppressWarnings("unchecked")
+                        ListIterator<NewsFeedItem> i = (ListIterator<NewsFeedItem>) feed.getEntries().listIterator();
+                        while (i.hasNext() && i.nextIndex() < maxStories) {
+                            NewsFeedItem entry = i.next();
+                            JSONObject jsonEntry = new JSONObject();
+                            jsonEntry.put("link",entry.getLink());
+                            jsonEntry.put("title",entry.getTitle());
+                            jsonEntry.put("description",entry.getDescription().getValue());
+                            if (entry.getImageUrl() != null) {
+                                jsonEntry.put("image", entry.getImageUrl());
+                            }
+                            jsonEntries.add(jsonEntry);
+                        }
+                        
+                        jsonFeed.put("entries", jsonEntries);
+                        
+                        model.put("feed", jsonFeed);
+                    }
+                }
+                else
+                {
                     log.warn("Failed to get feed from adapter.");
                     model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
                 }
@@ -172,19 +211,8 @@ public class AjaxNewsController {
         }
 
 		log.debug("forwarding to /ajaxFeedList");
-
-		String etag = String.valueOf(model.hashCode());
-        if (request.getETag() != null && etag.equals(request.getETag())) {
-            response.getCacheControl().setExpirationTime(300);
-            response.getCacheControl().setUseCachedContent(true);
-            return null;
-        }
-        
-        // create new content with new validation tag
-        response.getCacheControl().setETag(etag);
-        response.getCacheControl().setExpirationTime(300);
-	        
-		return new ModelAndView("json", model);
+		
+		this.ajaxPortletSupportService.redirectAjaxResponse("ajax/jsonView", model, request, response);
 	}
 
 }

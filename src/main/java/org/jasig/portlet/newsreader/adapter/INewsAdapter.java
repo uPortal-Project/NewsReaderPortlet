@@ -19,16 +19,16 @@
 
 package org.jasig.portlet.newsreader.adapter;
 
-import javax.portlet.PortletRequest;
-
+import com.sun.syndication.feed.synd.SyndFeed;
 import org.jasig.portlet.newsreader.NewsConfiguration;
-import org.jasig.portlet.newsreader.model.NewsFeed;
+
+import javax.portlet.PortletRequest;
 
 /**
  * @author Anthony Colebourne
  */
 public interface INewsAdapter {
 
-    public NewsFeed getSyndFeed(NewsConfiguration config, PortletRequest request) throws NewsException;
+    public SyndFeed getSyndFeed(NewsConfiguration config, PortletRequest request) throws NewsException;
 
 }

@@ -209,23 +209,6 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
 
     }
 
-    public PredefinedNewsDefinition getPredefinedNewsDefinitionByName(String name) {
-
-        try {
-
-            String query = "from PredefinedNewsDefinition def "
-                    + "left join fetch def.defaultRoles role where "
-                    + "def.name = :name";
-            Query q = this.getSession().createQuery(query);
-            q.setString("name", name);
-            return (PredefinedNewsDefinition) q.uniqueResult();
-
-        } catch (HibernateException ex) {
-            throw convertHibernateAccessException(ex);
-        }
-
-    }
-
     public NewsDefinition getNewsDefinition(Long id) {
 
         try {

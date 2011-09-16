@@ -24,7 +24,7 @@
 <c:set var="n"><portlet:namespace/></c:set>
 
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
 
 <style type="text/css">
 	table.edit-news { width: 100%; }
@@ -40,7 +40,7 @@
 
         var $ = ${n}.jQuery;
     
-        var savePrefUrl = '<portlet:resourceURL/>';
+        var savePrefUrl = '<portlet:actionURL><portlet:param name="action" value="saveDisplayPreference"/></portlet:actionURL>';
     
         $('#${n}maxStories').change(function(){
             $.post(savePrefUrl, { prefName: 'maxStories', prefValue: $('#${n}maxStories').val() }, null, 'json');

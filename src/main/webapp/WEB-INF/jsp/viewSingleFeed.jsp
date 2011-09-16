@@ -41,56 +41,65 @@
     * html .ui-tooltip { background-image: none; }
     body .ui-tooltip { border-width:2px; }
 </style>
-    
-<div class="org-jasig-portlet-newsreader">
-    <div id="${n}newsContainer">
-        <h2><a href="${ feed.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h2>
-        <div class="news-items-container">
-            <c:choose>
-                <c:when test="${ prefs.summaryView == 'titleAndAbstract' }">
-                    <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
-                        <h3>
-                            <a class="news-items" href="${ entry.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
-                        </h3>
-                        <p>${ entry.description }</p>
-                    </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <ul class="news-list">
-                        <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
-                            <li>
-                                <a class="news-item" href="${ entry.link }" rel="popup" title="${ entry.description }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
-                                <c:if test="${ prefs.summaryView == 'flyout' }"><span style="display:none">${ entry.description }</span></c:if>
-                            </li>
-                        </c:forEach>
-                    </ul>
-                </c:otherwise>
-            </c:choose>
-        </div>
-    </div>
-    <br />
 
-    <c:if test="${supportsEdit}">
-        <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
-    </c:if>
-</div>
+<!-- Error message will always be displayed if rendered in the markup -->
+<c:choose>
+    <c:when test="${message ne null}">
+        <div class="portlet-msg-error"><p><c:out value="${message}"/></p></div>
+    </c:when>
+
+	<c:otherwise>
+		<div class="org-jasig-portlet-newsreader">
+		    <div id="${n}newsContainer">
+		        <h2><a href="${ feed.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h2>
+		        <div class="news-items-container">
+		            <c:choose>
+		                <c:when test="${ prefs.summaryView == 'titleAndAbstract' }">
+		                    <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
+		                        <h3>
+		                            <a class="news-items" href="${ entry.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+		                        </h3>
+		                        <p>${ entry.description.value }</p>
+		                    </c:forEach>
+		                </c:when>
+		                <c:otherwise>
+		                    <ul class="news-list">
+		                        <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
+		                            <li>
+		                                <a class="news-item" href="${ entry.link }" rel="popup" title="${ entry.description.value }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+		                                <c:if test="${ prefs.summaryView == 'flyout' }"><span style="display:none">${ entry.description.value }</span></c:if>
+		                            </li>
+		                        </c:forEach>
+		                    </ul>
+		                </c:otherwise>
+		            </c:choose>
+		        </div>
+		    </div>
+		    <br />
+		
+		    <c:if test="${supportsEdit}">
+		        <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
+		    </c:if>
+		</div>
+	</c:otherwise>
+</c:choose>
 
 <c:if test="${ prefs.summaryView == 'flyout' }">
     <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4-00b5b5e/js/fluid-all-1.4-00b5b5e.min.js"/>"></script>
-    <script type="text/javascript"><rs:compressJs>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.3/js/fluid-all-1.3.min.js"/>"></script>
+    <script type="text/javascript">
         var ${n} = ${n} || {};
         ${n}.jQuery = jQuery.noConflict(true);
         ${n}.fluid = fluid;
         fluid = null;
-        fluid_1_4 = null;
+        fluid_1_3 = null;
 
         ${n}.jQuery("#${n}newsContainer .news-item").tooltip({
             bodyHandler: function() { 
-                return ${n}.jQuery(this).next().html(); 
+                return ${n}.jQuery(this).next().html();
             },
             showURL: false
         });
-    </rs:compressJs></script>
+    </script>
 </c:if>

@@ -18,8 +18,8 @@
  */
 
 var newsreader = newsreader || {};
-if (!newsreader.init) {
-    newsreader.init = function ($, fluid) {
+
+(function($, fluid) {
     
     // start of private methods
 
@@ -32,7 +32,7 @@ if (!newsreader.init) {
         var feedResult;
         $.ajax({
             url: that.options.url,
-            type: "GET",
+            type: "POST",
             dataType: "json",
             async: false,
             data: data,
@@ -331,6 +331,4 @@ if (!newsreader.init) {
 
     // end of defaults
 
-    newsreader.initialized = true;
-    };
-}
+})(jQuery, fluid_1_3);

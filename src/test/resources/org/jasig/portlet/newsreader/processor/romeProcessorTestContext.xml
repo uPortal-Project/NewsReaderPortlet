@@ -49,18 +49,13 @@
         <value>image/jpg</value>
     </util:list>
 
-    <util:list id="videoTypes">
-        <value>audio/x-mpeg</value>
-    </util:list>
-    
     <util:map id="antisamyPolicies">
         <entry key="antisamy-textonly" value="classpath:/antisamy/antisamy-textonly.xml"/>
     </util:map>
     
     <bean id="romeProcessor" 
         class="org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl"
-        p:imageTypes-ref="imageTypes" p:videoTypes-ref="videoTypes" 
-        p:policies-ref="antisamyPolicies"/>
+        p:imageTypes-ref="imageTypes" p:policies-ref="antisamyPolicies"/>
     
     <!-- RSS feed adapter -->
     <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapter" 

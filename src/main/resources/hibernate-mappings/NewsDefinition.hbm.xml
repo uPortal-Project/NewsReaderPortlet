@@ -53,7 +53,7 @@
         <map name="parameters" lazy="false" table="NEWS_PARAMETER" cascade="all, delete-orphan">
             <key column="NEWS_ID"/>
             <index column="NEWS_PARAMETER_NAME" type="string"/>
-            <element type="text" column="NEWS_PARAMETER_VALUE" not-null="true"/>
+            <element type="string" column="NEWS_PARAMETER_VALUE" not-null="true"/>
         </map>
 
         
@@ -74,10 +74,6 @@
         <!-- admin-defined, system-wide news -->
         <subclass name="org.jasig.portlet.newsreader.PredefinedNewsDefinition"
             discriminator-value="PD">
-
-            <property name="fname" type="string" unique="true">
-                <column name="NEWS_FNAME" length="100"/>
-            </property>
         
             <!-- user configurations and preferences for pre-defined news
                 these allow users to hide default system news and potentially

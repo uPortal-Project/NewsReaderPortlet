@@ -22,62 +22,42 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
-<portlet:actionURL var="hideUrl" escapeXml="false"><portlet:param name="actionCode" value="hide"/>
+<portlet:actionURL var="hideUrl"><portlet:param name="actionCode" value="hide"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
-<portlet:actionURL var="showUrl" escapeXml="false"><portlet:param name="actionCode" value="show"/>
-    <portlet:param name="id" value="ID"/></portlet:actionURL>
-<portlet:actionURL var="newUrl" escapeXml="false"><portlet:param name="actionCode" value="showNew"/>
+<portlet:actionURL var="showUrl"><portlet:param name="actionCode" value="show"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.js"/>"></script>
 
 <div class="portlet ptl-newsreader view-editnews">
-
-    <div data-role="header" class="titlebar portlet-titlebar">
-        <a href="<portlet:renderURL portletMode="view"/>" data-role="button" data-icon="back" data-inline="true">Back</a>
-        <h2>Preferences</h2>
-    </div>
-
 	<div id="${n}" class="portlet-content" data-role="content">
 	    <div data-role="fieldcontain">
 	        <fieldset data-role="controlgroup">
 	        	<legend>Which feeds should be displayed?</legend>
-                <c:set var="count" value="0"/>
-	            <c:forEach items="${ model.predefinedNewsConfigurations }" var="feed" varStatus="status">
-	                <input type="checkbox" name="${ feed.id }" id="${n}${ count }" ${ feed.displayed ? 'checked' : '' } />
-	                <label feedId="${ feed.id }" included="${ feed.displayed }" for="${n}${ count }">${ feed.newsDefinition.name }</label>
-                    <c:set var="count" value="${ count+1 }"/>
+	            <c:forEach items="${ model.predefinedNewsConfigurations }" var="feed">
+	                <input type="checkbox" name="${ feed.id }" id="${n}${ feed.id }" ${ feed.displayed ? 'checked' : '' } />
+	                <label feedId="${ feed.id }" included="${ feed.displayed }" for="${n}${ feed.id }">${ feed.newsDefinition.name }</label>
 	            </c:forEach>
-                <c:forEach items="${ model.hiddenFeeds }" var="feed">
-                    <input type="checkbox" name="${ feed.id }" id="${n}${ count }" />
-                    <label feedId="${ feed.id }" included="new" for="${n}${ count }">${ feed.name }</label>
-                    <c:set var="count" value="${ count+1 }"/>
-                </c:forEach>
 	        </fieldset>
 	    </div>
+	    
+	    <div class="utilities">
+	        <a data-role="button" href="<portlet:renderURL portletMode="view"/>">Done</a>
+	    </div>
 	</div>
-    
 </div>
 <script type="text/javascript"><rs:compressJs>
     var newsReaderPortlet = newsReaderPortlet || {};
     newsReaderPortlet.jQuery = jQuery.noConflict(true);
     newsReaderPortlet.jQuery(function(){
         var $ = newsReaderPortlet.jQuery;
-        var newUrl = '${ newUrl }';
         var showUrl = '${ showUrl }';
         var hideUrl = '${ hideUrl }';
 
         var updateNewsItem = function () {
-            var link, url, included;
+            var link, url;
             link = $(this);
-            included = link.attr("included");
-            if (included == 'new') {
-                url = newUrl;
-            } else if (included == 'true') {
-                url = hideUrl;
-            } else {
-                url = showUrl;
-            }
+            url = (link.attr("included") == 'true') ? hideUrl : showUrl;
             window.location = url.replace('ID', link.attr("feedId"));
         };
         

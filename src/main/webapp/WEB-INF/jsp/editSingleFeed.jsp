@@ -23,9 +23,11 @@
 <portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
 
+<portlet:actionURL var="savePrefUrl"/>
+
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.min.js"/>"></script>
+<script type="text/javascript">
 
     var ${n} = ${n} || {};
     ${n}.jQuery = jQuery.noConflict(true);
@@ -34,7 +36,7 @@
     
         var $ = ${n}.jQuery;
 
-        var savePrefUrl = '<portlet:actionURL/>';
+        var savePrefUrl = '${savePrefUrl}';
 
     	var $p = $("#news-single-preference");	//find the root element of the protlet to scope dom seraches
     	$p.find("#max").change(function(e){
@@ -49,7 +51,7 @@
 
     });
 
-</rs:compressJs></script>
+</script>
 <style type="text/css" media="screen">
 	.preference{
 		margin:0 0 13px 13px;

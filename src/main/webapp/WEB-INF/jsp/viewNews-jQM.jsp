@@ -22,7 +22,14 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
-<portlet:resourceURL var="feedUrl"/>
+<portlet:actionURL var="feedUrl">
+    <portlet:param name="action" value="ajax"/>
+</portlet:actionURL>
+
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8/jquery-ui-1.8.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.3/js/fluid-all-1.3.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.min.js"/>"></script>
 
 <div id="${n}">
     <div class="news-reader-feed-list portlet ptl-newsreader view-news">
@@ -53,62 +60,34 @@
 	            <h2 class="title news-reader-feed-title">News</h2>
 	        </div>
 	        
-            <div data-role="content" class="portlet-content">
-                <ul data-role="listview" class="feed">
-                    <li class="news-reader-story">
-                        <a class="news-reader-story-link">
-                            <img class="news-reader-story-image"/>
-                            <h3 class="title news-reader-story-title"></h3>
-                            <p class="news-reader-story-summary"></p>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+	            <div data-role="content" class="portlet-content">
+	                <ul data-role="listview" class="feed">
+	                    <li class="news-reader-story">
+	                        <a class="news-reader-story-link">
+	                            <img class="news-reader-story-image"/>
+	                            <h3 class="title news-reader-story-title"></h3>
+	                            <p class="news-reader-story-summary"></p>
+	                        </a>
+	                    </li>
+	                </ul>
+	            </div>
+	        </div>
 	    </div>
     </div>
-    
-    <div class="portlet news-reader-story-container" style="display:none;">
-        <div data-role="header" class="news-reader-back-bar titlebar portlet-titlebar">
-            <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
-            <h2 class="title news-reader-feed-title">News</h2>
-        </div>
-        
-        <div data-role="content" class="portlet-content news-reader-story-content">
-        </div>
-    </div>
-    
 </div>
 
-<c:if test="${ !usePortalJsLibs }">
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4-00b5b5e/js/fluid-all-1.4-00b5b5e.min.js"/>"></script>
-</c:if>
-<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.js"/>"></script>
-
 <script type="text/javascript"><rs:compressJs>
-    var ${n} = ${n} || {};
-    <c:choose>
-        <c:when test="${!usePortalJsLibs}">
-            ${n}.jQuery = jQuery.noConflict(true);
-            ${n}.fluid = fluid;
-            fluid = null; 
-            fluid_1_4 = null;
-        </c:when>
-        <c:otherwise>
-            ${n}.jQuery = ${ portalJsNamespace }${not empty portalJsNamespace ? '.' : ''}jQuery;
-            ${n}.fluid = ${ portalJsNamespace }${not empty portalJsNamespace ? '.' : ''}fluid;
-        </c:otherwise>
-    </c:choose>
-    if (!newsreader.initialized) newsreader.init(${n}.jQuery, ${n}.fluid);
-    ${n}.newsreader = newsreader;
-
-    ${n}.jQuery(function(){
-        var $ = ${n}.jQuery;
-        var fluid = ${n}.fluid;
+    var newsReaderPortlet = newsReaderPortlet || {};
+    newsReaderPortlet.jQuery = jQuery.noConflict(true);
+    newsReaderPortlet.fluid = fluid;
+    fluid = null;
+    fluid_1_3 = null;
+    newsReaderPortlet.jQuery(function(){
+        var $ = newsReaderPortlet.jQuery;
+        var fluid = newsReaderPortlet.fluid;
         
         $(document).ready(function () {
-            ${n}.newsreader.MobileFeedListView(
+            newsreader.MobileFeedListView(
                 $("#${n}"),
                 {
                     url: "${feedUrl}"

@@ -34,8 +34,6 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,13 +44,11 @@ import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.service.IViewResolver;
-import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
+import org.jasig.web.service.AjaxPortletSupportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.bind.annotation.ActionMapping;
-import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 
 /**
@@ -83,13 +79,13 @@ public class EditNewsPreferencesController {
         this.newsStore = newsStore;
     }
 
-    private NewsSetResolvingService setCreationService;
+    private AjaxPortletSupportService ajaxPortletSupportService;
     
     @Autowired(required = true)
-    public void setSetCreationService(NewsSetResolvingService setCreationService) {
-        this.setCreationService = setCreationService;
+    public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
+            this.ajaxPortletSupportService = ajaxPortletSupportService;
     }
-    
+
     private IViewResolver viewResolver;
     
     @Autowired(required = true)
@@ -104,8 +100,8 @@ public class EditNewsPreferencesController {
         Map<String, Object> model = new HashMap<String, Object>();
 
         PortletSession session = request.getPortletSession();
-        String setName = request.getPreferences().getValue("newsSetName", "default");
-        NewsSet set = setCreationService.getNewsSet(setName, request);
+        Long setId = (Long) session.getAttribute("setId", PortletSession.PORTLET_SCOPE);
+        NewsSet set = newsStore.getNewsSet(setId);
         Set<NewsConfiguration> configurations = set.getNewsConfigurations();
         
         // divide the configurations into user-defined and pre-defined
@@ -131,7 +127,7 @@ public class EditNewsPreferencesController {
 
         // get a list of predefined feeds the user doesn't
         // currently have configured
-        List<PredefinedNewsDefinition> definitions = newsStore.getHiddenPredefinedNewsDefinitions(set.getId(), userRoles);
+        List<PredefinedNewsDefinition> definitions = newsStore.getHiddenPredefinedNewsDefinitions(setId, userRoles);
         model.put("hiddenFeeds", definitions);
 
         model.put("predefinedEditActions", predefinedEditActions);
@@ -141,7 +137,7 @@ public class EditNewsPreferencesController {
         return new ModelAndView(viewName, "model", model);
     }
 
-    @ActionMapping
+    @RequestMapping
     protected void saveNewsPreference(ActionRequest request,
             ActionResponse response) throws Exception {
         Long id = Long.parseLong(request.getParameter("id"));
@@ -178,9 +174,9 @@ public class EditNewsPreferencesController {
         }
     }
 
-    @ResourceMapping
-    public ModelAndView saveDisplayPreference(ResourceRequest request,
-            ResourceResponse response) throws IOException {
+    @RequestMapping(params = "action=saveDisplayPreference")
+    public void saveDisplayPreference(ActionRequest request,
+            ActionResponse response) throws IOException {
 
         Map<String, ?> model;
         
@@ -199,7 +195,7 @@ public class EditNewsPreferencesController {
             model = Collections.singletonMap("status", "failure");
         }
 
-        return new ModelAndView("json", model);
+        this.ajaxPortletSupportService.redirectAjaxResponse("ajax/jsonView", model, request, response);
 
     }
 

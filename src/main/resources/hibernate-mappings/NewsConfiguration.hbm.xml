@@ -72,7 +72,7 @@
             <map name="preferences" lazy="false" table="NEWS_PREFERENCE" cascade="all, delete-orphan"> 
                 <key column="NEWS_CONFIGURATION_ID"/>
                 <index column="NEWS_PREFERENCE_NAME" type="string"/>
-                <element type="text" column="NEWS_PREFERENCE_VALUE" not-null="true"/> 
+                <element type="string" column="NEWS_PREFERENCE_VALUE" not-null="true"/> 
             </map> 
                         
         </subclass>

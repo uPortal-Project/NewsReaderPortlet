@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.portlet.bind.annotation.ActionMapping;
 
 
 /**
@@ -89,7 +88,7 @@ public class EditNewsDefinitionController {
         return "editNewsDefinition";
     }
     
-    @ActionMapping(params = "action=editNewsDefinition")
+    @RequestMapping(params = "action=editNewsDefinition")
     public void onSubmitAction(ActionRequest request,
                                   ActionResponse response, NewsDefinitionForm form)
             throws Exception {
