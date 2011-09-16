@@ -19,6 +19,8 @@
 
 package org.jasig.portlet.newsreader.adapter;
 
+import java.lang.IllegalArgumentException;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -76,17 +78,51 @@ public class RomeAdapter implements INewsAdapter {
         String titlePolicy = prefs.getValue( "titlePolicy", "antisamy-textonly");
         String descriptionPolicy = prefs.getValue( "descriptionPolicy", "antisamy-textonly");
 
-        // get the URL for this feed
+        // Get the URL for this feed
+        // If there is a 2nd URL, it is a fall-back in case the first does not work.
+        // Using two URLs is handy if your first URL happens to be a local file cache
+        // of the feed that is being maintained by an external script. This way developers
+        // can still view/test the feed even if they don't have a local file cache.
         String url = config.getNewsDefinition().getParameters().get("url");
+
+        if ( url == null )
+        {
+            throw new IllegalArgumentException( "The url parameter was not found; this is a required portlet preference." );
+        }
+
+        String url2 = config.getNewsDefinition().getParameters().get("url2" );
 
         // try to get the feed news
         String key = getCacheKey(url);
         Element cachedElement = cache.get(key);
-        if (cachedElement == null) {
 
+        if (cachedElement == null) {
             log.debug("Cache miss");
 
-            feed = getSyndFeed(url, titlePolicy, descriptionPolicy);
+            // Do we have one URL for the feed, or two?
+            if ( url2 == null )
+            {
+                // One URL; a normal setup. Process the URL...
+                feed = getSyndFeed(url, titlePolicy, descriptionPolicy);
+            }
+            else
+            {
+                // Two URLs, so if the first fails, try the backup...
+                try
+                {
+                    feed = getSyndFeed(url, titlePolicy, descriptionPolicy);
+                }
+                catch ( NewsException ex )
+                {
+                    log.warn( "Failed to load feed at the primary URL so trying URL2", ex );
+                }
+
+                if ( feed == null )
+                {
+                    // there must not be a local file cache, or it failed, so try the real url...
+                    feed = getSyndFeed(url2, titlePolicy, descriptionPolicy);
+                }
+            }
 
             // save the feed to the cache
             cachedElement = new Element(key, feed);
