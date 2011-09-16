@@ -154,12 +154,19 @@ public class SingleFeedNewsController {
     }
     
     protected NewsConfiguration getFeedConfiguration(PortletPreferences prefs) {
-        String url = prefs.getValue("url", null);
+        // An optional 2nd URL can be specified. This is for places where a
+        // local copy of the feed is maintained by a script. The first URL
+        // is the local copy and the 2nd URL is the real URL which is only
+        // used if the 1st URL is unavailable for some reason, such as the
+        // portal being run on a developer's box.
+        String url = prefs.getValue("url", null);   // Required
+        String url2 = prefs.getValue("url2", null); // Optional
         String name = prefs.getValue("name", "portlet preference 'name' not set");
         String className = prefs.getValue("className", null);
 
         NewsDefinition feedDef = new NewsDefinition(new Long(1), className, name);
         feedDef.addParameter("url", url);
+        feedDef.addParameter("url2", url2);
         
         NewsConfiguration feedConfig = new NewsConfiguration();
         feedConfig.setNewsDefinition(feedDef);
