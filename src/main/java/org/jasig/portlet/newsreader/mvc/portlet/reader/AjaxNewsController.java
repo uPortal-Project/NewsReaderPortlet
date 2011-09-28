@@ -99,122 +99,115 @@ public class AjaxNewsController {
         feeds.addAll(set.getNewsConfigurations());
         Collections.sort(feeds);
        
-	 PortletPreferences prefs = request.getPreferences();
-         String activeateNews = request.getParameter("activeateNews");
-         if (activeateNews != null) {
-                 log.debug("Activating "+activeateNews);
-                 prefs.setValue("activeFeed", activeateNews);
-                 prefs.store();
-         }
+        PortletPreferences prefs = request.getPreferences();
+        String activeateNews = request.getParameter("activeateNews");
+        if (activeateNews != null) {
+        	log.debug("Activating "+activeateNews);
+            prefs.setValue("activeFeed", activeateNews);
+            prefs.store();
+        }
 
-         int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
-         boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
+        int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
+        boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
 
-	// only bother to fetch the active feed
-	Long preferedActiveFeed = Long.valueOf(prefs.getValue("activeFeed", null));
+        // only bother to fetch the active feed
+        Long preferedActiveFeed = Long.valueOf(prefs.getValue("activeFeed", null));
         log.debug("Prefered active feed is "+preferedActiveFeed);
 
-	Long activeFeed = null; 
+        Long activeFeed = null; 
         JSONArray jsonFeeds = new JSONArray();
         for(NewsConfiguration feed : feeds) {
-            if (feed.isDisplayed()) {
-            	JSONObject jsonFeed = new JSONObject();
-            	jsonFeed.put("id",feed.getId());
-            	jsonFeed.put("name",feed.getNewsDefinition().getName());
-            	jsonFeeds.add(jsonFeed);
-            
-	    	if(feed.getId().equals(preferedActiveFeed)) {
-			log.debug("Actve feed is found in list");
-			activeFeed = preferedActiveFeed; 	
-	    	}
-	    }
+        	if (feed.isDisplayed()) {
+	           	JSONObject jsonFeed = new JSONObject();
+	           	jsonFeed.put("id",feed.getId());
+	           	jsonFeed.put("name",feed.getNewsDefinition().getName());
+	           	jsonFeeds.add(jsonFeed);
+	           
+			   	if(feed.getId().equals(preferedActiveFeed)) {
+			   		log.debug("Actve feed is found in list");
+			   		activeFeed = preferedActiveFeed; 	
+			   	}
+        	}
         }
         model.put("feeds", jsonFeeds);
        
         // if no active feed is currently set, use the first feed in the list
         if (activeFeed == null && jsonFeeds.size() > 0) {
-		log.debug("Resetting active feed to 1st in list");
-        	activeFeed = ((JSONObject) jsonFeeds.get(0)).getLong("id");
-		prefs.setValue("activeFeed", activeFeed.toString());
-		prefs.store();
+        	log.debug("Resetting active feed to 1st in list");
+		    activeFeed = ((JSONObject) jsonFeeds.get(0)).getLong("id");
+		    prefs.setValue("activeFeed", activeFeed.toString());
+		    prefs.store();
         }
-        
-        if(activeFeed != null) {
-	        NewsConfiguration feedConfig = newsStore.getNewsConfiguration(activeFeed);
-	        model.put("activeFeed", feedConfig.getId());        
-	        log.debug("On render Active feed is " + feedConfig.getId());
-	        try {
-	            // get an instance of the adapter for this feed
-	            INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
-	            // retrieve the feed from this adaptor
-	            SyndFeed feed = adapter.getSyndFeed(feedConfig, request);
-
-                if ( feed != null )
-                {
-                    log.debug("Got feed from adapter "+feed.getTitle());
+	        
+	    if(activeFeed != null) {
+	    	NewsConfiguration feedConfig = newsStore.getNewsConfiguration(activeFeed);
+		    model.put("activeFeed", feedConfig.getId());        
+		    log.debug("On render Active feed is " + feedConfig.getId());
+		    try {
+		    	// get an instance of the adapter for this feed
+		        INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
+		        // retrieve the feed from this adaptor
+		        SyndFeed feed = adapter.getSyndFeed(feedConfig, request);
 	
-                    if(feed.getEntries().isEmpty()) {
-                        model.put("message", "<p>No news.</p>");
-                    }
-                    else {
-                        //turn feed into JSON
-                        JSONObject jsonFeed = new JSONObject();
-                        
-                        jsonFeed.put("link", feed.getLink());
-                        jsonFeed.put("title", feed.getTitle());
-
-                        if ( showAuthor == true )
-                        {
-                            jsonFeed.put("author", feed.getAuthor());
-                        }
-
-                        jsonFeed.put("copyright", feed.getCopyright());
-                        
-                        JSONArray jsonEntries = new JSONArray();
-                        @SuppressWarnings("unchecked")
-                        ListIterator<NewsFeedItem> i = (ListIterator<NewsFeedItem>) feed.getEntries().listIterator();
-                        while (i.hasNext() && i.nextIndex() < maxStories) {
-                            NewsFeedItem entry = i.next();
-                            JSONObject jsonEntry = new JSONObject();
-                            jsonEntry.put("link",entry.getLink());
-                            jsonEntry.put("title",entry.getTitle());
-                            jsonEntry.put("description",entry.getDescription().getValue());
-                            if (entry.getImageUrl() != null) {
-                                jsonEntry.put("image", entry.getImageUrl());
-                            }
-                            jsonEntries.add(jsonEntry);
-                        }
-                        
-                        jsonFeed.put("entries", jsonEntries);
-                        
-                        model.put("feed", jsonFeed);
-                    }
-                }
-                else
-                {
-                    log.warn("Failed to get feed from adapter.");
-                    model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
-                }
-	            
-	        } catch (NoSuchBeanDefinitionException ex) {
-	            log.error("News class instance could not be found: " + ex.getMessage());
-	            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
-	        } catch (NewsException ex) {
-	            log.warn(ex);
-	            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
-	        } catch (Exception ex) {
-	            log.error(ex);
-	            model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
-	        }
-        }
-        else {
-        	//display message saying "Select the news you wish to read"
-        	model.put("message", "Select the news you wish to read.");
-        }
-
+	            if ( feed != null ) {
+	            	log.debug("Got feed from adapter "+feed.getTitle());
+		            if(feed.getEntries().isEmpty()) {
+		            	model.put("message", "<p>No news.</p>");
+		            }
+	                else {
+	                	//turn feed into JSON
+	                    JSONObject jsonFeed = new JSONObject();
+	                        
+	                    jsonFeed.put("link", feed.getLink());
+	                    jsonFeed.put("title", feed.getTitle());
+	
+	                    if ( showAuthor == true ) {
+	                    	jsonFeed.put("author", feed.getAuthor());
+	                    }
+	
+	                    jsonFeed.put("copyright", feed.getCopyright());
+	                        
+	                    JSONArray jsonEntries = new JSONArray();
+	                    @SuppressWarnings("unchecked")
+	                    ListIterator<NewsFeedItem> i = (ListIterator<NewsFeedItem>) feed.getEntries().listIterator();
+	                    while (i.hasNext() && i.nextIndex() < maxStories) {
+	                    	NewsFeedItem entry = i.next();
+	                        JSONObject jsonEntry = new JSONObject();
+	                        jsonEntry.put("link",entry.getLink());
+	                        jsonEntry.put("title",entry.getTitle());
+	                        jsonEntry.put("description",entry.getDescription().getValue());
+	                        if (entry.getImageUrl() != null) {
+	                        	jsonEntry.put("image", entry.getImageUrl());
+	                        }
+	                        jsonEntries.add(jsonEntry);
+	                    }
+	                    jsonFeed.put("entries", jsonEntries);
+	                    model.put("feed", jsonFeed);
+	                }
+	            }
+	            else {
+	            	log.warn("Failed to get feed from adapter.");
+	            	model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+	            }   
+		    } 
+		    catch (NoSuchBeanDefinitionException ex) {
+		    	log.error("News class instance could not be found: " + ex.getMessage());
+		        model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+		    } 
+		    catch (NewsException ex) {
+		        log.warn(ex);
+		        model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+		    }
+		    catch (Exception ex) {
+		        log.error(ex);
+		        model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
+		    }
+	    }
+	    else {
+	     	//display message saying "Select the news you wish to read"
+	      	model.put("message", "Select the news you wish to read.");
+	    }
 		log.debug("forwarding to /ajaxFeedList");
-		
 		this.ajaxPortletSupportService.redirectAjaxResponse("ajax/jsonView", model, request, response);
 	}
-
 }
