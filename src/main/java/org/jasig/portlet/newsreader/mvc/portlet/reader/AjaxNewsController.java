@@ -98,7 +98,23 @@ public class AjaxNewsController {
         List<NewsConfiguration> feeds = new ArrayList<NewsConfiguration>();
         feeds.addAll(set.getNewsConfigurations());
         Collections.sort(feeds);
-        
+       
+	 PortletPreferences prefs = request.getPreferences();
+         String activeateNews = request.getParameter("activeateNews");
+         if (activeateNews != null) {
+                 log.debug("Activating "+activeateNews);
+                 prefs.setValue("activeFeed", activeateNews);
+                 prefs.store();
+         }
+
+         int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
+         boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
+
+	// only bother to fetch the active feed
+	Long preferedActiveFeed = Long.valueOf(prefs.getValue("activeFeed", null));
+        log.debug("Prefered active feed is "+preferedActiveFeed);
+
+	Long activeFeed = null; 
         JSONArray jsonFeeds = new JSONArray();
         for(NewsConfiguration feed : feeds) {
             if (feed.isDisplayed()) {
@@ -106,50 +122,36 @@ public class AjaxNewsController {
             	jsonFeed.put("id",feed.getId());
             	jsonFeed.put("name",feed.getNewsDefinition().getName());
             	jsonFeeds.add(jsonFeed);
-            }
+            
+	    	if(feed.getId().equals(preferedActiveFeed)) {
+			log.debug("Actve feed is found in list");
+			activeFeed = preferedActiveFeed; 	
+	    	}
+	    }
         }
         model.put("feeds", jsonFeeds);
-       	
-		PortletPreferences prefs = request.getPreferences();
-		String activeateNews = request.getParameter("activeateNews");
-		if (activeateNews != null) {
-			prefs.setValue("activeFeed", activeateNews);
-			prefs.store();
-		}
-		
-		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
-		boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
-		
-		SyndFeed feed = null;
-
-        // only bother to fetch the active feed
-        String activeFeed = request.getPreferences().getValue("activeFeed", null);
-        
-        // if the current active feed no longer exists in the news set, unset it
-        if (!jsonFeeds.contains(activeFeed)) {
-            activeFeed = null;
-        }
-        
+       
         // if no active feed is currently set, use the first feed in the list
         if (activeFeed == null && jsonFeeds.size() > 0) {
-        	activeFeed = ((JSONObject) jsonFeeds.get(0)).getString("id");
-			prefs.setValue("activeFeed", activeateNews);
-			prefs.store();
+		log.debug("Resetting active feed to 1st in list");
+        	activeFeed = ((JSONObject) jsonFeeds.get(0)).getLong("id");
+		prefs.setValue("activeFeed", activeFeed.toString());
+		prefs.store();
         }
         
         if(activeFeed != null) {
-	        NewsConfiguration feedConfig = newsStore.getNewsConfiguration(Long.valueOf(activeFeed));
+	        NewsConfiguration feedConfig = newsStore.getNewsConfiguration(activeFeed);
 	        model.put("activeFeed", feedConfig.getId());        
 	        log.debug("On render Active feed is " + feedConfig.getId());
 	        try {
 	            // get an instance of the adapter for this feed
 	            INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
 	            // retrieve the feed from this adaptor
-	            feed = adapter.getSyndFeed(feedConfig, request);
+	            SyndFeed feed = adapter.getSyndFeed(feedConfig, request);
 
                 if ( feed != null )
                 {
-                    log.debug("Got feed from adapter");
+                    log.debug("Got feed from adapter "+feed.getTitle());
 	
                     if(feed.getEntries().isEmpty()) {
                         model.put("message", "<p>No news.</p>");
