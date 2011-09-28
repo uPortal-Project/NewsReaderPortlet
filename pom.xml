@@ -11,7 +11,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.1</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -42,9 +42,9 @@
     
 
     <scm>
-        <connection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/branches/rel-2-patches</connection>
-        <developerConnection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/branches/rel-2-patches</developerConnection>
-        <url>http://developer.jasig.org/source/browse/jasigsvn/portlets/NewsReaderPortlet/branches/rel-2-patches</url>
+        <connection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/tags/NewsReaderPortlet-2.0.1</connection>
+        <developerConnection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/tags/NewsReaderPortlet-2.0.1</developerConnection>
+        <url>http://developer.jasig.org/source/browse/jasigsvn/portlets/NewsReaderPortlet/tags/NewsReaderPortlet-2.0.1</url>
     </scm>
 
     <distributionManagement>
