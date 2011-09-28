@@ -39,7 +39,6 @@
             </roles>
         </developer>
     </developers>
-    
 
     <scm>
         <connection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/trunk</connection>
