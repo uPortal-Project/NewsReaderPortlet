@@ -111,8 +111,15 @@ public class AjaxNewsController {
         boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
 
         // only bother to fetch the active feed
-        Long preferedActiveFeed = Long.valueOf(prefs.getValue("activeFeed", null));
-        log.debug("Prefered active feed is "+preferedActiveFeed);
+        Long preferedActiveFeed = null;
+        try {
+        	preferedActiveFeed = Long.valueOf(prefs.getValue("activeFeed", null));
+        	log.debug("Prefered active feed is "+preferedActiveFeed);
+        }
+        catch (NumberFormatException e) {
+        	log.debug("No prefered active feed is set");
+		}
+    
 
         Long activeFeed = null; 
         JSONArray jsonFeeds = new JSONArray();
