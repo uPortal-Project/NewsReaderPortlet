@@ -27,7 +27,7 @@
 <portlet:actionURL var="showUrl"><portlet:param name="actionCode" value="show"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
 
 <div class="portlet ptl-newsreader view-editnews">
 	<div id="${n}" class="portlet-content" data-role="content">
