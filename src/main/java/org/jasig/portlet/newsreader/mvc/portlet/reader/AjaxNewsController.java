@@ -29,6 +29,8 @@ import java.util.Map;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -86,6 +88,20 @@ public class AjaxNewsController {
     public void setAjaxPortletSupportService(AjaxPortletSupportService ajaxPortletSupportService) {
             this.ajaxPortletSupportService = ajaxPortletSupportService;
     }
+    
+    /*
+     * Render requests that contain action=ajax do not get mapped to the default
+     * render handler NewsContoller.showMainView
+     * 
+     * All other render requests with or without an action param (e.g. action=foo) get mapped
+     * to the default handler correctly.
+     */
+    @RequestMapping(params = "action=ajax")
+	public String bugCatcher(RenderRequest request, RenderResponse response) throws Exception {
+    	log.error("bugCatcher bugCatcher bugCatcher bugCatcher bugCatcher bugCatcher bugCatcher bugCatcher bugCatcher bugCatcher");
+    	return "defError";
+    }
+
     
 	@RequestMapping(params = "action=ajax")
 	public void getJSONFeeds(ActionRequest request, ActionResponse response) throws Exception {

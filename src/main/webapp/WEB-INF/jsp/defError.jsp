@@ -18,5 +18,16 @@
     under the License.
 
 --%>
+<jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 
-<h1>Error from Anthony</h1>
+<div class="fl-widget portlet org-jasig-portlet-newsreader" role="section">
+
+	<div class="fl-widget-content portlet-body" role="main">
+		
+		<div class="portlet-msg-error" role="alert"> <!-- role changes to "alert" for error and alert messages. -->
+	        <h3>Error</h3>
+        	<p>A system error has occurred. Please <a href="<portlet:renderURL/>">Reload</a> and try again.</p>
+		</div>
+		
+	</div>
+</div>
