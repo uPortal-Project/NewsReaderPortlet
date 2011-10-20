@@ -64,6 +64,7 @@
 
     <util:map id="antisamyPolicies">
         <entry key="antisamy-textonly" value="classpath:/antisamy/antisamy-textonly.xml"/>
+        <entry key="antisamy-img" value="classpath:/antisamy/antisamy-img.xml"/>
     </util:map>
     
     <!-- NEWS ADAPTER REGISTRATIONS -->

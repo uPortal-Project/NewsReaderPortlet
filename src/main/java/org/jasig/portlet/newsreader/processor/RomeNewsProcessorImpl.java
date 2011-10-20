@@ -55,7 +55,6 @@ public class RomeNewsProcessorImpl {
     private List<String> imageTypes;
     
     public SyndFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
-                
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
         SyndFeedInput input = new SyndFeedInput();
@@ -79,22 +78,93 @@ public class RomeNewsProcessorImpl {
         NewsFeedItem item = new NewsFeedItem();
         item.copyFrom(entry);
 
+        // AntiSamy is used to remove unwanted, or risky, HTML tags from RSS Feed data.
+        // AntiSamy Policy files describe what is okay and what is not. Different portlets
+        // can use different policy files.
         AntiSamy as = new AntiSamy();
         CleanResults cr = null;
         double scanTime = 0;
-        if (item.getDescription() != null && item.getDescription().getValue() != null) {
-            cr = as.scan(item.getDescription().getValue(), policies.get(descriptionPolicy));
+
+        // When working with AntiSamy filter changes, it helps to know what things were
+        // before AntiSamy messes them up...
+        if ( log.isDebugEnabled() )
+        {
+            log.debug("SyndEntry Title Policy: '" + titlePolicy + "'" );
+            log.debug("SyndEntry Description Policy: '" + descriptionPolicy + "'" );
+
+            if ( item.getTitle() != null )
+            {
+                log.debug("SyndEntry Pre-AntiSamy Title: '" + item.getTitle() + "'" );
+            }
+            else
+            {
+                log.debug("SyndEntry Pre-AntiSamy Title: null value; skipping AntiSamy." );
+            }
+
+            if ( item.getDescription() != null && item.getDescription().getValue() != null )
+            {
+                log.debug("SyndEntry Pre-AntiSamy Description: '" + item.getDescription().getValue() + "'" );
+            }
+            else
+            {
+                log.debug("SyndEntry Pre-AntiSamy Description: null value; skipping AntiSamy." );
+            }
+        }
+
+        // Scrub the HTML data from the RSS Feed's Description tag...
+        if (item.getDescription() != null && item.getDescription().getValue() != null)
+        {
+            // Retrieve the specified AntiSamy policy for the description...
+            Policy asDescriptionPolicy = policies.get( descriptionPolicy );
+
+            // Make sure the specified AntiSamy policy actually exists...
+            if ( asDescriptionPolicy == null )
+            {
+                // It doesn't so, drop back to the text only policy...
+                log.warn( "AntiSamy Policy NOT FOUND for Feed Description: '" + descriptionPolicy + "'." );
+                log.warn( "Either the 'descriptionPolicy' portlet preference is incorrect or does not exist in the applicationContext.xml file." );
+                log.warn( "Proceeding with a Text Only policy, instead." );
+                asDescriptionPolicy = policies.get( "antisamy-textonly" );
+            }
+
+            // Have AntiSamy scan the description and clean out unwanted HTML tags...
+            cr = as.scan(item.getDescription().getValue(), asDescriptionPolicy);
             item.getDescription().setValue(cr.getCleanHTML());
             scanTime += cr.getScanTime();
         }
-        if (item.getTitle() != null) {
-            cr = as.scan(item.getTitle(), policies.get(titlePolicy));
+
+        if (log.isDebugEnabled() && cr != null)
+        {
+            log.debug("SyndEntry '" + entry.getTitle() + "' description cleaned in " + cr.getScanTime() + " seconds");
+            log.debug("SyndEntry '" + entry.getTitle() + "' modified description is '" + item.getDescription().getValue() + "'" );
+        }
+
+        // Scrub the HTML data from the RSS Feed's Title tag...
+        if (item.getTitle() != null)
+        {
+            // Retrieve the specified AntiSamy policy for the title...
+            Policy asTitlePolicy = policies.get( titlePolicy );
+
+            // Make sure the specified AntiSamy policy actually exists...
+            if ( asTitlePolicy == null )
+            {
+                // It doesn't so, drop back to the text only policy...
+                log.warn( "AntiSamy Policy NOT FOUND for Feed Title: '" + titlePolicy + "'." );
+                log.warn( "Either the 'titlePolicy' portlet preference is incorrect or does not exist in the applicationContext.xml file." );
+                log.warn( "Proceeding with a Text Only policy, instead." );
+                asTitlePolicy = policies.get( "antisamy-textonly" );
+            }
+
+            // Have AntiSamy scan the description and clean out unwanted HTML tags...
+            cr = as.scan(item.getTitle(), asTitlePolicy);
             item.setTitle(cr.getCleanHTML());
             scanTime += cr.getScanTime();
         }
-        if (log.isDebugEnabled() && cr != null) {
-            log.debug("SyndEntry '" + entry.getTitle() + "' cleaned in " 
-                                    + cr.getScanTime() + " seconds");
+
+        if (log.isDebugEnabled() && cr != null)
+        {
+            log.debug("SyndEntry '" + entry.getTitle() + "' title cleaned in " + cr.getScanTime() + " seconds");
+            log.debug("SyndEntry '" + entry.getTitle() + "' modified title is '" + item.getTitle() + "'" );
         }
 
         //add more types as required
