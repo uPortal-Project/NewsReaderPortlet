@@ -97,6 +97,10 @@ public class EditNewsPreferencesController {
     public ModelAndView showPreferencesView(RenderRequest request,
             RenderResponse response) throws Exception {
 
+    	if(request.getRemoteUser() == null) {
+    		return new ModelAndView("editNewsGuest");
+    	}
+    	
         Map<String, Object> model = new HashMap<String, Object>();
 
         PortletSession session = request.getPortletSession();
