@@ -24,7 +24,7 @@
 <c:set var="n"><portlet:namespace/></c:set>
 
 <style>
-    ul.news-list li { padding-bottom:0.5em; list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');  }
+    ul.news-stories li { padding-bottom:0.5em; list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');  }
     .ui-tooltip {
         padding:8px;
         position:absolute;
@@ -38,11 +38,60 @@
     * html .ui-tooltip { background-image: none; }
     body .ui-tooltip { border-width:2px; }
 </style>
+<portlet:resourceURL var="feedUrl"/>
     
-<c:set var="storyView">${renderRequest.preferences.map['storyView'][0]}</c:set>
 <div class="org-jasig-portlet-newsreader">
 
-    <div id="${n}newsContainer">Loading . . . </div>
+    <div id="${n}">
+        <div class="news-reader-feed-list portlet ptl-newsreader view-news">
+            <div class="news-feeds-container">
+                <div>
+                    <select class="news-feed-select">
+                    </select>
+                </div>
+            </div>
+            <div class="news-stories-container" style="display:none;">
+                <div class="titlebar portlet-titlebar">
+                    <h2 class="title news-feed-title">Feed Title</h2>
+                </div>
+                <div data-role="content" class="portlet-content">
+                    <c:choose>
+                        <c:when test="${ storyView == 'flyout-list' }">
+                            <ul class="news-stories feed">
+                                <li class="news-story">
+                                    <a href="javascript:;" class="news-story-link" title="">
+                                        <span class="news-story-title"><span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="news-stories feed">
+                                <div class="news-story">
+                                    <h3>
+                                        <a href="javascript:;" class="news-story-link" title="">
+                                            <span class="news-story-title"><span>
+                                        </a>
+                                    </h3>
+                                    <p class="news-story-summary"></p>
+                                </div>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+            <div class="story-container" style="display:none">
+                <div class="titlebar portlet-titlebar">
+                    <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
+                    <h1 class="title story-title">Story Title</h1>
+                </div>
+                <div data-role="content" class="portlet-content">
+                    <div class="story-content">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
        
     <br/>
     <p>
@@ -80,24 +129,16 @@
             ${n}.fluid = ${ portalJsNamespace }${not empty portalJsNamespace ? '.' : ''}fluid;
         </c:otherwise>
     </c:choose>
-    if (!newsreader.initialized) newsreader.init(${n}.jQuery, ${n}.fluid);
-    ${n}.newsreader = newsreader;
+    if (!news.initialized) news.init(${n}.jQuery, ${n}.fluid);
+    ${n}.news = news;
 
     ${n}.jQuery(function(){
         var $ = ${n}.jQuery;
-
-        $(document).ready(function(){
-            var options = {
-                url: '<portlet:resourceURL/>',
-                namespace: '${n}',
-                feedView: "${renderRequest.preferences.map['feedView'][0]}",
-                summaryView: "${ storyView == 'scroll-summaries' ? 'full' : 'flyout' }",
-                newWindow: ${renderRequest.preferences.map['newWindow'][0]},
-                scrolling: ${ storyView == 'scroll-summaries' ? true : false }
-            };
-            newsreader.MultipleFeedView("#${n}newsContainer", options);
+        var fluid = ${n}.fluid;
+        
+        $(document).ready(function () {
+            var reader = ${n}.news.reader($("#${n}"), { url: "${feedUrl}" });
         });
-
     });
 </rs:compressJs></script>
 

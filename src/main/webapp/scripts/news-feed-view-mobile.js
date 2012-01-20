@@ -17,237 +17,301 @@
  * under the License.
  */
 
-var newsreader = newsreader || {};
-if (!newsreader.init) {
-    newsreader.init = function ($, fluid) {
-    
-    // start of private methods
+var news = news || {};
+if (!news.init) {
+    news.init = function ($, fluid) {
 
-    /**
-     * Retrieve a news feed from the server
-     */
-    var retrieveFeed = function(that, feedId) {
-        var data = {};
-        if (feedId) data['activeateNews'] = feedId;
-        var feedResult;
-        $.ajax({
-            url: that.options.url,
-            type: "GET",
-            dataType: "json",
-            async: false,
-            data: data,
-            success: function(response, textStatus){
-                feedResult = response;
-            }
-        });
-        return feedResult;
-    };
-
-    // end of private methods
-    
-    
-    // start of creator function
-
-    newsreader.MobileFeedListView = function(container, options) {
-        var that = fluid.initView("newsreader.MobileFeedListView", container, options);
-        that.views = {};
-        that.state = {};
-
-        that.views.storyList = fluid.initSubcomponent(that, "storyListView", [container, that, fluid.COMPONENT_OPTIONS]);        
-        that.views.storyContent = fluid.initSubcomponent(that, "storyContentView", [container, that, fluid.COMPONENT_OPTIONS]);        
-
-        var cutpoints = [
-            { id: "feed:", selector: that.options.selectors.feed },
-            { id: "title", selector: that.options.selectors.title },
-            { id: "link", selector: that.options.selectors.link }
-        ];
-
-        var feedResult = retrieveFeed(that);
-        var tree = { children: [] };
-        $(feedResult.feeds).each(function (idx, feed) {
-            tree.children.push({
-                ID: "feed:",
-                children: [
-                    { ID: "title", value: feed.name },
-                    {
-                        ID: "link",
-                        decorators: [
-                            { type: "jQuery", func: "click", args: function () {
-                                    return that.showFeed(feed); 
-                                } 
-                            }
-                        ]
-                    }
-                ]
-            });
-        });
-        
-        that.showFeed = function (feed) {
-            var feedResult = retrieveFeed(that, feed.id);
-            feedResult.feed.title = feed.name;
-            that.views.storyList.showFeed(feedResult.feed);
-            return false;
-        };
-        
-        fluid.selfRender($(that.locate("feedList")), tree, { cutpoints: cutpoints });
-        
-        return that;
-    };
-
-    newsreader.MobileStoryListView = function(container, overallThat, options) {
-        var that = fluid.initView("newsreader.MobileStoryListView", container, options);
-        that.state = {};
-
-        var storyCutpoints = [
-            { id: "story:", selector: that.options.selectors.story },
-            { id: "feedTitle", selector: that.options.selectors.feedTitle },
-            { id: "title", selector: that.options.selectors.title },
-            { id: "summary", selector: that.options.selectors.summary },
-            { id: "link", selector: that.options.selectors.link },
-            { id: "image", selector: that.options.selectors.image }
-        ];
-
-        that.showFeed = function (feed) {
-            
-            var tree = { children: [] };
-            tree.children.push({ ID: "feedTitle", value: feed.title });
-            $(feed.entries).each(function (idx, story) {
-                tree.children.push({
-                    ID: "story:",
-                    children: [
-                        { ID: "title", value: story.title },
-                        { ID: "summary", markup: story.description },
-                        { ID: "link", target: "javascript:;",
-                            decorators: [
-                                 { type: "jQuery", func: "click", args: function () {
-                                         return overallThat.views.storyContent.showContent(story); 
-                                     } 
-                                 }
-                             ]
-                        },
-                        { 
-                            ID: "image", 
-                            decorators: [{ type: "attrs", attributes: { src: story.image } }]
+        // Top-level news reader component.
+        // contains logic for retrieving feed data as well as
+        // as subcomponent for presenting that data on the page
+        fluid.defaults("news.reader", {
+            url: null,
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                feedListContainer: ".news-feeds-container",
+                storyListContainer: ".news-stories-container",
+                storyDetailContainer: ".story-container"
+            },
+            events: {
+                onReady: null,
+                onFeedReturn: null,
+                onFeedSelect: null,
+                onStorySelect: null
+            },
+            components: {
+                feedListView: {
+                    type: "news.feedListView",
+                    createOnEvent: "onReady",
+                    container: "{reader}.dom.feedListContainer",
+                    options: {
+                        model: "{reader}.model",
+                        url: "{reader}.options.url",
+                        events: {
+                            onFeedSelect: "{reader}.events.onFeedSelect",
+                            onFeedReturn: "{reader}.events.onFeedReturn"
                         }
-                    ]
-                });
-            });
-            
-            if (that.state.storyTemplates) {
-                fluid.reRender(that.state.storyTemplates, $(that.locate("storyList")), tree, { cutpoints: storyCutpoints });
-            } else {
-                that.state.storyTemplates = fluid.selfRender($(that.locate("storyList")), tree, { cutpoints: storyCutpoints });
-            }
-
-            $(feed.entries).each(function (idx, story) {
-                if (!story.image) {
-                    that.locate("storyList").find("li:eq(" + idx + ")").removeClass("ui-li-has-thumb");
+                    }
+                },
+                // define a subcomponent controlling the presentation of
+                // the feed data
+                feedDetailView: {
+                    type: "news.feedDetailView",
+                    createOnEvent: "onReady",
+                    container: "{reader}.dom.storyListContainer",
+                    options: {
+                        model: "{reader}.model",
+                        events: {
+                            onFeedSelect: "{reader}.events.onFeedSelect",
+                            onFeedReturn: "{reader}.events.onFeedReturn",
+                            onStorySelect: "{reader}.events.onStorySelect"
+                        }
+                    }
+                },
+                storyDetailView: {
+                    type: "news.storyDetailView",
+                    createOnEvent: "onReady",
+                    container: "{reader}.dom.storyDetailContainer",
+                    options: {
+                        model: "{reader}.model",
+                        events: {
+                            onStorySelect: "{reader}.events.onStorySelect"
+                        }
+                    }
                 }
-            });
-
-            if (overallThat.options.selectors.feedList) {
-                $(overallThat.locate("feedList")).hide();
-                $(that.locate("backBar")).show();
-            }
-            $(that.locate("storyList")).show();
-            $(that.locate("backLink")).click(that.showList);
-
-        };
-
-        if (overallThat.options.selectors.feedList) {
-            
-            that.showList = function () {
-                $(that.locate("storyList")).hide();
-                $(that.locate("backBar")).hide();
-                $(overallThat.locate("feedList")).show();
-                return false;
-            };
-            
-        }
-
-        return that;
-    };
-
-    newsreader.MobileStoryContentView = function(container, overallThat, options) {
-        var that = fluid.initView("newsreader.MobileStoryContentView", container, options);
-        that.state = {};
-
-        that.showContent = function (story) {
-            if (story.videoUrl) {
-                $(that.locate("contentContainer")).append(
-                    $(document.createElement("video")).append(
-                        $(document.createElement("source"))
-                            .attr("src", story.videoUrl).attr("type", 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"')
-                    ).attr("controls", "controls").attr("autoplay", "autoplay")
+            },
+            finalInitFunction: function(that) {
+                // retrieve the JSON feed data from the server
+                $.get(
+                    that.options.url, 
+                    function(data) {
+                        // set the component data model to the returned feed data
+                        that.model = data;
+                        // fire an even indicating that the component has finished initializing
+                        // and the subcomponent can now be created
+                        that.events.onReady.fire();
+                        // show the populated story container div
+                        that.locate("feedListContainer").show();
+                    }, 
+                    "json"
                 );
-            } else if (story.content) {
-                $(that.locate("content")).html(story.content);
-            } else {
-                window.location = story.link;
             }
-            $(that.locate("contentContainer")).show();
-            $(overallThat.views.storyList.locate("storyList")).hide();
-            return false;
-        };
-        
-        that.hideContent = function () {
-            $(that.locate("contentContainer")).find("video").remove();
-            $(that.locate("contentContainer")).hide();
-            $(overallThat.views.storyList.locate("storyList")).show();
-            return false;
-        };
-
-        $(that.locate("backLink")).click(that.hideContent);
-
-        return that;
+        });
+    
+        fluid.defaults("news.feedListView", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            renderOnInit: true,
+            // jQuery selectors mapping HTML nodes to the renderer
+            selectors: {
+                feed: ".news-feed",
+                feedLink: ".news-feed-link",
+                feedTitle: ".news-feed-title"
+            },
+            listeners: {
+                hideFeed: function(that) {
+                    that.hideList();
+                },
+                showFeed: function(that) {
+                    that.showList();
+                }
+            },
+            events: {
+                onFeedSelect: null,
+                onFeedReturn: null,
+                showFeed: {
+                    event: "onFeedReturn",
+                    args: [ "{feedListView}" ]
+                },
+                hideFeed: { 
+                    event: "onFeedSelect",
+                    args: [ "{feedListView}" ]
+                }
+            },
+            repeatingSelectors: [ "feed" ],
+            // renderer proto-tree defining how data should be bound
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "feed",
+                    controlledBy: "feeds",
+                    pathAs: "feed",
+                    tree: {
+                        feedTitle: { value: "${{feed}.name}" },
+                        feedLink: { target: "javascript:;" }
+                    }
+                }
+            },
+            finalInitFunction: function(that) {
+                $(that.options.selectors.feedLink).live('click', function () {
+                    var feedIndex, feed, feedId;
+                    
+                    // get the feed object matching this link
+                    feedIndex = $(this).index(that.options.selectors.feedLink);
+                    feedId = that.model.feeds[feedIndex].id;
+                    
+                    if (feedId !== that.model.activeFeed) {
+                        console.log("updating");
+                        $.ajax({
+                            url: that.options.url, 
+                            data: { activeateNews: feedId },
+                            dataType: "json",
+                            success: function(data) {
+                                // set the component data model to the returned feed data
+                                that.model = data;
+                                // fire the feed selection event, passing this feed to the event
+                                that.events.onFeedSelect.fire(that.model.feed);
+                            }
+                        });
+                    } else {
+                        // fire the feed selection event, passing this feed to the event
+                        that.events.onFeedSelect.fire(that.model.feed);
+                    }
+                    
+                });
+                
+                that.hideList = function () {
+                    $(that.container).hide();
+                };
+                
+                that.showList = function () {
+                    $(that.container).show();
+                };
+            }
+        });
+    
+        // Feed view subcomponent
+        fluid.defaults("news.feedDetailView", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            renderOnInit: false,
+            // jQuery selectors mapping HTML nodes to the renderer
+            selectors: {
+                feedTitle: ".news-feed-title",
+                backLink: ".news-reader-back-link",
+                story: ".news-story",
+                storyLink: ".news-story-link",
+                storyTitle: ".news-story-title",
+                storySummary: ".news-story-summary"
+            },
+            events: {
+                onFeedSelect: null,
+                onFeedReturn: null,
+                onStoryReturn: null,
+                showDetails: { 
+                    event: "onFeedSelect",
+                    args: [ "{feedDetailView}", "{arguments}.0" ]
+                },
+                hideDetails: {
+                    event: "onFeedReturn",
+                    args: [ "{feedDetailView}" ]
+                }
+            },
+            listeners: {
+                showDetails: function(that, feed) {
+                    that.showDetails(feed);
+                },
+                hideDetails: function(that) {
+                    that.hideDetails();
+                }
+            },
+            repeatingSelectors: [ "story" ],
+            // renderer proto-tree defining how data should be bound
+            protoTree: {
+                feedTitle: { value: "${feed.title}" },
+                backLink: { target: "javascript:;" },
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "story",
+                    controlledBy: "feed.entries",
+                    pathAs: "story",
+                    tree: {
+                        storyTitle: { value: "${{story}.title}" },
+                        storyLink: { target: "${{story}.link}" },
+                        storySummary: { value: "${{story}.description}" }
+                    }
+                }
+            },
+            finalInitFunction: function(that) {
+                $(that.options.selectors.storyLink).live('click', function () {
+                    var storyIndex, story;
+                    
+                    // get the feed object matching this link
+                    storyIndex = $(this).index(that.options.selectors.feedLink);
+                    story = that.model.entries[storyIndex];
+                    
+                    // fire the feed selection event, passing this feed to the event
+                    that.events.onStorySelect.fire(story);
+                });
+                
+                that.showDetails = function (feed) {
+                    that.model.feed = feed;
+                    that.refreshView();
+                    $(that.container).show();
+                };
+                
+                that.hideDetails = function () {
+                    $(that.container).hide();
+                };
+                
+                $(that.options.selectors.backLink).live('click', function () {
+                    that.events.onFeedReturn.fire();
+                });         
+            }
+        });
+    
+        // Feed view subcomponent
+        fluid.defaults("news.storyDetailView", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            renderOnInit: true,
+            // jQuery selectors mapping HTML nodes to the renderer
+            selectors: {
+                storyContent: ".story-content"
+            },
+            events: {
+                onStorySelect: null,
+                onStoryReturn: null,
+                showStory: { 
+                    event: "onStorySelect",
+                    args: [ "{storyDetailView}", "{arguments}.0" ]
+                },
+                hideStory: { 
+                    event: "onStoryReturn",
+                    args: [ "{storyDetailView}" ]
+                }
+            },
+            listeners: {
+                showStory: function(that, feed) {
+                    that.showStory(feed);
+                },
+                hideStory: function(that) {
+                    that.hideStory();
+                }
+            },
+            repeatingSelectors: [ "story" ],
+            // renderer proto-tree defining how data should be bound
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "story",
+                    controlledBy: "entries",
+                    pathAs: "story",
+                    tree: {
+                        storyContent: { value: "${{story}.description}" }
+                    }
+                }
+            },
+            finalInitFunction: function(that) {
+                that.showStory = function (story) {
+                    $(that.container).show();
+                };
+                
+                that.hideStory = function () {
+                    $(that.container).hide();
+                };
+                
+                $(that.options.selectors.backLink).live('click', function () {
+                    that.events.onStoryReturn.fire();
+                });         
+            }
+        });
     };
-
-    //end of creator function
-    
-    
-    //start of defaults
-
-    fluid.defaults("newsreader.MobileFeedListView", {
-        url: null,
-        storyListView: {
-            type: "newsreader.MobileStoryListView"
-        },
-        storyContentView: {
-            type: "newsreader.MobileStoryContentView"
-        },
-        selectors: {
-            feedList: ".news-reader-feed-list",
-            feed: ".news-reader-feed",
-            title: ".news-reader-feed-title",
-            link: ".news-reader-feed-link"
-        }
-    });
-
-    fluid.defaults("newsreader.MobileStoryListView", {
-        selectors: {
-            backBar: ".news-reader-back-bar",
-            backLink: ".news-reader-back-link",
-            storyList: ".news-reader-story-list",
-            story: ".news-reader-story",
-            feedTitle: ".news-reader-feed-title",
-            title: ".news-reader-story-title",
-            summary: ".news-reader-story-summary",
-            link: ".news-reader-story-link",
-            image: ".news-reader-story-image"
-        }
-    });
-
-    fluid.defaults("newsreader.MobileStoryContentView", {
-        selectors: {
-            backBar: ".news-reader-back-bar",
-            backLink: ".news-reader-back-link",
-            contentContainer: ".news-reader-story-container",
-            content: ".news-reader-story-content",
-        }
-    });
-
-    // end of defaults
-
-    newsreader.initialized = true;
+        
 };
-}

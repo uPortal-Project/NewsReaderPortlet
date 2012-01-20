@@ -17,320 +17,317 @@
  * under the License.
  */
 
-var newsreader = newsreader || {};
-if (!newsreader.init) {
-    newsreader.init = function ($, fluid) {
+var news = news || {};
+if (!news.init) {
     
-    // start of private methods
+    news.init = function ($, fluid) {
 
-    /**
-     * Retrieve a news feed from the server
-     */
-    var retrieveFeed = function(that, feedId) {
-        var data = {};
-        if (feedId) data['activeateNews'] = feedId;
-        var feedResult;
-        $.ajax({
-            url: that.options.url,
-            type: "GET",
-            dataType: "json",
-            async: false,
-            data: data,
-            success: function(response, textStatus){
-                feedResult = response;
-            }
-        });
-        return feedResult;
-    };
-    
-    var initSingle = function(feedResult, that) {
-        that.container.append($(document.createElement('div')).attr('id', that.options.namespace + 'feed' + feedResult.activeFeed));        
-        displayFeed(feedResult, that);
-    };    
-
-    
-    /**
-     * Initialized a tabbed multi-feed view
-     */
-    var initTabs = function(feedResult, that) {
-        
-        // create the tabs and add them to our container
-        var tabs = $(document.createElement('ul'));
-        that.container.append(tabs);
-        
-        // add a tab and div for each feed
-        var selected = 0;
-        for (var i = 0; i < feedResult.feeds.length; i++) {
-            var li = $(document.createElement('li')).append(
-                $(document.createElement('a')).append(
-                    $(document.createElement('span')).text(feedResult.feeds[i].name)
-                ).attr('href', '#' + that.options.namespace + 'feed' + feedResult.feeds[i].id)
-                .attr('title', feedResult.feeds[i].name)
-            );
-            tabs.append(li);
-            that.container.append($(document.createElement('div')).attr('id', that.options.namespace + 'feed' + feedResult.feeds[i].id));
-            if (feedResult.feeds[i].id == feedResult.activeFeed) selected = i;
-        }
-        that.initializedFeeds.push(Number(feedResult.activeFeed));
-        
-        // display the active news feed
-        displayFeed(feedResult, that);
-        
-        // initialize the jQuery tabs and bind and update method
-        that.container.tabs({ selected: selected });
-        that.container.bind('tabsshow', function(event, ui) {
-            var newFeedId = ui.panel.id.split('feed')[1];
-            updateFeed(newFeedId, that);
-        });
-        
-    };    
-
-    /**
-     * Initialized a select menu multi-feed view
-     */
-    var initSelect = function(feedResult, that) {
-        
-        // create the select menu and add it to our container
-        var select = $(document.createElement('select'));
-        that.container.append(select);
-        
-        // create a select menu option and div for each feed
-        for (var i = 0; i < feedResult.feeds.length; i++) {
-            var feed = feedResult.feeds[i];
-            select.get(0).options[i] = new Option(feed.name, feed.id);
-            that.container.append(
-                $(document.createElement('div')).addClass('story-div')
-                    .attr('id', that.options.namespace + 'feed' + feedResult.feeds[i].id));
-        }
-        // pre-select the currently active feed
-        select.val(feedResult.activeFeed);
-        that.initializedFeeds.push(Number(feedResult.activeFeed));
-        
-        // display the active news feed
-        displayFeed(feedResult, that);
-        
-        // bind the update method to the select menu
-        select.change(function(){
-            var newFeedId = $(this).val();
-            that.container.find('.story-div').css("display", "none");
-            $('#' + that.options.namespace + 'feed' + newFeedId).css("display", "block");
-            updateFeed(newFeedId, that);
-        });
-
-    };
-    
-    /**
-     * Update and a news feed
-     */
-    var updateFeed = function(feedId, that) {
-        
-        // if this feed is already initialized, we don't need to download it
-        // again
-        if ($.inArray(Number(feedId), that.initializedFeeds) >= 0) {
-            return;
-        }
-        
-        // display a loading message in the story container
-        var storyContainer = $('#' + that.options.namespace + 'feed' + feedId)
-            .html('<p><strong>Loading...</strong></p>');
-            
-        // get the new feed and add it to our initialized list
-        var feedResult = retrieveFeed(that, feedId);
-        that.initializedFeeds.push(Number(feedId));
-        
-        displayFeed(feedResult, that);
-    };
-    
-    /**
-     * Display a news feed
-     */
-    var displayFeed = function(feedResult, that) {
-        var storyContainer = $('#' + that.options.namespace + 'feed' + feedResult.activeFeed);
-        
-        // if an error occurred, display the message in the story container
-        if(feedResult.message != undefined) {
-            storyContainer.html('<p>'+feedResult.message+'</p>');
-            return;
-        }
-
-        // otherwise, display the active news feed according in the preferred style
-        var feed = feedResult.feed;
-        
-        // create the title
-        var targetAttribute = '';
-        if(that.options.newWindow) {
-            targetAttribute = ' target="_new"';
-        }
-        var header = '<h2><a href="'+feed.link+'" rel="popup"' + targetAttribute + '>'+feed.title+'</a>'
-        if (feed.author != undefined) header += " by " + feed.author;
-        header +='</h2>';
-        storyContainer.html(header);
-        
-        // if scrolling is set to true, add the scrolling class
-        var itemsContainer = $(document.createElement('div')).addClass('news-items-container');
-        if (that.options.scrolling) {
-            itemsContainer.addClass('portlet-rss-scrollable-content');
-        }
-        storyContainer.append(itemsContainer);
-
-        // print out the feed items in the desired format
-        if (that.options.summaryView == 'flyout') {
-            displayFlyoutSummaries(feedResult.activeFeed, feed, that);
-		}else if(that.options.summaryView == 'title'){
-			displayTitles(feedResult.activeFeed, feed, that);
-        } else {
-            displayFullSummaries(feedResult.activeFeed, feed, that);
-        }
-        
-        // if the feed has a defined copyright, add it to the view
-        if (feed.copyright != undefined) {
-            storyContainer.append(
-                $(document.createElement('p')).text(feed.copyright)
-                    .addClass('news-feed-copyright')
-            );
-        }
-        
-    };
-    
-    /**
-     * Display a feed as a flyout list
-     */
-    var displayFlyoutSummaries = function(feedId, feed, that) {
-        // add a list to the story container to hold our feed items 
-        var storyContainer = $('#' + that.options.namespace + 'feed' + feedId).find('.news-items-container');
-        var list = $(document.createElement('ul')).addClass('news-list');
-        storyContainer.append(list);
-
-        // Decide what clicking on a link does
-        var targetAttribute = '';
-        if(that.options.newWindow) {
-            targetAttribute = ' target="_new"';
-        }
-        
-        // add each news feed to the list
-        var html = '';
-        for (var i = 0; i < feed.entries.length; i++) {
-            var entry = feed.entries[i];
-            html += '<li><a title="' + entry.description + '" class="news-item" href="'+entry.link+'" rel="popup"' + targetAttribute + '>'+entry.title+'</a>';
-            html += '<span style="display:none">'+entry.description+'</span></li>';
-        }
-        list.html(html);
-        
-        // initialize the tooltips
-        storyContainer.find(".news-item").tooltip({
-            position: { offset: "15 15" }
-        });
-        
-    };
-    
-    /**
-     * Display a feed as a scrolling div with summaries
-     */
-    var displayFullSummaries = function(feedId, feed, that) {
-        // add a list to the story container to hold our feed items 
-        var storyContainer = $('#' + that.options.namespace + 'feed' + feedId).find('.news-items-container');
-
-        // Decide what clicking on a link does
-        var targetAttribute = '';
-        if(that.options.newWindow) {
-            targetAttribute = ' target="_new"';
-        }
-
-        var html = '';
-        for (var i = 0; i < feed.entries.length; i++) {
-            var entry = feed.entries[i];
-            html += '<h3><a href="'+entry.link+'" rel="popup"' + targetAttribute + '>'+entry.title+'</a></h3>';
-            html += '<p>'+entry.description+'</p>';
-        }
-        storyContainer.html(html);
-    };
-
-	var displayTitles = function(feedId, feed, that){
-		var storyContainer = $('#' + that.options.namespace + 'feed' + feedId).find('.news-items-container');
-		var feedList = $(document.createElement("ul")).addClass("news-list");
-		
-        // Decide what clicking on a link does
-        var targetAttribute = '';
-        if(that.options.newWindow) {
-            targetAttribute = ' target="_new"';
-        }
-
-		$(feed.entries).each(function(){
-			feedList.append('<li><a href="' + this.link + '" class="news-item"' + targetAttribute + '>' + this.title + '</a></li>');
-		});
-		storyContainer.append(feedList);
-	}
-    
-    // end of private methods
-    
-    
-    // start of creator function
-    
-    newsreader.FeedView = function(container, options) {
-        var that = fluid.initView("newsreader.FeedView", container, options);
-        
-        /**
-         * Initialization method
-         */
-        that.init = function() {
-            var feeds = retrieveFeed(that);
-            that.container.html("");
-            initSingle(feeds, that);
+        var updateModelFromResponse = function (that, data) {
+            // set the component data model to the returned feed data
+            that.model = data;
+            that.model.feedIds = [];
+            that.model.feedNames = [];
+            $(that.model.feeds).each(function(idx, feed) {
+                that.model.feedIds.push(String(feed.id));
+                that.model.feedNames.push(feed.name);
+            });
+            that.model.activeFeedStr = String(that.model.activeFeed);
         };
         
-        // initialization
-        that.initializedFeeds = [];
-        that.init();
-        
-        return that;
-    };
-
-    newsreader.MultipleFeedView = function(container, options) {
-        var that = fluid.initView("newsreader.MultipleFeedView", container, options);
-        
-        /**
-         * Initialization method
-         */
-        that.init = function() {
-            var feeds = retrieveFeed(that);
-            that.container.html("");
-            if (that.options.feedView == 'tabs') {
-                initTabs(feeds, that);
-            } else {
-                initSelect(feeds, that);
+        // Top-level news reader component.
+        // contains logic for retrieving feed data as well as
+        // as subcomponent for presenting that data on the page
+        fluid.defaults("news.reader", {
+            url: null,
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                feedListContainer: ".news-feeds-container",
+                storyListContainer: ".news-stories-container",
+                storyDetailContainer: ".story-container"
+            },
+            events: {
+                onReady: null,
+                onFeedReturn: null,
+                onFeedSelect: null,
+                onStorySelect: null
+            },
+            components: {
+                feedListView: {
+                    type: "news.feedListView",
+                    createOnEvent: "onReady",
+                    container: "{reader}.dom.feedListContainer",
+                    options: {
+                        model: "{reader}.model",
+                        url: "{reader}.options.url",
+                        events: {
+                            onFeedSelect: "{reader}.events.onFeedSelect",
+                            onFeedReturn: "{reader}.events.onFeedReturn"
+                        }
+                    }
+                },
+                // define a subcomponent controlling the presentation of
+                // the feed data
+                feedDetailView: {
+                    type: "news.feedDetailView",
+                    createOnEvent: "onReady",
+                    container: "{reader}.dom.storyListContainer",
+                    options: {
+                        model: "{reader}.model",
+                        events: {
+                            onFeedSelect: "{reader}.events.onFeedSelect",
+                            onFeedReturn: "{reader}.events.onFeedReturn",
+                            onStorySelect: "{reader}.events.onStorySelect"
+                        }
+                    }
+                },
+                storyDetailView: {
+                    type: "news.storyDetailView",
+                    createOnEvent: "onReady",
+                    container: "{reader}.dom.storyDetailContainer",
+                    options: {
+                        model: "{reader}.model",
+                        events: {
+                            onStorySelect: "{reader}.events.onStorySelect"
+                        }
+                    }
+                }
+            },
+            finalInitFunction: function(that) {
+                // retrieve the JSON feed data from the server
+                $.get(
+                    that.options.url, 
+                    function(data) {
+                        // set the component data model to the returned feed data
+                        updateModelFromResponse(that, data);
+                        // fire an even indicating that the component has finished initializing
+                        // and the subcomponent can now be created
+                        that.events.onReady.fire();
+                        // show the populated story container div
+                        that.locate("feedListContainer").show();
+                    }, 
+                    "json"
+                );
             }
-        };
-        
-        // initialization
-        that.initializedFeeds = [];
-        that.init();
-        
-        return that;
-    };
-
-    //end of creator function
+        });
     
+        fluid.defaults("news.feedListView", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            renderOnInit: true,
+            // jQuery selectors mapping HTML nodes to the renderer
+            selectors: {
+                feedSelect: ".news-feed-select"
+            },
+            listeners: {
+                hideFeed: function(that) {
+                    that.hideList();
+                },
+                showFeed: function(that) {
+                    that.showList();
+                }
+            },
+            events: {
+                onFeedSelect: null,
+                onFeedReturn: null,
+                showFeed: {
+                    event: "onFeedReturn",
+                    args: [ "{feedListView}" ]
+                },
+//                hideFeed: { 
+//                    event: "onFeedSelect",
+//                    args: [ "{feedListView}" ]
+//                }
+                hideFeed: null
+            },
+            repeatingSelectors: [ "feed" ],
+            // renderer proto-tree defining how data should be bound
+            protoTree: {
+                feedSelect: {
+                    selection: "${activeFeedStr}",
+                    optionlist: "${feedIds}",
+                    optionnames: "${feedNames}"
+                }
+            },
+            finalInitFunction: function(that) {
+                
+                that.loadFeed = function (feedId) {
+                    if (feedId !== that.model.activeFeed) {
+                        $.ajax({
+                            url: that.options.url, 
+                            data: { activeateNews: feedId },
+                            dataType: "json",
+                            success: function(data) {
+                                // set the component data model to the returned feed data
+                                updateModelFromResponse(that, data);
+                                // fire the feed selection event, passing this feed to the event
+                                that.events.onFeedSelect.fire(that.model.feed);
+                            }
+                        });
+                    } else {
+                        // fire the feed selection event, passing this feed to the event
+                        that.events.onFeedSelect.fire(that.model.feed);
+                    }
+                };
+                
+                $(that.options.selectors.feedSelect).live('change', function () {
+                    var feedIndex, feed, feedId;
+                    
+                    // get the feed object matching this link
+                    feedId = $(this).val();
+                    
+                    that.loadFeed(feedId);
+                    
+                });
+                
+                that.hideList = function () {
+                    $(that.container).hide();
+                };
+                
+                that.showList = function () {
+                    $(that.container).show();
+                };
+
+            }
+        });
     
-    //start of defaults
-
-    fluid.defaults("newsreader.FeedView", {
-        feedView: 'select',
-        summaryView: 'full',
-        scrolling: false,
-        url: null,
-        namespace: null
-    });
-
-    fluid.defaults("newsreader.MultipleFeedView", {
-        feedView: 'select',
-        summaryView: 'full',
-        scrolling: false,
-        url: null,
-        namespace: null
-    });
-
-    // end of defaults
-
-    newsreader.initialized = true;
+        // Feed view subcomponent
+        fluid.defaults("news.feedDetailView", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            renderOnInit: true,
+            // jQuery selectors mapping HTML nodes to the renderer
+            selectors: {
+                feedTitle: ".news-feed-title",
+                backLink: ".news-reader-back-link",
+                story: ".news-story",
+                storyLink: ".news-story-link",
+                storyTitle: ".news-story-title",
+                storySummary: ".news-story-summary"
+            },
+            events: {
+                onFeedSelect: null,
+                onFeedReturn: null,
+                onStoryReturn: null,
+                showDetails: { 
+                    event: "onFeedSelect",
+                    args: [ "{feedDetailView}", "{arguments}.0" ]
+                },
+                hideDetails: {
+                    event: "onFeedReturn",
+                    args: [ "{feedDetailView}" ]
+                }
+            },
+            listeners: {
+                showDetails: function(that, feed) {
+                    that.showDetails(feed);
+                },
+                hideDetails: function(that) {
+                    that.hideDetails();
+                }
+            },
+            repeatingSelectors: [ "story" ],
+            // renderer proto-tree defining how data should be bound
+            protoTree: {
+                feedTitle: { value: "${feed.title}" },
+                backLink: { target: "javascript:;" },
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "story",
+                    controlledBy: "feed.entries",
+                    pathAs: "story",
+                    tree: {
+                        storyTitle: { value: "${{story}.title}" },
+                        storyLink: { target: "${{story}.link}", decorators: { attrs: { title: "${{story}.description}" } } },
+                        storySummary: { value: "${{story}.description}" }
+                    }
+                }
+            },
+            finalInitFunction: function(that) {
+                $(that.options.selectors.storyLink).live('click', function () {
+                    var storyIndex, story;
+                    
+                    // get the feed object matching this link
+                    storyIndex = $(this).index(that.options.selectors.feedLink);
+                    story = that.model.entries[storyIndex];
+                    
+                    // fire the feed selection event, passing this feed to the event
+                    that.events.onStorySelect.fire(story);
+                });
+                
+                that.showDetails = function (feed) {
+                    that.model.feed = feed;
+                    that.refreshView();
+                    $(that.options.selectors.storyLink).each(function (idx, link) { 
+                        $(link).tooltip({ position: { offset: "15 15" } });
+                    });
+                    $(that.container).show();
+                };
+                
+                that.hideDetails = function () {
+                    $(that.container).hide();
+                };
+                
+                $(that.options.selectors.backLink).live('click', function () {
+                    that.events.onFeedReturn.fire();
+                });
+                
+                that.showDetails(that.model.feed);
+            }
+        });
+    
+        // Feed view subcomponent
+        fluid.defaults("news.storyDetailView", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            renderOnInit: true,
+            // jQuery selectors mapping HTML nodes to the renderer
+            selectors: {
+                storyContent: ".story-content"
+            },
+            events: {
+                onStorySelect: null,
+                onStoryReturn: null,
+                showStory: { 
+                    event: "onStorySelect",
+                    args: [ "{storyDetailView}", "{arguments}.0" ]
+                },
+                hideStory: { 
+                    event: "onStoryReturn",
+                    args: [ "{storyDetailView}" ]
+                }
+            },
+            listeners: {
+                showStory: function(that, feed) {
+                    that.showStory(feed);
+                },
+                hideStory: function(that) {
+                    that.hideStory();
+                }
+            },
+            repeatingSelectors: [ "story" ],
+            // renderer proto-tree defining how data should be bound
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "story",
+                    controlledBy: "entries",
+                    pathAs: "story",
+                    tree: {
+                        storyContent: { value: "${{story}.description}" }
+                    }
+                }
+            },
+            finalInitFunction: function(that) {
+                that.showStory = function (story) {
+                    $(that.container).show();
+                };
+                
+                that.hideStory = function () {
+                    $(that.container).hide();
+                };
+                
+                $(that.options.selectors.backLink).live('click', function () {
+                    that.events.onStoryReturn.fire();
+                });         
+            }
+        });
     };
-}
+        
+};
