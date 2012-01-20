@@ -22,6 +22,11 @@ package org.jasig.portlet.newsreader.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class NewsFeed implements Serializable {
 
     private List<NewsFeedItem> entries;
@@ -69,5 +74,55 @@ public class NewsFeed implements Serializable {
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
-    
+
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof NewsFeed)) {
+            return false;
+        }
+
+        NewsFeed feed = (NewsFeed) obj;
+        return new EqualsBuilder()
+            .append(this.title, feed.title)
+            .append(this.link, feed.link)
+            .append(this.author, feed.author)
+            .append(this.copyright, feed.copyright)
+            .append(this.entries, feed.entries)
+            .isEquals();
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(464270933, -1074792143)
+            .append(this.title)
+            .append(this.link)
+            .append(this.author)
+            .append(this.copyright)
+            .append(this.entries)
+            .toHashCode();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("title", this.title)
+                .append("link", this.link)
+                .append("author", this.author)
+                .append("copyright", this.copyright)
+                .append("entries", this.entries)
+                .toString();
+    }
+
 }

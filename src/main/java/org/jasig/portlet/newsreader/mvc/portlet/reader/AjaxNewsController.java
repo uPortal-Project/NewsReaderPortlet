@@ -46,7 +46,6 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
@@ -173,16 +172,22 @@ public class AjaxNewsController {
 
 		log.debug("forwarding to /ajaxFeedList");
 
-		String etag = String.valueOf(model.hashCode());
-        if (request.getETag() != null && etag.equals(request.getETag())) {
-            response.getCacheControl().setExpirationTime(300);
+        String etag = String.valueOf(model.hashCode());
+        String requestEtag = request.getETag();
+        
+        // if the request ETag matches the hash for this response, send back
+        // an empty response indicating that cached content should be used
+        if (request.getETag() != null && etag.equals(requestEtag)) {
+            response.getCacheControl().setExpirationTime(1);
             response.getCacheControl().setUseCachedContent(true);
-            return null;
+            // returning null appears to cause the response to be committed
+            // before returning to the portal, so just use an empty view
+            return new ModelAndView("empty", Collections.<String,String>emptyMap());
         }
         
         // create new content with new validation tag
         response.getCacheControl().setETag(etag);
-        response.getCacheControl().setExpirationTime(300);
+        response.getCacheControl().setExpirationTime(1);
 	        
 		return new ModelAndView("json", model);
 	}
