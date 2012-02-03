@@ -45,6 +45,7 @@ if (!news.init) {
                 storyListContainer: ".news-stories-container",
                 storyDetailContainer: ".story-container"
             },
+            useFlyouts: true,
             events: {
                 onReady: null,
                 onFeedReturn: null,
@@ -73,6 +74,7 @@ if (!news.init) {
                     container: "{reader}.dom.storyListContainer",
                     options: {
                         model: "{reader}.model",
+                        useFlyouts: "{reader}.options.useFlyouts",
                         events: {
                             onFeedSelect: "{reader}.events.onFeedSelect",
                             onFeedReturn: "{reader}.events.onFeedReturn",
@@ -233,9 +235,10 @@ if (!news.init) {
                     repeatID: "story",
                     controlledBy: "feed.entries",
                     pathAs: "story",
+                    valueAs: "storyValue",
                     tree: {
                         storyTitle: { value: "${{story}.title}" },
-                        storyLink: { target: "${{story}.link}", decorators: { attrs: { title: "${{story}.description}" } } },
+                        storyLink: { target: "${{story}.link}", decorators: [ { attrs: { title: "{storyValue}.description" } } ] },
                         storySummary: { value: "${{story}.description}" }
                     }
                 }
@@ -255,9 +258,12 @@ if (!news.init) {
                 that.showDetails = function (feed) {
                     that.model.feed = feed;
                     that.refreshView();
-                    $(that.options.selectors.storyLink).each(function (idx, link) { 
-                        $(link).tooltip({ position: { offset: "15 15" } });
-                    });
+                    if (that.options.useFlyouts) {
+                        $(that.options.selectors.storyLink).tooltip({ 
+                            showURL: false,
+                            position: { offset: "15 15" } 
+                        });
+                    }
                     $(that.container).show();
                 };
                 

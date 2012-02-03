@@ -56,7 +56,7 @@
                 </div>
                 <div data-role="content" class="portlet-content">
                     <c:choose>
-                        <c:when test="${ storyView == 'flyout-list' }">
+                        <c:when test="${ storyView == 'flyout' }">
                             <ul class="news-stories feed">
                                 <li class="news-story">
                                     <a href="javascript:;" class="news-story-link" title="">
@@ -137,7 +137,7 @@
         var fluid = ${n}.fluid;
         
         $(document).ready(function () {
-            var reader = ${n}.news.reader($("#${n}"), { url: "${feedUrl}" });
+            var reader = ${n}.news.reader($("#${n}"), { url: "${feedUrl}", useFlyouts: ${ storyView == 'flyout' } });
         });
     });
 </rs:compressJs></script>

@@ -140,7 +140,7 @@ public class NewsController {
         PortletPreferences prefs = request.getPreferences();
         model.put(PREFERENCE_USE_PORTAL_JS_LIBS, prefs.getValue(PREFERENCE_USE_PORTAL_JS_LIBS, "true"));
         model.put(PREFERENCE_PORTAL_JS_NAMESPACE, prefs.getValue(PREFERENCE_PORTAL_JS_NAMESPACE, "up"));
-        model.put("storyView", prefs.getValue("storyView", "flyout"));
+        model.put("storyView", prefs.getValue("summaryView", "flyout"));
         
         String viewName = viewResolver.getReaderView(request);
         return new ModelAndView(viewName, model);
