@@ -77,7 +77,7 @@
 
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
-        <resource-server.version>1.0.21</resource-server.version>
+        <resource-server.version>1.0.23</resource-server.version>
         
         <!-- The JDBC Driver used by the portlet -->
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
@@ -418,22 +418,29 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>net.sf.alchim</groupId>
-                <artifactId>yuicompressor-maven-plugin</artifactId>
-                <version>0.7.1</version>
+                <groupId>org.jasig.resourceserver</groupId>
+                <artifactId>resource-server-plugin</artifactId>
+                <version>${resource-server.version}</version>
                 <executions>
                     <execution>
-                        <goals><goal>compress</goal></goals>
+                        <id>aggregate-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>batch-aggregate</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <displayJsWarnings>false</displayJsWarnings>
+                            <includes>
+                                <include>skin.xml</include>
+                                <include>skin-shared.xml</include>
+                                <include>skin-mobile.xml</include>
+                                <include>skin-mobile-shared.xml</include>
+                            </includes>
+                            <sharedJavaScriptDirectory>scripts/</sharedJavaScriptDirectory>
+                        </configuration>
                     </execution>
-                </executions>        
-                <configuration>
-                    <excludes>
-                        <exclude>**/*.min.js</exclude>
-                    </excludes>
-                    <linebreakpos>10000</linebreakpos>
-                    <suffix>.min</suffix>
-                    <jswarn>false</jswarn>
-                </configuration>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
@@ -480,9 +487,9 @@
                             <groupId>org.jasig.resourceserver</groupId>
                             <artifactId>resource-server-content</artifactId>
                             <includes>
-                                <include>rs/jquery/1.5/</include>
+                                <include>rs/jquery/1.6.1/</include>
                                 <include>rs/jqueryui/1.8.13/</include>
-                                <include>rs/fluid/1.4-00b5b5e/</include>
+                                <include>rs/fluid/1.4.0/</include>
                                 <include>rs/famfamfam/silk/1.3/bullet_feed.png</include>
                             </includes>
                         </overlay>

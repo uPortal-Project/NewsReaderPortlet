@@ -33,4 +33,6 @@
 
 <%@ taglib prefix="rs" uri="http://www.jasig.org/resource-server" %>
 
-<link rel="stylesheet" href="<c:url value="/css/news.min.css"/>" type="text/css"></link>
+<portlet:defineObjects/>
+<c:set var="usePortalJsLibs" value="${renderRequest.preferences.map['usePortalJsLibs'][0]}"/>
+<c:set var="portalJsNamespace" value="${renderRequest.preferences.map['portalJsNamespace'][0]}"/>

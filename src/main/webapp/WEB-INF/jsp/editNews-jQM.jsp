@@ -21,7 +21,6 @@
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <portlet:defineObjects/>
-<c:set var="n"><portlet:namespace/></c:set>
 <portlet:actionURL var="hideUrl" escapeXml="false"><portlet:param name="actionCode" value="hide"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
 <portlet:actionURL var="showUrl" escapeXml="false"><portlet:param name="actionCode" value="show"/>
@@ -29,7 +28,7 @@
 <portlet:actionURL var="newUrl" escapeXml="false"><portlet:param name="actionCode" value="showNew"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
+<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.6.1/jquery-1.6.1.min.js"/>"></script>
 
 <div class="portlet ptl-newsreader view-editnews">
 

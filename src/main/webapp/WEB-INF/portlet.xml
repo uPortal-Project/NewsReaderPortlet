@@ -60,22 +60,30 @@
                 <name>feedView</name>
                 <value>scroll-summaries</value>
             </preference>
+            <preference>
+                <name>usePortalJsLibs</name>
+                <value>false</value>
+            </preference>
+            <preference>
+                <name>portalJsNamespace</name>
+                <value>up</value>
+            </preference>
         </portlet-preferences>
         <security-role-ref>
             <role-name>everyone</role-name>
-            <role-link>local.0</role-link>
+            <role-link>Everyone</role-link>
         </security-role-ref>
         <security-role-ref>
             <role-name>newsAdmin</role-name>
-            <role-link>local.2</role-link>
+            <role-link>Portal Administrators</role-link>
         </security-role-ref>
         <security-role-ref>
             <role-name>student</role-name>
-            <role-link>local.34</role-link>
+            <role-link>Students</role-link>
         </security-role-ref>
         <security-role-ref>
             <role-name>staff</role-name>
-            <role-link>local.33</role-link>
+            <role-link>Staff</role-link>
         </security-role-ref>
     </portlet>
 
@@ -110,6 +118,14 @@
             <preference>
                 <name>className</name>
                 <value>org.jasig.portlet.newsreader.adapter.RomeAdapter</value>
+            </preference>
+            <preference>
+                <name>usePortalJsLibs</name>
+                <value>false</value>
+            </preference>
+            <preference>
+                <name>portalJsNamespace</name>
+                <value>up</value>
             </preference>
         </portlet-preferences>
     </portlet>

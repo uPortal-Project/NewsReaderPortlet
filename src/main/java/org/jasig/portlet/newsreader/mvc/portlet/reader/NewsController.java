@@ -50,9 +50,6 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 @RequestMapping("VIEW")
 public class NewsController {
 
-    public static final String PREFERENCE_USE_PORTAL_JS_LIBS = "usePortalJsLibs";
-    public static final String PREFERENCE_PORTAL_JS_NAMESPACE = "portalJsNamespace";
-
     protected final Log log = LogFactory.getLog(getClass());
 
     private NewsStore newsStore;
@@ -138,8 +135,6 @@ public class NewsController {
         model.put("isGuest", request.getRemoteUser() == null);
         
         PortletPreferences prefs = request.getPreferences();
-        model.put(PREFERENCE_USE_PORTAL_JS_LIBS, prefs.getValue(PREFERENCE_USE_PORTAL_JS_LIBS, "true"));
-        model.put(PREFERENCE_PORTAL_JS_NAMESPACE, prefs.getValue(PREFERENCE_PORTAL_JS_NAMESPACE, "up"));
         model.put("storyView", prefs.getValue("summaryView", "flyout"));
         
         String viewName = viewResolver.getReaderView(request);

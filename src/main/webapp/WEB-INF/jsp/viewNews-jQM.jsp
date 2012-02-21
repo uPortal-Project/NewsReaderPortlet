@@ -20,7 +20,6 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
-<portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
 <portlet:resourceURL var="feedUrl"/>
 
@@ -74,13 +73,7 @@
     </div>
 </div>
 
-<c:if test="${ !usePortalJsLibs }">
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4.0/js/fluid-all-1.4.0.min.js"/>"></script>
-</c:if>
-<script type="text/javascript" src="<c:url value="/scripts/news-feed-view-mobile.js"/>"></script>
-
+<rs:aggregatedResources path="${ usePortalJsLibs ? '/skin-mobile-shared.xml' : '/skin-mobile.xml' }"/>
 <script type="text/javascript"><rs:compressJs>
     var ${n} = ${n} || {};
     <c:choose>

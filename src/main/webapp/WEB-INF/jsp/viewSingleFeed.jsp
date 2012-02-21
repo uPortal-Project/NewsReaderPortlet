@@ -20,7 +20,6 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
-<portlet:defineObjects/>
 <c:set var="n"><portlet:namespace/></c:set>
 <c:set var="max" value="${ prefs.maxStories > fn:length(feed.entries) ? fn:length(feed.entries)-1 : prefs.maxStories-1 }"/>
 
@@ -76,9 +75,9 @@
 </div>
 
 <c:if test="${ prefs.summaryView == 'flyout' }">
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.5/jquery-1.5.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.6.1/jquery-1.6.1.min.js"/>"></script>
     <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4-00b5b5e/js/fluid-all-1.4-00b5b5e.min.js"/>"></script>
+    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4.0/js/fluid-all-1.4.0.min.js"/>"></script>
     <script type="text/javascript"><rs:compressJs>
         var ${n} = ${n} || {};
         ${n}.jQuery = jQuery.noConflict(true);
