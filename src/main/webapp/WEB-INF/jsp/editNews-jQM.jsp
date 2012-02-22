@@ -20,7 +20,7 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
-<portlet:defineObjects/>
+<c:set var="n"><portlet:namespace/></c:set>
 <portlet:actionURL var="hideUrl" escapeXml="false"><portlet:param name="actionCode" value="hide"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
 <portlet:actionURL var="showUrl" escapeXml="false"><portlet:param name="actionCode" value="show"/>
