@@ -41,9 +41,10 @@ This project includes:
   Ehcache Core under The Apache Software License, Version 2.0
   Ehcache Web Filters under The Apache Software License, Version 2.0
   ezmorph under The Apache Software License, Version 2.0
+  FindBugs-jsr305 under The Apache Software License, Version 2.0
   Groovy under Apache License, Version 2.0
   groovy-engine under BSD License
-  Guava (Google Common Libraries) under The Apache Software License, Version 2.0
+  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   Hibernate under GNU LESSER GENERAL PUBLIC LICENSE
   HSQLDB Database under HSQLDB License, a BSD open source license
   HttpClient under Apache License
