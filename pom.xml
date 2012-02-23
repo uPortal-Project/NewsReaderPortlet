@@ -11,7 +11,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.1</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -41,9 +41,9 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/trunk</connection>
-        <developerConnection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/trunk</developerConnection>
-        <url>http://developer.jasig.org/source/browse/jasigsvn/portlets/NewsReaderPortlet/trunk</url>
+        <connection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/tags/NewsReaderPortlet-3.0.1</connection>
+        <developerConnection>scm:svn:https://source.jasig.org/portlets/NewsReaderPortlet/tags/NewsReaderPortlet-3.0.1</developerConnection>
+        <url>http://developer.jasig.org/source/browse/jasigsvn/portlets/NewsReaderPortlet/tags/NewsReaderPortlet-3.0.1</url>
     </scm>
 
     <distributionManagement>
