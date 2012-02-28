@@ -31,7 +31,7 @@
 			            <c:if test="${ not empty entry.imageUrl }"><img src="${ entry.imageUrl }"/></c:if>
 			            <h3 class="title">${ entry.title }</h3>
 			            <p>
-			                ${ entry.description.value }
+			                ${ entry.description }
 			            </p>
 		            </a>
 		        </li>
