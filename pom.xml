@@ -83,6 +83,7 @@
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
         <jdbc.artifactId>hsqldb</jdbc.artifactId>
         <jdbc.version>2.2.4</jdbc.version>
+        <quartz.version>1.8.5</quartz.version>
     </properties>
     
     <dependencyManagement>
@@ -293,6 +294,11 @@
                 <artifactId>standard</artifactId>
                 <version>1.1.2</version>
             </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     
@@ -412,6 +418,10 @@
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
         </dependency>
     </dependencies>
 

@@ -31,6 +31,10 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    
+    <!-- Quartz is used for scheduling pre-fetched newsfeeds -->
+    <!-- remove to enable pre-fetching.  Default adapter must be changed for edit screen, and pre-fetching adapter uncommented below -->
+    <!--import resource="quartzContext.xml" /-->
 
     <!-- EHCache Configuration -->
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
@@ -73,6 +77,9 @@
     </util:map>
     
     <!-- NEWS ADAPTER REGISTRATIONS -->
+    <bean id="adapterClassName" class="java.lang.String">
+        <constructor-arg value="org.jasig.portlet.newsreader.adapter.PreFetchingAdapter"/>
+    </bean>
     
     <bean id="romeProcessor" 
         class="org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl"
@@ -84,6 +91,20 @@
         class="org.jasig.portlet.newsreader.adapter.RomeAdapter"
         p:processor-ref="romeProcessor" p:cache-ref="newsCache"/>
 
+    <!-- RSS feed adapter, except with pre-fetching configuration.  Requires quartz context enabled above. See quartzContext.xml -->
+    <!--bean id="org.jasig.portlet.newsreader.adapter.PreFetchingAdapter" 
+         class="org.jasig.portlet.newsreader.adapter.PreFetchingAdapter"
+         p:processor-ref="romeProcessor" p:cache-ref="newsCache"
+         p:policies-ref="antisamyPolicies">
+         <property name="staticFetchedFeeds">
+             <value>false</value>
+         </property>
+         <property name="fetchedUrls">   
+             <list>
+             </list>
+         </property>
+    </bean-->
+        
 
     <bean id="setCreationService" class="org.jasig.portlet.newsreader.service.SharedNewsSetServiceImpl">
         <property name="newsStore" ref="newsStore"/>
