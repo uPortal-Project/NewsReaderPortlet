@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.UserDefinedNewsDefinition;
+import org.jasig.portlet.newsreader.adapter.PreFetchingAdapter;
 import org.jasig.portlet.newsreader.adapter.RomeAdapter;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsListingCommand;
@@ -53,7 +54,7 @@ public class EditUserRomeController {
     protected final Log log = LogFactory.getLog(getClass());
 
     private NewsStore newsStore;
-
+    
     @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
@@ -64,6 +65,13 @@ public class EditUserRomeController {
     @Autowired(required = true)
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
         this.setCreationService = setCreationService;
+    }
+    
+    // This is pulled from the application Context and specifies how RSS feeds are captured. 
+    private String adapterClassName = RomeAdapter.class.getName();
+    @Autowired(required=true)
+    public void setAdapterClassName(String adapterClassName) {
+        this.adapterClassName = adapterClassName;
     }
 
     @ModelAttribute("newsListingCommand")
@@ -117,9 +125,8 @@ public class EditUserRomeController {
             log.debug("Updating");
 
         } else {
-
             definition = new UserDefinedNewsDefinition();
-            definition.setClassName(RomeAdapter.class.getName());
+            definition.setClassName(adapterClassName);
             definition.addParameter("url", form.getUrl());
             definition.setName(form.getName());
             newsStore.storeNewsDefinition(definition);

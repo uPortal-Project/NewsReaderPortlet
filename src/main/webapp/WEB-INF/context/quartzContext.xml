@@ -25,6 +25,7 @@
 	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 	
+	<!-- This is where you specify the adapter.  No need to change unless customizing to fit a new class -->
 	<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	  <property name="targetObject" ref="org.jasig.portlet.newsreader.adapter.PreFetchingAdapter"/>
 	  <property name="targetMethod" value="fetchFeeds"/>
@@ -32,12 +33,13 @@
 	</bean>
 	
 	<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-	  <!-- see the example of method invoking job above -->
+	  <!-- fetching feeds in the above -->
+	  <!-- Common numbers.  10000 = 10 seconds. 600000 = 10 minutes. 3600000 = 1 hour. 86400000 = 24 hours -->
 	  <property name="jobDetail" ref="jobDetail"/>
-	    <!-- 10 seconds -->
-	  <property name="startDelay" value="10000"/>
-	    <!-- repeat every 50 seconds -->
-	  <property name="repeatInterval" value="20000"/>
+	    <!-- 20 seconds after startup -->
+	  <property name="startDelay" value="20000"/>
+	    <!-- repeat every so often. default check every 30 minutes -->
+	  <property name="repeatInterval" value="1800000"/>
 	</bean>
 	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
