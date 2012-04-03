@@ -40,6 +40,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.bind.annotation.ActionMapping;
+import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 @Controller
 @RequestMapping("EDIT")
@@ -63,7 +65,7 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
         
     }
 
-    @RequestMapping
+	@RenderMapping
 	protected ModelAndView showForm(RenderRequest request, RenderResponse response) throws Exception {
 
         log.trace("handleRenderRequestInternal");
@@ -72,6 +74,21 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
 		PortletPreferences preferences = request.getPreferences();
 		Map<String, Preference> model = new HashMap<String, Preference>();
 		
+		Preference name = new Preference();
+		name.setValue(preferences.getValue(Preference.FFED_NAME, ""));
+		name.setReadOnly(preferences.isReadOnly(Preference.FFED_NAME));
+		model.put("name", name);
+
+		Preference url = new Preference();
+		url.setValue(preferences.getValue(Preference.FEED_URL, ""));
+		url.setReadOnly(preferences.isReadOnly(Preference.FEED_URL));
+		model.put("url", url);
+
+		Preference className = new Preference();
+		className.setValue(preferences.getValue(Preference.CLASS_NAME, ""));
+		className.setReadOnly(preferences.isReadOnly(Preference.CLASS_NAME));
+		model.put("className", className);
+
 		Preference max = new Preference();
 		max.setOptions(optionsMaxStories);
 		max.setValue(preferences.getValue(Preference.MAX_STORIES, ""));
@@ -94,7 +111,7 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
 
     }
     
-    @RequestMapping
+	@ActionMapping
     public Map<Object, Object> savePreference(ActionRequest request,
             ActionResponse response) throws Exception {
 

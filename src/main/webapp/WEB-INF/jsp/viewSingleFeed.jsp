@@ -22,7 +22,9 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <c:set var="n"><portlet:namespace/></c:set>
 <c:set var="max" value="${ prefs.maxStories > fn:length(feed.entries) ? fn:length(feed.entries)-1 : prefs.maxStories-1 }"/>
-
+<c:if test="${max < 0}">	
+	<c:set var="max" value="0"/>
+</c:if>
 
 <style>
     ul.news-list li { padding-bottom:0.5em; list-style-image:url('<c:url value="/images/bullet_feed.png"/>');  }
@@ -42,6 +44,8 @@
 </style>
     
 <div class="org-jasig-portlet-newsreader">
+	
+	
     <div id="${n}newsContainer">
         <h2><a href="${ feed.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h2>
         <div class="news-items-container">
@@ -68,7 +72,11 @@
         </div>
     </div>
     <br />
-
+	
+	<c:if test='${not empty message}'>
+		<div class="portlet-msg-error portlet-msg error">${message}</div><br/>
+	</c:if>
+	 
     <c:if test="${supportsEdit}">
         <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
     </c:if>
