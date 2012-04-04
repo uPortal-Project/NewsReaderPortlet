@@ -20,13 +20,13 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
-<portlet:defineObjects/>
+<c:set var="n"><portlet:namespace/></c:set>
 
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.6.1/jquery-1.6.1.min.js"/>"></script>
 <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-<script type="text/javascript"><rs:compressJs>
 
-    var ${n} = ${n} || {};
+<script type="text/javascript"> 
+	 var ${n} = ${n} || {};
     ${n}.jQuery = jQuery.noConflict(true);
 
     ${n}.jQuery(function() {
@@ -36,6 +36,17 @@
         var savePrefUrl = '<portlet:actionURL/>';
 
     	var $p = $("#news-single-preference");	//find the root element of the protlet to scope dom seraches
+		
+		$p.find("#name").change(function(e){
+    		$.post(savePrefUrl, {prefName: 'name', prefValue: $(e.target).val()});
+    	});	
+    	$p.find("#url").change(function(e){
+    		$.post(savePrefUrl, {prefName: 'url', prefValue: $(e.target).val()});
+    	});	
+    	$p.find("#className").change(function(e){
+    		$.post(savePrefUrl, {prefName: 'className', prefValue: $(e.target).val()});
+    	});	
+		
     	$p.find("#max").change(function(e){
     		$.post(savePrefUrl, {prefName: 'maxStories', prefValue: $(e.target).val()});
     	});	
@@ -47,16 +58,35 @@
     	});
 
     });
+	 
+	
+ </script>
 
-</rs:compressJs></script>
 <style type="text/css" media="screen">
 	.preference{
 		margin:0 0 13px 13px;
 	}
 </style>
-
 <div id="news-single-preference">
 	<h3>Preferences</h3>
+	
+
+	<div class="preference">
+		<label class="portlet-form-field-label">News feed name:</label>
+		<input type="text" name="name" value="${name.value}" id="name" size="50">
+	</div>
+		
+	<div class="preference">
+		<label class="portlet-form-field-label">News feed URL:</label>
+		<input type="text" name="url" value="${url.value}" id="url" size="50">
+	</div>
+	
+	<div class="preference">
+		<label class="portlet-form-field-label">News feed class:</label>		
+		<input size="50" type="text" name="className" value="${className.value}" id="className"    
+		       ${ className.readOnly ? "readonly='readonly'" : '' }>
+	</div>
+	
 	<div class="preference">
 		<label>Maximum number of stories to display</label>
 		<select id="max" ${ max.readOnly ? "disabled='disabled'" : ''}>
@@ -85,5 +115,6 @@
 			${ newWindow.value == "true" ?  "checked='checked'" : '' } 
 			${ newWindow.readOnly ? "disabled='disabled'" : '' }>
 	</div>
+	
 	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>"> Return to feed</a>
 </div>
