@@ -20,9 +20,12 @@
 package org.jasig.portlet.newsreader;
 
 public class Preference {
-	public static final String MAX_STORIES = "maxStories";
-	public static final String SUMMARY_VIEW_STYLE = "summaryView";
-	public static final String NEW_WINDOW = "newWindow";
+	public static final String	MAX_STORIES			= "maxStories";
+	public static final String	SUMMARY_VIEW_STYLE	= "summaryView";
+	public static final String	NEW_WINDOW			= "newWindow";
+	public static final String	CLASS_NAME			= "className";
+	public static final String	FFED_NAME			= "name";
+	public static final String	FEED_URL			= "url";
 
 	private String value;
 	private Object options;

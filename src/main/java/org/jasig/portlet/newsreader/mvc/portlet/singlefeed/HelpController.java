@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.portlet.newsreader.mvc.portlet.reader;
+package org.jasig.portlet.newsreader.mvc.portlet.singlefeed;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HelpController {
 
 	@RequestMapping
-    public String getHelpView() {
-        return "help";
-    }
-    
+	public String getHelpView() {
+		return "helpSingleFeed";
+	}
+
 }
