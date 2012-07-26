@@ -142,6 +142,7 @@ public class SingleFeedNewsController {
         preferences.put(Preference.SUMMARY_VIEW_STYLE, portletPrefs.getValue(Preference.SUMMARY_VIEW_STYLE, ""));
         preferences.put(Preference.MAX_STORIES, portletPrefs.getValue(Preference.MAX_STORIES, ""));
         preferences.put(Preference.NEW_WINDOW, portletPrefs.getValue(Preference.NEW_WINDOW, Boolean.TRUE.toString()));
+        preferences.put(Preference.SHOW_TITLE, portletPrefs.getValue(Preference.SHOW_TITLE, Boolean.TRUE.toString()));
         
         model.put("prefs", preferences);
         

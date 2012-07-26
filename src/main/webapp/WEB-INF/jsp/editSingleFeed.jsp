@@ -33,7 +33,7 @@
     
         var $ = ${n}.jQuery;
 
-        var savePrefUrl = '<portlet:actionURL/>';
+        var savePrefUrl = '<portlet:resourceURL/>';
 
     	var $p = $("#news-single-preference");	//find the root element of the protlet to scope dom seraches
 		
@@ -54,7 +54,8 @@
     		$.post(savePrefUrl, {prefName: 'summaryView', prefValue: $(e.target).val()});
     	});	
     	$p.find("#new-window").change(function(e){
-    		$.post(savePrefUrl, {prefName: 'newWindow', prefValue: $(e.target).attr("checked")});
+    		prefValue = ($(e.target).attr("checked") == "checked") ? 'true' : 'false';
+    		$.post(savePrefUrl, {prefName: 'newWindow', prefValue: prefValue});
     	});
 
     });
@@ -73,18 +74,18 @@
 
 	<div class="preference">
 		<label class="portlet-form-field-label">News feed name:</label>
-		<input type="text" name="name" value="${name.value}" id="name" size="50">
+		<input type="text" name="name" value="${name.value}" id="name" size="50" ${ name.readOnly ? "disabled='disabled'" : '' }>
 	</div>
 		
 	<div class="preference">
 		<label class="portlet-form-field-label">News feed URL:</label>
-		<input type="text" name="url" value="${url.value}" id="url" size="50">
+		<input type="text" name="url" value="${url.value}" id="url" size="50" ${ url.readOnly ? "disabled='disabled'" : '' }>
 	</div>
 	
 	<div class="preference">
 		<label class="portlet-form-field-label">News feed class:</label>		
 		<input size="50" type="text" name="className" value="${className.value}" id="className"    
-		       ${ className.readOnly ? "readonly='readonly'" : '' }>
+		       ${ className.readOnly ? "disabled='disabled'" : '' }>
 	</div>
 	
 	<div class="preference">

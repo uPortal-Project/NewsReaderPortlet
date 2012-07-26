@@ -116,6 +116,10 @@
                 <value>false</value>
             </preference>
             <preference>
+                <name>showTitle</name>
+                <value>true</value>
+            </preference>
+            <preference>
                 <name>className</name>
                 <value>org.jasig.portlet.newsreader.adapter.RomeAdapter</value>
             </preference>

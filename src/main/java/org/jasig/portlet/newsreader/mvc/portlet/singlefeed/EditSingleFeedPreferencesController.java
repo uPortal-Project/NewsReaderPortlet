@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 
 import net.sf.json.JSONObject;
 
@@ -38,10 +38,11 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.Preference;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 @Controller
 @RequestMapping("EDIT")
@@ -73,17 +74,20 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
 		//get the user preferences
 		PortletPreferences preferences = request.getPreferences();
 		Map<String, Preference> model = new HashMap<String, Preference>();
-		
+
+		log.debug("name preference readOnly: "+preferences.isReadOnly(Preference.FFED_NAME));
 		Preference name = new Preference();
 		name.setValue(preferences.getValue(Preference.FFED_NAME, ""));
 		name.setReadOnly(preferences.isReadOnly(Preference.FFED_NAME));
 		model.put("name", name);
 
+		log.debug("url preference readOnly: "+preferences.isReadOnly(Preference.FEED_URL));
 		Preference url = new Preference();
 		url.setValue(preferences.getValue(Preference.FEED_URL, ""));
 		url.setReadOnly(preferences.isReadOnly(Preference.FEED_URL));
 		model.put("url", url);
 
+		log.debug("className preference readOnly: "+preferences.isReadOnly(Preference.CLASS_NAME));
 		Preference className = new Preference();
 		className.setValue(preferences.getValue(Preference.CLASS_NAME, ""));
 		className.setReadOnly(preferences.isReadOnly(Preference.CLASS_NAME));
@@ -111,13 +115,15 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
 
     }
     
-	@ActionMapping
-    public Map<Object, Object> savePreference(ActionRequest request,
-            ActionResponse response) throws Exception {
+	@ResourceMapping
+    public String savePreference(ResourceRequest request,
+    		ResourceResponse response, Model model) throws Exception {
 
         try {
             String prefName = request.getParameter("prefName");
             String prefValue = request.getParameter("prefValue");
+            
+            log.debug("Storing: "+prefName+" : "+prefValue);
             
             PortletPreferences prefs = request.getPreferences();
             prefs.setValue(prefName, prefValue);
@@ -126,9 +132,8 @@ public class EditSingleFeedPreferencesController implements InitializingBean {
             JSONObject json = new JSONObject();
             json.put("status", "success");
 
-            Map<Object, Object> model = new HashMap<Object, Object>();
-            model.put("json", json);
-            return model;
+            model.addAttribute("json", json);
+            return "json";
         } catch (Exception e) {
             log.error("There was an error saving the preferences.", e);
             throw e;

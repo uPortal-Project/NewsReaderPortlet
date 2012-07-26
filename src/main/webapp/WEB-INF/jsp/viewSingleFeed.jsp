@@ -47,23 +47,48 @@
 	
 	
     <div id="${n}newsContainer">
-        <h2><a href="${ feed.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h2>
+    	<c:if test="${prefs.showTitle}">
+       		<h2><a href="${ feed.link }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h2>
+       	</c:if>
         <div class="news-items-container">
             <c:choose>
                 <c:when test="${ prefs.summaryView == 'titleAndAbstract' }">
                     <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
                         <h3>
-                            <a class="news-items" href="${ entry.link }" rel="popup" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+                        	<c:choose>
+	                        	<c:when test="${!empty entry.link }">
+	                            	<a class="news-item" href="${ entry.link }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+	                            </c:when>
+	                            <c:otherwise>
+	                            	<span class="news-item">${ entry.title }</span>
+	                            </c:otherwise>
+                            </c:choose>
                         </h3>
                         <p>${ entry.description }</p>
                     </c:forEach>
+                </c:when>
+                <c:when test="${ prefs.summaryView == 'flyout' }">
+                	<ul class="news-list">
+                        <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
+                            <li>
+								<a class="news-item" href="${ entry.link }" title="${ entry.description }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+                                <span style="display:none">${ entry.description }</span>
+                            </li>
+                        </c:forEach>
+                    </ul>
                 </c:when>
                 <c:otherwise>
                     <ul class="news-list">
                         <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
                             <li>
-                                <a class="news-item" href="${ entry.link }" rel="popup" title="${ entry.description }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
-                                <c:if test="${ prefs.summaryView == 'flyout' }"><span style="display:none">${ entry.description }</span></c:if>
+                            	<c:choose>
+		                        	<c:when test="${!empty entry.link }">
+		                            	<a class="news-item" href="${ entry.link }" title="${ entry.description }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ entry.title }</a>
+		                            </c:when>
+		                            <c:otherwise>
+		                            	<span class="news-item" title="${ entry.description }">${ entry.title }</span>
+		                            </c:otherwise>
+                            	</c:choose>
                             </li>
                         </c:forEach>
                     </ul>
