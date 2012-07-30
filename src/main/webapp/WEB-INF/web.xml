@@ -87,4 +87,11 @@
         <url-pattern>/WEB-INF/servlet/view</url-pattern>
     </servlet-mapping>
     
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <scripting-invalid>true</scripting-invalid>
+        </jsp-property-group>
+    </jsp-config>
+    
 </web-app>
