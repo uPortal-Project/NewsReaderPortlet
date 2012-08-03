@@ -48,6 +48,8 @@ public class ThemeNameViewResolverImpl implements IViewResolver {
     public String getReaderView(PortletRequest request) {
         if (isMobile(request)) {
             return "viewNews-jQM";
+        } else if(request.getPreferences().getValue("feedView", "tabs").equalsIgnoreCase("tabs")) {
+            return "viewNews-tabs";
         } else {
             return "viewNews";
         }
