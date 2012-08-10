@@ -100,7 +100,7 @@ public class RomeNewsProcessorImpl {
         
         if (entry.getContents() != null) {
             for (SyndContent content : (List<SyndContent>) entry.getContents()) {
-                if ("html".equals(content.getType())) {
+                if ("html".equals(content.getType()) || "text".equals(content.getType())) {
                     item.setContent(content.getValue());
                 }
             }
