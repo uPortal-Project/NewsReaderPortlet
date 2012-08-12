@@ -70,6 +70,8 @@
         <entry key="antisamy-textonly" value="classpath:/antisamy/antisamy-textonly.xml"/>
         <entry key="antisamy-ebay" value="classpath:/antisamy/antisamy-ebay-1.1.1.xml"/>
         <entry key="antisamy-img" value="classpath:/antisamy/antisamy-img.xml"/>
+        <entry key="antisamy-manchester" value="classpath:/antisamy/antisamy-manchester.xml"/>
+        <entry key="antisamy-anythinggoes" value="classpath:/antisamy/antisamy-anythinggoes-1.1.1.xml"/>
     </util:map>
     
     <!-- NEWS ADAPTER REGISTRATIONS -->
@@ -90,13 +92,8 @@
     </bean>
     
     <!-- Message source for this context, loaded from localized "messages_xx" files -->
-    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-        <property name="basenames">
-            <list>
-                <value>messages</value>
-            </list>
-        </property>
-    </bean>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+        p:basenames="messages" p:useCodeAsDefaultMessage="true"/>
     
     <bean class="org.jasig.portlet.newsreader.service.ThemeNameViewResolverImpl"/>
     

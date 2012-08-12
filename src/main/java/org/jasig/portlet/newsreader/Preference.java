@@ -23,6 +23,7 @@ public class Preference {
 	public static final String	MAX_STORIES			= "maxStories";
 	public static final String	SUMMARY_VIEW_STYLE	= "summaryView";
 	public static final String	NEW_WINDOW			= "newWindow";
+	public static final String	SHOW_TITLE			= "showTitle";
 	public static final String	CLASS_NAME			= "className";
 	public static final String	FFED_NAME			= "name";
 	public static final String	FEED_URL			= "url";

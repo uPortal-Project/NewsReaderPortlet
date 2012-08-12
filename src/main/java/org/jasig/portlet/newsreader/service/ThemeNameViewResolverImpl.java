@@ -31,35 +31,11 @@ import javax.portlet.PortletRequest;
  * @author Jen Bourey, jennifer.bourey@gmail.com
  * @version $Revision$
  */
-public class ThemeNameViewResolverImpl implements IViewResolver {
+public class ThemeNameViewResolverImpl extends AbstractViewResolver {
 
     protected static final String THEME_NAME_PROPERTY = "themeName";
     protected static final String MOBILE_THEMES_KEY = "mobileThemes";
     protected static final String[] MOBILE_THEMES_DEFAULT = new String[]{ "UniversalityMobile" };
-    
-    public String getSingleFeedView(PortletRequest request) {
-        if (isMobile(request)) {
-            return "viewSingleFeed-jQM";
-        } else {
-            return "viewSingleFeed";
-        }
-    }
-
-    public String getReaderView(PortletRequest request) {
-        if (isMobile(request)) {
-            return "viewNews-jQM";
-        } else {
-            return "viewNews";
-        }
-    }
-    
-    public String getPreferencesView(PortletRequest request) {
-        if (isMobile(request)) {
-            return "editNews-jQM";
-        } else {
-            return "editNews";
-        }
-    }
     
     protected boolean isMobile(PortletRequest request) {
         String[] mobileThemes = request.getPreferences().getValues(MOBILE_THEMES_KEY, MOBILE_THEMES_DEFAULT);
