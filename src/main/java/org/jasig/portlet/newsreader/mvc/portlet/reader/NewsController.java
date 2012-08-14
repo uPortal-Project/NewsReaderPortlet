@@ -139,6 +139,7 @@ public class NewsController {
         
         String viewName = viewResolver.getReaderView(request);
         return new ModelAndView(viewName, model);
+        
     }
 
 }
