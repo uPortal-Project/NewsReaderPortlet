@@ -29,7 +29,7 @@ import javax.portlet.PortletRequest;
  * @author Jen Bourey
  * @version $Revision$
  */
-public class ViewResolverImpl implements IViewResolver {
+public class ViewResolverImpl extends AbstractViewResolver {
 
     private List<Pattern> mobileDeviceRegexes = null;
     
@@ -44,32 +44,6 @@ public class ViewResolverImpl implements IViewResolver {
             for (String pattern : patterns) {
                     this.mobileDeviceRegexes.add(Pattern.compile(pattern));
             }
-    }
-
-    public String getSingleFeedView(PortletRequest request) {
-        if (isMobile(request)) {
-            return "viewSingleFeed-jQM";
-        } else {
-            return "viewSingleFeed";
-        }
-    }
-
-    public String getReaderView(PortletRequest request) {
-        if (isMobile(request)) {
-            return "viewNews-jQM";
-        } else if(request.getPreferences().getValue("feedView", "tabs").equalsIgnoreCase("tabs")) {
-            return "viewNews-tabs";
-        } else {
-            return "viewNews";
-        }
-    }
-    
-    public String getPreferencesView(PortletRequest request) {
-        if (isMobile(request)) {
-            return "editNews-jQM";
-        } else {
-            return "editNews";
-        }
     }
     
     protected boolean isMobile(PortletRequest request) {
