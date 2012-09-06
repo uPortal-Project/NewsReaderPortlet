@@ -65,9 +65,9 @@
 </script>
 
 <script type="text/template" id="${n}feed-detail-template">
-    <div class="titlebar portlet-wrapper-titlebar" data-role="header" data-position="inline">
-        <a href="javascript:;" data-icon="home" data-direction="reverse" data-transition="none">Back</a>
-        <h1 class="title">${"<%= title %>"}</h1>
+    <div class="titlebar portlet-titlebar ui-header ui-bar-a" data-role="header">
+        <a href="javascript:;" data-role="button" data-icon="home" data-direction="reverse" data-transition="none" class="ui-btn-left ui-btn-inline">Back</a>
+        <h2 class="ui-title" role="heading">${"<%= title %>"}</h1>
     </div>
 
     <!-- Module content  -->
@@ -95,7 +95,7 @@
     ${n}.Backbone = Backbone.noConflict();
     </c:when>
     <c:otherwise>
-    ${n}.jQuery = up.jQuery.noConflict(true);
+    ${n}.jQuery = up.jQuery;
     ${n}._ = up._;
     ${n}.Backbone = up.Backbone;
     </c:otherwise>
@@ -113,7 +113,7 @@
             template: _.template($("#${n}feed-detail-template").html()),
             postRender: function () {
                 this.$el.trigger("create");
-                this.$(".titlebar").header();
+                console.log(this.$el);
             }
         });
         

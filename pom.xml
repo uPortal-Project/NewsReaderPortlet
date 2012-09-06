@@ -76,8 +76,8 @@
     </pluginRepositories>
 
     <properties>
-        <spring.version>3.0.5.RELEASE</spring.version>
-        <resource-server.version>1.0.23</resource-server.version>
+        <spring.version>3.1.1.RELEASE</spring.version>
+        <resource-server.version>1.0.26</resource-server.version>
         
         <!-- The JDBC Driver used by the portlet -->
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
@@ -227,6 +227,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>1.8.5</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
                 <version>${spring.version}</version>
@@ -362,6 +367,10 @@
             <artifactId>resource-server-utils</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
         </dependency>
@@ -487,7 +496,7 @@
                             <groupId>org.jasig.resourceserver</groupId>
                             <artifactId>resource-server-content</artifactId>
                             <includes>
-                                <include>rs/jquery/1.6.1/</include>
+                                <include>rs/jquery/1.6.4/</include>
                                 <include>rs/jqueryui/1.8.13/</include>
                                 <include>rs/fluid/1.4.0/</include>
                                 <include>rs/jquery-mobile/1.0rc1/</include>
