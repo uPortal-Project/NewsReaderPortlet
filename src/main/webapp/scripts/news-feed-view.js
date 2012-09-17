@@ -237,9 +237,9 @@ if (!news.init) {
                     pathAs: "story",
                     valueAs: "storyValue",
                     tree: {
-                        storyTitle: { value: "${{story}.title}" },
+                        storyTitle: { markup: "${{story}.title}" },
                         storyLink: { target: "${{story}.link}", decorators: [ { attrs: { title: "{storyValue}.description" } } ] },
-                        storySummary: { value: "${{story}.description}" }
+                        storySummary: { markup: "${{story}.description}" }
                     }
                 }
             },
@@ -316,7 +316,7 @@ if (!news.init) {
                     controlledBy: "entries",
                     pathAs: "story",
                     tree: {
-                        storyContent: { value: "${{story}.description}" }
+                        storyContent: { markup: "${{story}.description}" }
                     }
                 }
             },
