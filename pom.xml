@@ -444,6 +444,10 @@
                             <includes>
                                 <include>skin.xml</include>
                                 <include>skin-shared.xml</include>
+                                
+                                <include>skin-tabs.xml</include>
+                                <include>skin-tabs-shared.xml</include>
+                                
                                 <include>skin-mobile.xml</include>
                                 <include>skin-mobile-shared.xml</include>
                             </includes>
