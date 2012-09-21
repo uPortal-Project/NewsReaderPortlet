@@ -102,7 +102,7 @@
 		<div class="portlet-msg-error portlet-msg error">${message}</div><br/>
 	</c:if>
 	 
-    <c:if test="${supportsEdit}">
+    <c:if test="${supportsEdit && !isGuest}">
         <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
     </c:if>
 </div>

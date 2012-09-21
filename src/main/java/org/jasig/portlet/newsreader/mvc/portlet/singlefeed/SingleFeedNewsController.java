@@ -25,7 +25,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.portlet.ActionRequest;
-import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
@@ -39,6 +38,7 @@ import org.jasig.portlet.newsreader.Preference;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.model.NewsFeed;
+import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
 import org.jasig.portlet.newsreader.service.IInitializationService;
 import org.jasig.portlet.newsreader.service.IViewResolver;
 import org.springframework.beans.BeansException;
@@ -51,7 +51,7 @@ import org.springframework.web.portlet.ModelAndView;
 
 @Controller
 @RequestMapping("VIEW")
-public class SingleFeedNewsController {
+public class SingleFeedNewsController extends AbstractNewsController {
 
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -145,9 +145,6 @@ public class SingleFeedNewsController {
         preferences.put(Preference.SHOW_TITLE, portletPrefs.getValue(Preference.SHOW_TITLE, Boolean.TRUE.toString()));
         
         model.put("prefs", preferences);
-        
-        boolean supportsEdit = request.isPortletModeAllowed(PortletMode.EDIT);
-        model.put("supportsEdit", supportsEdit);
 
         String viewName = viewResolver.getSingleFeedView(request);
         return new ModelAndView(viewName, model);

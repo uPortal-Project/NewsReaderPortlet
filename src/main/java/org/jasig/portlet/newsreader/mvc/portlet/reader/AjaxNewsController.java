@@ -111,7 +111,6 @@ public class AjaxNewsController {
 		}
 		
 		int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
-		boolean showAuthor = Boolean.parseBoolean( prefs.getValue( "showAuthor", "true" ) );
 		
         // only bother to fetch the active feed
         String activeFeed = request.getPreferences().getValue("activeFeed", null);

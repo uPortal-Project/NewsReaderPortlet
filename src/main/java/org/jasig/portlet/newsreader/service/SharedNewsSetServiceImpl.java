@@ -61,8 +61,9 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 		
 		// Persistent set is now loaded but may still need re-initalising since last use.
 		// by adding setId to session, we signal that initialisation has taken place.
-		if (session.getAttribute("setId") == null) {
-			Set<String> roles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
+        if (session.getAttribute("setId") == null) {
+            @SuppressWarnings("unchecked")
+            Set<String> roles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
 			
 			newsStore.initNews(set, roles);
 			newsStore.storeNewsSet(set);

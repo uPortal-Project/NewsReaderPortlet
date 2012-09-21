@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
@@ -34,6 +33,7 @@ import javax.portlet.RenderRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
 import org.jasig.portlet.newsreader.service.IInitializationService;
 import org.jasig.portlet.newsreader.service.IViewResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
  */
 @Controller
 @RequestMapping("VIEW")
-public class NewsController {
+public class NewsController extends AbstractNewsController {
 
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -128,11 +128,6 @@ public class NewsController {
             session.setMaxInactiveInterval(60 * 60 * 2);
 
         } 
-
-        model.put("supportsHelp", request.isPortletModeAllowed(PortletMode.HELP));
-        model.put("supportsEdit", request.isPortletModeAllowed(PortletMode.EDIT));
-        model.put("isAdmin", session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE));
-        model.put("isGuest", request.getRemoteUser() == null);
         
         PortletPreferences prefs = request.getPreferences();
         model.put("storyView", prefs.getValue("summaryView", "flyout"));
