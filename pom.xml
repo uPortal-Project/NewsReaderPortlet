@@ -298,6 +298,12 @@
                 <artifactId>standard</artifactId>
                 <version>1.1.2</version>
             </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.0</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     
@@ -422,6 +428,10 @@
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -443,6 +453,10 @@
                             <includes>
                                 <include>skin.xml</include>
                                 <include>skin-shared.xml</include>
+                                
+                                <include>skin-tabs.xml</include>
+                                <include>skin-tabs-shared.xml</include>
+                                
                                 <include>skin-mobile.xml</include>
                                 <include>skin-mobile-shared.xml</include>
                             </includes>
