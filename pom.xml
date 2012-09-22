@@ -11,7 +11,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>3.0.3-SNAPSHOT</version>
+    <version>3.0.3</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
