@@ -38,9 +38,6 @@
             </div>
         </div>
         
-        <div class="news-stories-container" style="display:none">
-        </div>
-
         <div class="story-container" style="display:none">
             <div data-role="header" class="titlebar portlet-titlebar">
                 <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
@@ -66,7 +63,7 @@
 
 <script type="text/template" id="${n}feed-detail-template">
     <div class="titlebar portlet-titlebar ui-header ui-bar-a" data-role="header">
-        <a href="javascript:;" data-role="button" data-icon="home" data-direction="reverse" data-transition="none" class="ui-btn-left ui-btn-inline">Back</a>
+        <a href="javascript:;" data-role="button" data-icon="home" data-direction="reverse" data-transition="none" class="ui-btn-left ui-btn-inline feed-back-button">Back</a>
         <h2 class="ui-title" role="heading">${"<%= title %>"}</h1>
     </div>
 
@@ -84,22 +81,10 @@
         </ul>
     </div>
 </script>
-        
-<rs:aggregatedResources path="${ usePortalJsLibs ? '/skin-mobile-shared.xml' : '/skin-mobile.xml' }"/>
+
+<c:set var="mobile" value="${ true }"/>        
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
-    var ${n} = ${n} || {};
-    <c:choose>
-    <c:when test="${ !usePortalJsLibs }">
-    ${n}.jQuery = jQuery.noConflict(true);
-    ${n}._ = _.noConflict();
-    ${n}.Backbone = Backbone.noConflict();
-    </c:when>
-    <c:otherwise>
-    ${n}.jQuery = up.jQuery;
-    ${n}._ = up._;
-    ${n}.Backbone = up.Backbone;
-    </c:otherwise>
-    </c:choose>
     
     ${n}.jQuery(function(){
         var $, _, Backbone, newsView;
@@ -107,18 +92,22 @@
         $ = ${n}.jQuery;
         _ = ${n}._;
         Backbone = ${n}.Backbone;
+        upnews = ${n}.upnews;
         
         var MobileNewsFeedDetailView = upnews.NewsFeedDetailView.extend({
-            el: "#${n} .news-stories-container",
             template: _.template($("#${n}feed-detail-template").html()),
             postRender: function () {
+            	console.log("post");
                 this.$el.trigger("create");
-                console.log(this.$el);
+                this.$(".feed-back-button").click(function () {
+                    $("#${n} .news-stories-container").hide();
+                    $("#${n} .news-feeds-container").show();
+                });
             }
         });
         
         var MobileNewsFeedListView = upnews.NewsFeedListView.extend({
-            el: "#${n} .news-feeds-container",
+            el: "#${n} .news-feed-list",
             template: _.template($("#${n}feed-list-template").html()),
             postRender: function () {
                 var view = this;
@@ -126,7 +115,7 @@
                     var link, feedId;
                     link = $(this);
                     var div = $(link.parents("li").get(0));
-                    var index = view.$(".news-feed-list li").index(div);
+                    var index = $("#${n} .news-feeds-container li").index(div);
                     feedId = view.model.at(index).get("id");
                     view.trigger("feedSelected", feedId);
                 });
@@ -137,9 +126,14 @@
 
         newsView = new upnews.NewsView();
         newsView.url = "${feedUrl}";
-        newsView.feedDetailView = new MobileNewsFeedDetailView();
+        newsView.feedDetailViewFn = MobileNewsFeedDetailView;
         newsView.feedListView = new MobileNewsFeedListView();
+        newsView.namespace = "${n}";
         
+        newsView.onSuccessfulSetup = function () {
+        	$("#${n} .news-stories-container").hide();
+            $.mobile.hidePageLoadingMsg();
+        };
         newsView.onSuccessfulRetrieval = function () {
             $.mobile.hidePageLoadingMsg();
         };
@@ -147,21 +141,17 @@
         $(document).ready(function () {
 
             newsView.feedListView.bind("feedSelected", function (id) {
-                newsView.feedListView.$el.hide();
-                newsView.feedDetailView.$el.show();
+                $("#${n} .news-feeds-container").hide();
+                $("#${n} .news-stories-container").hide();
+                $("#${n}feed" + id).show();
                 if (!newsView.feedDetails || newsView.feedDetails.get("id") !== id) {
                     $.mobile.showPageLoadingMsg();
                     newsView.getFeed(id);
                 }
             });
-            
-            newsView.feedDetailView.bind("showList", function () {
-                newsView.feedDetailView.$el.hide();
-                newsView.feedListView.$el.show();
-            });
-            
+
             $.mobile.showPageLoadingMsg();
-            newsView.getFeed();
+            newsView.setup();
             
         });
         

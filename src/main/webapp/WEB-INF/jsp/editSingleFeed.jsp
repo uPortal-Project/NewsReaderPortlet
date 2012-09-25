@@ -22,9 +22,7 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <c:set var="n"><portlet:namespace/></c:set>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.6.1/jquery-1.6.1.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"> 
 	 var ${n} = ${n} || {};
     ${n}.jQuery = jQuery.noConflict(true);

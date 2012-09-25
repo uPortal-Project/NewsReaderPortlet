@@ -131,6 +131,8 @@ public class NewsController extends AbstractNewsController {
         
         PortletPreferences prefs = request.getPreferences();
         model.put("storyView", prefs.getValue("summaryView", "flyout"));
+        model.put("feedView", prefs.getValue("feedView", "select"));
+        model.put("newWindow", Boolean.valueOf(prefs.getValue("newWindow", "true")));
         
         String viewName = viewResolver.getReaderView(request);
         return new ModelAndView(viewName, model);

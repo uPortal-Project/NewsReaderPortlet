@@ -43,12 +43,14 @@
 
     <div id="${n}">
         <div class="news-reader-feed-list portlet ptl-newsreader view-news">
-            <div class="news-feeds-container">
-                <div class="news-feed-list">
-                </div>
-            </div>
-            <div class="news-stories-container">
-            </div>
+            <c:choose>
+                <c:when test="${ feedView == 'select' }">
+                    <select class="news-feeds-container"></select>
+                </c:when>
+                <c:otherwise>
+                    <ul class="news-feeds-container"></ul>
+                </c:otherwise>
+            </c:choose>
             <div class="story-container" style="display:none">
                 <div class="titlebar portlet-titlebar">
                     <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
@@ -78,13 +80,20 @@
 </div>
 
 <script type="text/template" id="${n}feed-list-template">
-    <select>
-      ${"<%"} _(feeds).each(function(feed) { ${" %>"}
-        <option value="${"<%="} feed.id ${"%>"}">
-            ${"<%="} feed.name ${"%>"}
-        </option>
-      ${"<%"} }); ${"%>"}
-    </select>
+    <c:choose>
+        <c:when test="${ feedView == 'select' }">
+                ${"<%"} _(feeds).each(function(feed) { ${" %>"}
+                <option value="${"<%="} feed.id ${"%>"}">
+                    ${"<%="} feed.name ${"%>"}
+                </option>
+                ${"<%"} }); ${"%>"}
+        </c:when>
+        <c:otherwise>
+                ${"<%"} _(feeds).each(function(feed) { ${" %>"}
+                    <li><a href="#${n}feed${"<%="} feed.id ${"%>"}">${"<%="} feed.name ${"%>"}</a></li>
+                ${"<%"} }); ${"%>"}
+        </c:otherwise>
+    </c:choose>    
 </script>
 
 <script type="text/template" id="${n}feed-detail-template">
@@ -97,7 +106,7 @@
             <ul class="news-stories feed">
                 ${"<%"} _(entries).each(function(story) { ${" %>"}
                     <li>
-                        <a href="${"<%="} story.link ${"%>"}" title="${"<%="} story.description ${"%>"}">
+                        <a href="${"<%="} story.link ${"%>"}" title="${"<%="} story.description ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
                             ${"<%="} story.title ${"%>"}
                         </a>
                     </li>
@@ -108,7 +117,7 @@
             <div class="news-stories feed">
                 ${"<%"} _(entries).each(function(story) { ${" %>"}
                     <h3>
-                        <a href="${"<%="} story.link ${"%>"}">
+                        <a href="${"<%="} story.link ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
                             ${"<%="} story.title ${"%>"}
                         </a>
                     </h3>
@@ -119,24 +128,17 @@
     </c:choose>
 </script>
 
-<c:set var="usePortalJsLibs" value="${ false }"/>
-<rs:aggregatedResources path="${ usePortalJsLibs ? '/skin-shared.xml' : '/skin.xml' }"/>
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
-    var ${n} = ${n} || {};
-    ${n}.jQuery = jQuery.noConflict(true);
-    ${n}._ = _.noConflict();
-    ${n}.Backbone = Backbone.noConflict();
-    ${n}.fluid = null;
-    
     ${n}.jQuery(function(){
-        var $, _, Backbone, newsView;
+        var $, _, Backbone, newsView, upnews;
         
         $ = ${n}.jQuery;
         _ = ${n}._;
         Backbone = ${n}.Backbone;
+        upnews = ${n}.upnews;
         
         var DesktopNewsFeedDetailView = upnews.NewsFeedDetailView.extend({
-            el: "#${n} .news-stories-container",
             template: _.template($("#${n}feed-detail-template").html()),
             postRender: function () {
                 <c:if test="${ storyView == 'flyout' }">
@@ -148,26 +150,45 @@
             }
         });
         
-        
         var DesktopNewsFeedListView = upnews.NewsFeedListView.extend({
             el: "#${n} .news-feeds-container",
-            template: _.template($("#${n}feed-list-template").html()),
-            postRender: function () {
-                var view = this;
-                
-                view.$("option").removeAttr("selected");
-                view.$("option[value=" + newsView.feedDetails.get("id") + "]").attr("selected", "selected");
-                
-                view.$("select").change(function () {
-                    view.trigger("feedSelected", $(this).val());
-                });
-            }
+            template: _.template($("#${n}feed-list-template").html())
         });
         
         newsView = new upnews.NewsView();
+        newsView.onSuccessfulSetup = function () {
+            if (${ feedView  == 'select' }) {
+            	// set the current news feed to selected in the select menu
+                $("#${n} option").removeAttr("selected");
+                $("#${n} option[value=" + newsView.feedDetails.get("id") + "]").attr("selected", "selected");
+
+                // event handler for select menu
+                $("#${n} select").change(function () {
+                	var id = $(this).val();
+                    newsView.feedListView.trigger("feedSelected", id);
+                    $("#${n} .news-stories-container").hide();
+                    $("#${n}feed" + id).show();
+                });
+            } else {
+            	// compute the index of the currently selected feed
+            	var index = $("#${n} .news-stories-container").index($("#${n}feed" + newsView.feedDetails.get("id")));
+            	
+            	// initialize the jQueryUI tabs widget and set the initially
+            	// selected tab
+                $("#${n} .view-news").tabs({
+                	select: function (event, ui) {
+                		var id = ui.panel.id.split("feed")[1];
+                		newsView.feedListView.trigger("feedSelected", id);
+                	},
+                	selected: index
+                });
+            }
+
+        };
         newsView.url = "${feedUrl}";
-        newsView.feedDetailView = new DesktopNewsFeedDetailView();
+        newsView.feedDetailViewFn = DesktopNewsFeedDetailView;
         newsView.feedListView = new DesktopNewsFeedListView();
+        newsView.namespace = "${n}";
         
         $(document).ready(function () {
 
@@ -177,8 +198,8 @@
                 }
             });
             
-            newsView.getFeed();
-            
+            newsView.setup();
+
         });
         
     });

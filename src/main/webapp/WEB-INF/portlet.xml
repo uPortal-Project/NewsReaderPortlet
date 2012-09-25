@@ -58,7 +58,7 @@
             </preference>
             <preference>
                 <name>feedView</name>
-                <value>scroll-summaries</value>
+                <value>summaries</value>
             </preference>
             <preference>
                 <name>usePortalJsLibs</name>

@@ -22,19 +22,14 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <c:set var="n"><portlet:namespace/></c:set>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.6.1/jquery-1.6.1.min.js"/>"></script>
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-
 <style type="text/css">
 	table.edit-news { width: 100%; }
 	table.edit-news td { font-size: 1.1em; }
 	table.edit-news td.instruction { color: #666; font-size: 1em; text-align: center; vertical-align: bottom; }
 </style>
 
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
-    var ${n} = ${n} || {};
-    ${n}.jQuery = jQuery.noConflict(true);
-    
     ${n}.jQuery(function(){
 
         var $ = ${n}.jQuery;
@@ -48,10 +43,10 @@
             $.post(savePrefUrl, { prefName: 'feedView', prefValue: $('#${n}feedView').val() }, null, 'json');
         });
         $('#${n}storyView').change(function(){
-            $.post(savePrefUrl, { prefName: 'storyView', prefValue: $('#${n}storyView').val() }, null, 'json');
+            $.post(savePrefUrl, { prefName: 'summaryView', prefValue: $('#${n}storyView').val() }, null, 'json');
         });
         $("#${n}newWindow").change(function(e){
-        	$.post(savePrefUrl, { prefName: 'newWindow', prefValue: $(e.target).attr("checked") }, null, 'json');
+        	$.post(savePrefUrl, { prefName: 'newWindow', prefValue: ($(e.target).attr("checked") == 'checked') }, null, 'json');
         });
 
     });
@@ -202,10 +197,10 @@
 
     <p>
         <label for="${n}storyView">Display my stories as</label>
-        <c:set var="storyView" value="${renderRequest.preferences.map['storyView'][0]}"/>
+        <c:set var="storyView" value="${renderRequest.preferences.map['summaryView'][0]}"/>
         <select id="${n}storyView">
-            <option value="flyout-list" ${ storyView == 'flyout-list' ? 'selected="selected"' : '' }>a list with flyouts</option>
-            <option value="scroll-summaries" ${ storyView == 'scroll-summaries' ? 'selected="selected"' : '' }>scrolling div</option>
+            <option value="flyout" ${ storyView == 'flyout' ? 'selected="selected"' : '' }>a list with flyouts</option>
+            <option value="summaries" ${ storyView == 'summaries' ? 'selected="selected"' : '' }>scrolling div</option>
         </select>
     </p>
     

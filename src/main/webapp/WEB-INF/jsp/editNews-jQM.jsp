@@ -28,8 +28,6 @@
 <portlet:actionURL var="newUrl" escapeXml="false"><portlet:param name="actionCode" value="showNew"/>
     <portlet:param name="id" value="ID"/></portlet:actionURL>
 
-<script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.6.1/jquery-1.6.1.min.js"/>"></script>
-
 <div class="portlet ptl-newsreader view-editnews">
 
     <div data-role="header" class="titlebar portlet-titlebar">
@@ -57,11 +55,12 @@
 	</div>
     
 </div>
+
+<c:set var="mobile" value="${ true }"/>        
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
-    var newsReaderPortlet = newsReaderPortlet || {};
-    newsReaderPortlet.jQuery = jQuery.noConflict(true);
-    newsReaderPortlet.jQuery(function(){
-        var $ = newsReaderPortlet.jQuery;
+    ${n}.jQuery(function(){
+        var $ = ${n}.jQuery;
         var newUrl = '${ newUrl }';
         var showUrl = '${ showUrl }';
         var hideUrl = '${ hideUrl }';
