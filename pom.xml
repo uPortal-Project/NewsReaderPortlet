@@ -4,14 +4,14 @@
     <parent>
         <groupId>org.jasig.parent</groupId>
         <artifactId>jasig-parent</artifactId>
-        <version>33</version>
+        <version>34</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>3.0.3-SNAPSHOT</version>
+    <version>3.0.4-SNAPSHOT</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -41,7 +41,7 @@
     </developers>
 
     <scm>
-	<connection>scm:git:git://github.com/Jasig/NewsReaderPortlet.git</connection>
+        <connection>scm:git:git://github.com/Jasig/NewsReaderPortlet.git</connection>
         <developerConnection>scm:git:git@github.com:Jasig/NewsReaderPortlet.git</developerConnection>
         <url>https://github.com/Jasig/NewsReaderPortlet</url>
     </scm>
