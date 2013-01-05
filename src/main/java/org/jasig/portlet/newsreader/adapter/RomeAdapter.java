@@ -34,6 +34,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -58,6 +60,17 @@ public class RomeAdapter implements INewsAdapter {
     protected final Log log = LogFactory.getLog(getClass());
     
     private RomeNewsProcessorImpl processor;
+
+    private String proxyHost = null;
+    private String proxyPort = null;
+    
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    public void setProxyPort(String proxyPort) {
+        this.proxyPort = proxyPort;
+    }
     
     public void setProcessor(RomeNewsProcessorImpl processor) {
         this.processor = processor;
@@ -149,12 +162,30 @@ public class RomeAdapter implements INewsAdapter {
         HttpClient client = new HttpClient();
         GetMethod get = null;
         NewsFeed feed = null;
-
+        String proxyHost = null;
+        String proxyPort = null;
+        InputStream in = null;
+        
         try {
 
-            if (log.isDebugEnabled())
-                log.debug("Retrieving feed " + url);
-
+            log.debug("Retrieving feed " + url);
+            
+            if (StringUtils.isBlank(this.proxyHost) && StringUtils.isBlank(this.proxyPort)) {
+                log.trace("Locating proxy configuration from system properties...");
+                proxyHost = System.getProperty("http.proxyHost");
+                proxyPort = System.getProperty("http.proxyPort");
+                if (StringUtils.isBlank(proxyHost) && StringUtils.isBlank(proxyPort)) {
+                    log.debug("Found proxy configuration from system properties");
+                }
+            }
+            
+            if (StringUtils.isBlank(proxyHost) && StringUtils.isBlank(proxyPort)) {
+                client.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+                log.debug("Using proxy configuration to retrieve news feeds: " + proxyHost + ":" + proxyPort);
+            } else {
+                log.debug("No proxy configuration is set. Proceeding normally...");
+            }
+            
             get = new GetMethod(url);
             int rc = client.executeMethod(get);
             if (rc != HttpStatus.SC_OK) {
@@ -162,7 +193,7 @@ public class RomeAdapter implements INewsAdapter {
             }
 
             // retrieve
-            InputStream in = get.getResponseBodyAsStream();
+            in = get.getResponseBodyAsStream();
 
             // See if we got back any results. If so, then we can work on the results.
             // Otherwise we'd eat a parse error for trying to parse a null stream.
@@ -179,22 +210,27 @@ public class RomeAdapter implements INewsAdapter {
 
         } catch (PolicyException e) {
             log.warn("Error fetching feed", e);
-            throw new NewsException("Error fetching feed");
+            throw new NewsException("Error fetching feed", e);
         } catch (ScanException e) {
             log.warn("Error fetching feed", e);
-            throw new NewsException("Error fetching feed");
+            throw new NewsException("Error fetching feed", e);
         } catch (HttpException e) {
             log.warn("Error fetching feed", e);
-            throw new NewsException("Error fetching feed");
+            throw new NewsException("Error fetching feed", e);
         } catch (IOException e) {
             log.warn("Error fetching feed", e);
-            throw new NewsException("Error fetching feed");
+            throw new NewsException("Error fetching feed", e);
         } catch (FeedException e) {
             log.warn("Error parsing feed: ", e);
-            throw new NewsException("Error parsing feed");
+            throw new NewsException("Error parsing feed", e);
         } finally {
-            if (get != null)
+            if (in != null) {
+                IOUtils.closeQuietly(in);
+            }
+            
+            if (get != null) {
                 get.releaseConnection();
+            }
         }
 
     }
