@@ -171,7 +171,7 @@ public class RomeAdapter implements INewsAdapter {
             log.debug("Retrieving feed " + url);
             
             if (StringUtils.isBlank(this.proxyHost) && StringUtils.isBlank(this.proxyPort)) {
-                log.trace("Locating proxy configuration from system properties...");
+                log.trace("Checking for proxy configuration from system properties...");
                 proxyHost = System.getProperty("http.proxyHost");
                 proxyPort = System.getProperty("http.proxyPort");
                 if (StringUtils.isBlank(proxyHost) && StringUtils.isBlank(proxyPort)) {
@@ -179,7 +179,7 @@ public class RomeAdapter implements INewsAdapter {
                 }
             }
             
-            if (StringUtils.isBlank(proxyHost) && StringUtils.isBlank(proxyPort)) {
+            if (!StringUtils.isBlank(proxyHost) && !StringUtils.isBlank(proxyPort)) {
                 client.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
                 log.debug("Using proxy configuration to retrieve news feeds: " + proxyHost + ":" + proxyPort);
             } else {
