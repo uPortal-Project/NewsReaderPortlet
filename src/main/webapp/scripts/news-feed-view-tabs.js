@@ -135,7 +135,6 @@ if (!news.init) {
 
                                 $(".news-stories-container").empty();
                                 
-                                    console.log("updating");
                                     $.ajax({
                                         url: that.options.url, 
                                         data: { activeateNews: feedId },

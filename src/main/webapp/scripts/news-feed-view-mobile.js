@@ -149,7 +149,6 @@ if (!news.init) {
                     feedId = that.model.feeds[feedIndex].id;
                     
                     if (feedId !== that.model.activeFeed) {
-                        console.log("updating");
                         $.ajax({
                             url: that.options.url, 
                             data: { activeateNews: feedId },
