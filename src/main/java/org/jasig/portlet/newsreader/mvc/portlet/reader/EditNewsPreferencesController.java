@@ -52,6 +52,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
+import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 
@@ -97,7 +98,7 @@ public class EditNewsPreferencesController {
         this.viewResolver = viewResolver;
     }
 
-    @RequestMapping
+    @RenderMapping
     public ModelAndView showPreferencesView(RenderRequest request,
             RenderResponse response) throws Exception {
 
