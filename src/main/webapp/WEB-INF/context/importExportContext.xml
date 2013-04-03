@@ -21,10 +21,13 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <import resource="applicationContext.xml" />
+    <context:property-placeholder location="classpath:datasource.properties"/>
+    <import resource="databaseContext.xml" />
 
     <bean id="crn-import" class="org.danann.cernunnos.runtime.PojoTask">
         <property name="location"
@@ -63,6 +66,33 @@
     <bean id="parse-NewsDefinition" class="org.danann.cernunnos.runtime.PojoTask">
         <property name="location"
             value="classpath:/org/jasig/portlet/newsreader/io/parse-NewsDefinition.crn.xml" />
+    </bean>
+
+    <bean id="crn-export" class="org.danann.cernunnos.runtime.PojoTask">
+        <property name="location" value="classpath:/org/jasig/portlet/newsreader/io/export.crn.xml" />
+        <property name="requestAttributes">
+            <util:map>
+                <entry key="exportTasks">
+                    <ref bean="exportTasks" />
+                </entry>
+            </util:map>
+        </property>
+    </bean>
+
+    <util:list id="exportTasks">
+        <ref bean="export-PredefinedNewsDefinitions_v1-0" />
+    </util:list>
+
+    <bean id="export-PredefinedNewsDefinitions_v1-0" class="org.danann.cernunnos.runtime.PojoTask">
+        <property name="location"
+                  value="classpath:/org/jasig/portlet/newsreader/io/export-PredefinedNewsDefinitions_v1-0.crn.xml" />
+        <property name="requestAttributes">
+            <util:map>
+                <entry key="newsStore">
+                    <ref bean="newsStore" />
+                </entry>
+            </util:map>
+        </property>
     </bean>
 
 </beans>
