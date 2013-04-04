@@ -45,14 +45,7 @@
         <developerConnection>scm:git:git@github.com:Jasig/NewsReaderPortlet.git</developerConnection>
         <url>https://github.com/Jasig/NewsReaderPortlet</url>
       <tag>HEAD</tag>
-  </scm>
-
-    <distributionManagement>
-        <site>
-            <id>developer.jasig</id>
-            <url>${jasig-site-dist-base}/NewsReaderPortlet/${project.version}</url>
-        </site>
-    </distributionManagement>
+    </scm>
 
     <repositories>
         <repository>
