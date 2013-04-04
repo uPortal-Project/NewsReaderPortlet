@@ -82,7 +82,7 @@
         <!-- The JDBC Driver used by the portlet -->
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
         <jdbc.artifactId>hsqldb</jdbc.artifactId>
-        <jdbc.version>2.2.4</jdbc.version>
+        <jdbc.version>2.2.9</jdbc.version>
     </properties>
     
     <dependencyManagement>
@@ -361,7 +361,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate</artifactId>
-            <version>3.2.3.ga</version>
         </dependency>
         <dependency>
             <groupId>org.jasig.resourceserver</groupId>
@@ -438,7 +437,6 @@
         <plugins>
              <plugin>
                  <artifactId>maven-release-plugin</artifactId>
-                 <version>2.2.1</version>
                  <configuration>
                      <autoVersionSubmodules>true</autoVersionSubmodules>
                      <localCheckout>true</localCheckout>
@@ -533,17 +531,11 @@
                     </overlays>
                 </configuration>
             </plugin>
-
-
-
-
-
-
             <!-- Plug-in to add lifecycles to support db-init, data-import, and data-export -->
             <plugin>
-                <groupId>org.jasig.maven</groupId>
-                <artifactId>uportaldata-maven-plugin</artifactId>
-                <version>1.0</version>
+                <groupId>org.jasig.portal.maven</groupId>
+                <artifactId>uportal-maven-plugin</artifactId>
+                <version>1.0.0</version>
                 <!-- extensions must be set to true to pick up the custom phases -->
                 <extensions>true</extensions>
             </plugin>
@@ -579,7 +571,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <!-- To import the calendar db tables, use mvn [-Ddir=dir] data-import -->
+            <!-- To import the news reader db tables, use mvn [-Ddir=dir] data-import -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
