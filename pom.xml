@@ -11,7 +11,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>3.0.5</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -44,7 +44,8 @@
         <connection>scm:git:git://github.com/Jasig/NewsReaderPortlet.git</connection>
         <developerConnection>scm:git:git@github.com:Jasig/NewsReaderPortlet.git</developerConnection>
         <url>https://github.com/Jasig/NewsReaderPortlet</url>
-    </scm>
+      <tag>NewsReaderPortlet-3.0.5</tag>
+  </scm>
 
     <distributionManagement>
         <site>
@@ -584,7 +585,7 @@
                         <configuration>
                             <tasks>
                                 <!-- Set default value of data location if it is not set -->
-                                <property name="dir" value="${basedir}/src/main/data"/>
+                                <property name="dir" value="${basedir}/src/main/data" />
 
                                 <property name="runtime_classpath" refid="maven.runtime.classpath" />
                                 <property name="plugin_classpath" refid="maven.plugin.classpath" />
@@ -600,7 +601,7 @@
                                         <pathelement path="${plugin_classpath}" />
                                         <pathelement location="${servlet.jar}" />
                                         <pathelement location="${portlet.jar}" />
-                                        <pathelement path="${project.build.directory}/${project.artifactId}/WEB-INF/classes"/>
+                                        <pathelement path="${project.build.directory}/${project.artifactId}/WEB-INF/classes" />
                                     </classpath>
 
                                     <arg value="classpath://org/jasig/portlet/newsreader/io/import.crn.xml" />
@@ -637,10 +638,10 @@
                                         <pathelement path="${plugin_classpath}" />
                                         <pathelement location="${servlet.jar}" />
                                         <pathelement location="${portlet.jar}" />
-                                        <pathelement path="${project.build.directory}/${project.artifactId}/WEB-INF/classes"/>
+                                        <pathelement path="${project.build.directory}/${project.artifactId}/WEB-INF/classes" />
                                     </classpath>
                                     <!-- This may be helpful to troubleshoot CAP-137 -->
-                                    <!--<jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"/>-->
+                                    <!--<jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005" />-->
 
                                     <arg value="classpath://org/jasig/portlet/newsreader/io/export.crn.xml" />
                                     <arg value="${dir}" />
