@@ -40,6 +40,7 @@ public class NewsFeedItem {
     private String link;
     private String title;
     private String uri;
+    private String fullStory;
 
     public String getImageUrl() {
         return imageUrl;
@@ -105,4 +106,11 @@ public class NewsFeedItem {
         this.uri = uri;
     }
 
+    public String getFullStory() {
+		return fullStory;
+	}
+
+	public void setFullStory(String fullStory) {
+		this.fullStory = fullStory;
+	}  
 }

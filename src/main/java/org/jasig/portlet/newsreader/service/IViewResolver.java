@@ -33,4 +33,5 @@ public interface IViewResolver {
     
     public String getPreferencesView(PortletRequest request);
 
+    public String getFullStoryView(PortletRequest request);
 }
