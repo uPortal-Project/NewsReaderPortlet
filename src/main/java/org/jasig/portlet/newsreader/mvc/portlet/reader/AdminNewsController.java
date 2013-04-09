@@ -34,6 +34,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 
 /**
@@ -57,7 +58,7 @@ public class AdminNewsController {
         this.newsStore = newsStore;
     }
 
-    @RequestMapping(params="action=administration")
+    @RenderMapping(params="action=administration")
     public ModelAndView getAdminView(RenderRequest request,
             RenderResponse response) {
 
@@ -65,7 +66,6 @@ public class AdminNewsController {
 
         // get a list of all predefined newss
         model.put("feeds", newsStore.getPredefinedNewsConfigurations());
-
         return new ModelAndView("/adminNews", "model", model);
 
     }
