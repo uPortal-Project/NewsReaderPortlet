@@ -21,8 +21,7 @@
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 
-
-<spring:message code="help.detail" />
+<spring:message code="help.detail" htmlEscape="false"/>
 <p>
 	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"><spring:message code="back.list"/></a>
 </p>
