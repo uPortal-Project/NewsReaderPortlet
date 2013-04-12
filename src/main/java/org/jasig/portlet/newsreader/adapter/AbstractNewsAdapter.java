@@ -19,34 +19,24 @@
 
 package org.jasig.portlet.newsreader.adapter;
 
-import javax.portlet.PortletRequest;
-
-import org.jasig.portlet.newsreader.NewsConfiguration;
-import org.jasig.portlet.newsreader.model.NewsFeed;
-
-/**
- * @author Anthony Colebourne
- */
-public interface INewsAdapter {
+public abstract class AbstractNewsAdapter implements INewsAdapter {
     
-    /**
-     * Provides the fully-qualified name of the concrete INewsAdapter class, 
-     * which is used in creating a {@link NewsDefinition}.
-     */
-    String getClassName();
-    
-    /**
-     * Provides the key string for accessing the name of this adapter from the 
-     * messageBundle bean.
-     */
-    String getNameKey();
-    
-    /**
-     * Provides the key string for accessing the description of this adapter 
-     * from the messageBundle bean.
-     */
-    String getDescriptionKey();
+    private static final String NAME_KEY_SUFFIX = ".messages.name";
+    private static final String DESCRIPTION_KEY_SUFFIX = ".messages.description";
 
-    NewsFeed getSyndFeed(NewsConfiguration config, PortletRequest request) throws NewsException;
+    @Override
+    public String getClassName() {
+        return getClass().getName();
+    }
+
+    @Override
+    public String getNameKey() {
+        return this.getClassName() + NAME_KEY_SUFFIX;
+    }
+
+    @Override
+    public String getDescriptionKey() {
+        return this.getClassName() + DESCRIPTION_KEY_SUFFIX;
+    }
 
 }
