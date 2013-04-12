@@ -34,6 +34,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.bind.annotation.ActionMapping;
+import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 
 /**
@@ -57,9 +59,10 @@ public class AdminNewsController {
         this.newsStore = newsStore;
     }
 
-    @RequestMapping(params="action=administration")
-    public ModelAndView getAdminView(RenderRequest request,
-            RenderResponse response) {
+    @RenderMapping(params="action=administration")
+    public ModelAndView getAdminView(RenderRequest request,RenderResponse response) {
+    	
+    	log.debug("Entering news admin");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -70,7 +73,7 @@ public class AdminNewsController {
 
     }
 
-    @RequestMapping(params="action=deletePredefinedFeed")
+    @ActionMapping(params="action=deletePredefinedFeed")
     public void deleteFeed(@RequestParam("id") Long id) {
         PredefinedNewsDefinition def = newsStore.getPredefinedNewsDefinition(id);
         newsStore.deleteNewsDefinition(def);
