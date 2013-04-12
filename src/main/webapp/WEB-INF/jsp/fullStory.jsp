@@ -23,6 +23,10 @@
 <c:set var="n"><portlet:namespace/></c:set>
     
 <div class="org-jasig-portlet-newsreader">
+	<div class="titlebar portlet-titlebar">
+		<h1 class="title story-title">${storyTitle}</h1>
+	</div>
+                
 	${fullStory}
 	
 	<p>

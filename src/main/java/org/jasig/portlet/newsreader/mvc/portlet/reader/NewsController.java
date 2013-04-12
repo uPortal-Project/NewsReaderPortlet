@@ -190,6 +190,7 @@ public class NewsController extends AbstractNewsController {
             NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, request);
             if (sharedFeed != null) {
                	NewsFeedItem item = sharedFeed.getEntries().get(itemIndex);
+               	model.addAttribute("storyTitle", item.getTitle());
                	model.addAttribute("fullStory", item.getFullStory());
             } else {
                 log.warn("Failed to get feed from adapter.");
