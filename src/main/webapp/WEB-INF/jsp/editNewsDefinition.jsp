@@ -92,8 +92,16 @@
 		<form:errors path="name" cssClass="portlet-msg-error"/>
 	</p>
    	<p>
+
         <label class="portlet-form-field-label"><spring:message code="edit.news.feed.url"/></label>
-        <form:input path="className" size="50"/>
+        <form:select path="className">
+            <c:forEach items="${availableAdapters}" var="adapter">
+                <c:set var="adapterName"><spring:message code="${adapter.nameKey}"/></c:set>
+                <c:set var="adapterDescription"><spring:message code="${adapter.descriptionKey}"/></c:set>
+                <form:option value="${adapter.className}" label="${adapterName}" title="${adapterDescription}" />
+            </c:forEach>
+        </form:select>
+
 		<form:errors path="className" cssClass="portlet-msg-error"/>
 	</p>
 	<br/>

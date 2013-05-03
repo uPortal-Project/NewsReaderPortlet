@@ -21,12 +21,13 @@ package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 @Controller
 @RequestMapping("HELP")
 public class HelpController {
 
-	@RequestMapping
+	@RenderMapping
     public String getHelpView() {
         return "help";
     }

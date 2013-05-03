@@ -81,6 +81,10 @@
         class="org.jasig.portlet.newsreader.adapter.RomeAdapter"
         p:processor-ref="romeProcessor" p:cache-ref="newsCache"/>
 
+    <util:list id="availableAdapters">
+        <ref bean="org.jasig.portlet.newsreader.adapter.RomeAdapter"/>
+    </util:list>
+
 
     <bean id="setCreationService" class="org.jasig.portlet.newsreader.service.SharedNewsSetServiceImpl">
         <property name="newsStore" ref="newsStore"/>

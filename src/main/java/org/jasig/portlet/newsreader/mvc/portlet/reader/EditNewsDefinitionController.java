@@ -19,12 +19,16 @@
 
 package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
+import java.util.List;
+
+import javax.annotation.Resource;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.mvc.NewsDefinitionForm;
@@ -50,6 +54,9 @@ public class EditNewsDefinitionController {
     protected final Log log = LogFactory.getLog(getClass());
 
     private NewsStore newsStore;
+
+    @Resource(name="availableAdapters")
+    private List<INewsAdapter> availableAdapters;
 
     @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
@@ -120,5 +127,9 @@ public class EditNewsDefinitionController {
 
     }
     
+    @ModelAttribute("availableAdapters")
+    public List<INewsAdapter> getAvailableAdapters() {
+        return availableAdapters;
+    }
 
 }

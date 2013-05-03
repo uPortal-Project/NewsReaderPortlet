@@ -55,7 +55,7 @@ import com.sun.syndication.io.FeedException;
  *
  * @author Anthony Colebourne
  */
-public class RomeAdapter implements INewsAdapter {
+public class RomeAdapter extends AbstractNewsAdapter {
 
     protected final Log log = LogFactory.getLog(getClass());
     
