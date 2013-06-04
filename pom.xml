@@ -70,6 +70,7 @@
     </pluginRepositories>
 
     <properties>
+        <icu4j.version>51.1</icu4j.version>
         <spring.version>3.1.4.RELEASE</spring.version>
         <resource-server.version>1.0.26</resource-server.version>
         
@@ -116,6 +117,11 @@
                         <artifactId>js</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.ibm.icu</groupId>
+                <artifactId>icu4j</artifactId>
+                <version>${icu4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-collections</groupId>
