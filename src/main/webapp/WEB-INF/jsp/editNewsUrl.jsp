@@ -23,31 +23,31 @@
 
 <portlet:actionURL var="postUrl"><portlet:param name="action" value="editUrl"/></portlet:actionURL>
 
-<h3>Edit news feed</h3>
+<h3><spring:message code="edit.news.feed.edit"/></h3>
 
 <form:form name="news" commandName="newsListingCommand" action="${postUrl}">
 	<form:hidden path="id"/>
 	<p>
-		<label class="portlet-form-field-label">News feed name:</label>
+		<label class="portlet-form-field-label"><spring:message code="edit.news.feed.name"/></label>
 		<form:input path="name" size="50"/>
 		<form:errors path="name" cssClass="portlet-msg-error"/>
 	</p>
    	<p>
-        <label class="portlet-form-field-label">News feed URL:</label>
+        <label class="portlet-form-field-label"><spring:message code="edit.news.feed.url"/></label>
         <form:input path="url" size="50"/>
 		<form:errors path="url" cssClass="portlet-msg-error"/>
 	</p>
 	<br/>
 	<p>
-		Note: News feed URLs should start with http:// or https://.
+		<spring:message code="edit.news.feed.note"/>
 	</p>
 	<br/>
     <p>
-        <button type="submit" class="portlet-form-button">Save news feed</button>
+        <button type="submit" class="portlet-form-button"><spring:message code="edit.news.feed.sav"/></button>
     </p>
 </form:form>
 <br />
 <hr />
 <p>
-	<a href="<portlet:renderURL><portlet:param name="action" value="editPrefences"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> Return to main edit page</a>
+	<a href="<portlet:renderURL><portlet:param name="action" value="editPrefences"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"><spring:message code="edit.news.feed.back"/></a>
 </p>
