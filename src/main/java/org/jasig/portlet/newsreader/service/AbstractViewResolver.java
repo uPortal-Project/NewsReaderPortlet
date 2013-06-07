@@ -56,6 +56,16 @@ public abstract class AbstractViewResolver implements IViewResolver {
         }
     }
     
+    @Override
+    public String getFullStoryView(PortletRequest request) {
+    	final PortletPreferences preferences = request.getPreferences();
+        if (isMobile(request)) {
+            return preferences.getValue(MOBILE_VIEW_NAME_PREFERENCE, "fullStory-jQM");
+        } else {
+            return preferences.getValue(VIEW_NAME_PREFERENCE, "fullStory");
+        }
+    }
+    
     protected abstract boolean isMobile(PortletRequest request);
 
 }

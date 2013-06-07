@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletURL;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
@@ -40,6 +41,7 @@ import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.model.NewsFeed;
+import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -137,6 +139,19 @@ public class AjaxNewsController {
 	            // retrieve the feed from this adaptor
                 NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, request);
                 if (sharedFeed != null) {
+                	
+                	List<NewsFeedItem> items = sharedFeed.getEntries();
+                	for(int i = 0; i < items.size(); i++) {
+                		NewsFeedItem item = items.get(i); 
+                		if(item.getLink() == null && item.getFullStory() != null) {
+                			PortletURL link = response.createRenderURL();
+                			link.setParameter("action", "fullStory");
+                			link.setParameter("activeFeed", feedConfig.getId().toString());
+                			link.setParameter("itemIndex", String.valueOf(i));
+                			item.setLink(link.toString());
+                		}
+                	}
+                	
                     if (sharedFeed.getEntries().size() > maxStories) {
                         NewsFeed limitedFeed = new NewsFeed();
                         limitedFeed.setAuthor(sharedFeed.getAuthor());
