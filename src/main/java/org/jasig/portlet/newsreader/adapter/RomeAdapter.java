@@ -19,8 +19,6 @@
 
 package org.jasig.portlet.newsreader.adapter;
 
-import java.lang.IllegalArgumentException;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,14 +28,18 @@ import javax.portlet.PortletRequest;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.impl.client.DecompressingHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
@@ -159,8 +161,8 @@ public class RomeAdapter extends AbstractNewsAdapter {
      */
     protected NewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
 
-        HttpClient client = new HttpClient();
-        GetMethod get = null;
+        HttpClient client = new DecompressingHttpClient(new DefaultHttpClient());
+        HttpGet get = null;
         NewsFeed feed = null;
         String proxyHost = null;
         String proxyPort = null;
@@ -180,20 +182,21 @@ public class RomeAdapter extends AbstractNewsAdapter {
             }
             
             if (!StringUtils.isBlank(proxyHost) && !StringUtils.isBlank(proxyPort)) {
-                client.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+            	HttpHost proxy = new HttpHost(proxyHost, Integer.valueOf(proxyPort));
+                client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
                 log.debug("Using proxy configuration to retrieve news feeds: " + proxyHost + ":" + proxyPort);
             } else {
                 log.debug("No proxy configuration is set. Proceeding normally...");
             }
             
-            get = new GetMethod(url);
-            int rc = client.executeMethod(get);
-            if (rc != HttpStatus.SC_OK) {
-                log.warn("HttpStatus for " + url + ":" + rc);
+            get = new HttpGet(url);
+            HttpResponse httpResponse = client.execute(get);
+            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                log.warn("HttpStatus for " + url + ":" + httpResponse);
             }
 
             // retrieve
-            in = get.getResponseBodyAsStream();
+            in = httpResponse.getEntity().getContent();
 
             // See if we got back any results. If so, then we can work on the results.
             // Otherwise we'd eat a parse error for trying to parse a null stream.
@@ -212,9 +215,6 @@ public class RomeAdapter extends AbstractNewsAdapter {
             log.warn("Error fetching feed", e);
             throw new NewsException("Error fetching feed", e);
         } catch (ScanException e) {
-            log.warn("Error fetching feed", e);
-            throw new NewsException("Error fetching feed", e);
-        } catch (HttpException e) {
             log.warn("Error fetching feed", e);
             throw new NewsException("Error fetching feed", e);
         } catch (IOException e) {
