@@ -31,7 +31,7 @@
 <div class="portlet ptl-newsreader view-editnews">
 
     <div data-role="header" class="titlebar portlet-titlebar">
-        <a href="<portlet:renderURL portletMode="view"/>" data-role="button" data-icon="back" data-inline="true">Back</a>
+        <a href="<portlet:renderURL portletMode="view"/>" data-role="button" data-icon="back" data-inline="true"><spring:message code="back"/></a>
         <h2>Preferences</h2>
     </div>
 

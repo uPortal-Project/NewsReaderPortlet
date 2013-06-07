@@ -53,8 +53,8 @@
             </c:choose>
             <div class="story-container" style="display:none">
                 <div class="titlebar portlet-titlebar">
-                    <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
-                    <h1 class="title story-title">Story Title</h1>
+                    <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true"><spring:message code="back" /></a>
+                    <h1 class="title story-title"><spring:message code="story.title" /></h1>
                 </div>
                 <div data-role="content" class="portlet-content">
                     <div class="story-content">
@@ -67,14 +67,14 @@
     <br/>
     <p>
         <c:if test="${supportsHelp}">
-            <a href="<portlet:renderURL portletMode='help'/>">Help</a>
+            <a href="<portlet:renderURL portletMode='help'/>"><spring:message code="help" /></a>
         </c:if>
         <c:if test="${supportsEdit && !isGuest}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>">Edit news feeds</a>
+            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><spring:message code="edit.news.feed" /></a>
         </c:if>
         <c:if test="${isAdmin}">
                 &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>">
-                    News Administration</a>
+                    <spring:message code="administration" /></a>
         </c:if>
     </p>
 </div>

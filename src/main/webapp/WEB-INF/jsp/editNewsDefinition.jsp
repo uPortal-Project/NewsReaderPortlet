@@ -82,17 +82,18 @@
 
 <portlet:actionURL var="postUrl"><portlet:param name="action" value="editNewsDefinition"/></portlet:actionURL>
 
-<h3>Edit feed</h3>
+<h3><spring:message code="edit.news.feed.edit"/></h3>
 
 <form:form name="news" commandName="newsDefinitionForm" action="${postUrl}">
 	<form:hidden path="id"/>
 	<p>
-		<label class="portlet-form-field-label">Feed name:</label>
+		<label class="portlet-form-field-label"><spring:message code="edit.news.feed.name"/></label>
 		<form:input path="name" size="50"/>
 		<form:errors path="name" cssClass="portlet-msg-error"/>
 	</p>
    	<p>
-        <label class="portlet-form-field-label">Feed class:</label>
+
+        <label class="portlet-form-field-label"><spring:message code="edit.news.feed.url"/></label>
         <form:select path="className">
             <c:forEach items="${availableAdapters}" var="adapter">
                 <c:set var="adapterName"><spring:message code="${adapter.nameKey}"/></c:set>
@@ -100,11 +101,12 @@
                 <form:option value="${adapter.className}" label="${adapterName}" title="${adapterDescription}" />
             </c:forEach>
         </form:select>
+
 		<form:errors path="className" cssClass="portlet-msg-error"/>
 	</p>
 	<br/>
 	<p id="role-list">
-		<label class="portlet-form-field-label">Feed default roles:</label><br />
+		<label class="portlet-form-field-label"><spring:message code="edit.news.feed.roles"/></label><br />
 		<c:forEach items="${ newsDefinitionForm.role }" var="role">
 			<div style="padding-left: 5px;">
 				<input name="role" type="text" value="${ role }" size="20"/>
@@ -116,11 +118,11 @@
 		<div style="padding: 5px;">
 			<a href="javascript:;" onclick="addRole('role-list')">
 				<img style="vertical-align: middle;" src="<c:url value="/images/add.png"/>"/>
-				add a role</a>
+				<spring:message code="edit.news.feed.roles.add"/></a>
 		</div>
 	</p>
 	<p id="parameter-list">
-		<label class="portlet-form-field-label">Feed parameters:</label><br />
+		<label class="portlet-form-field-label"><spring:message code="edit.news.feed.param"/></label><br />
 		<c:forEach items="${ newsDefinitionForm.parameterName }" var="paramName" varStatus="status">
 			<div style="padding-left: 5px">
 				<input name="parameterName" type="text" value="${ paramName }" size="20"/>
@@ -133,15 +135,15 @@
 		<div style="padding: 5px;">
 			<a href="javascript:;" onclick="addParameter('parameter-list')">
 				<img style="vertical-align: middle;" src="<c:url value="/images/add.png"/>"/>
-				add a parameter</a>
+				<spring:message code="edit.news.feed.param.add"/></a>
 		</div>
 	</p>
     <p>
-        <button type="submit" class="portlet-form-button">Save feed</button>
+        <button type="submit" class="portlet-form-button"><spring:message code="edit.news.feed.sav"/></button>
     </p>
 </form:form>
 <br />
 <hr />
 <p>
-	<a href="<portlet:renderURL><portlet:param name="action" value="administration"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> Return to main administration page</a>
+	<a href="<portlet:renderURL><portlet:param name="action" value="administration"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> <spring:message code="administration.feed.back"/></a>
 </p>

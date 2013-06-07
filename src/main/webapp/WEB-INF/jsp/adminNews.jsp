@@ -28,12 +28,11 @@
 </style>
 
 <portlet:actionURL var="postUrl"/>
-
 <table class="edit-news">
 	<tr>
-		<td><h3>Pre-configured Feeds</h3></td>
-		<td class="instruction">Edit</td>
-		<td class="instruction">Delete</td>
+		<td><h3><spring:message code="administration.preconf"/></h3></td>
+		<td class="instruction"><spring:message code="edit.news.edit"/></td>
+		<td class="instruction"><spring:message code="edit.news.delete"/></td>
 	</tr>
 	<c:forEach items="${ model.feeds }" var="feed">
     	<tr>
@@ -59,12 +58,12 @@
 <p>
 	<a href="<portlet:renderURL><portlet:param name="action" value="editNewsDefinition"/></portlet:renderURL>">
 		<img src="<c:url value="/images/rss_add.png"/>" style="vertical-align: middle"/>
-		add a news feed
+		<spring:message code="edit.news.add"/>
 	</a>
 </p>
 
 <br />
 <hr />
 <p>
-	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> Return to news</a>
+	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"><spring:message code="back.list"/></a>
 </p>

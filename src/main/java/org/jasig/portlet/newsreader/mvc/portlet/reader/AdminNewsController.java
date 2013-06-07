@@ -60,15 +60,16 @@ public class AdminNewsController {
     }
 
     @RenderMapping(params="action=administration")
+
     public ModelAndView getAdminView(RenderRequest request,RenderResponse response) {
     	
     	log.debug("Entering news admin");
+
 
         Map<String, Object> model = new HashMap<String, Object>();
 
         // get a list of all predefined newss
         model.put("feeds", newsStore.getPredefinedNewsConfigurations());
-
         return new ModelAndView("/adminNews", "model", model);
 
     }
