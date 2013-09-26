@@ -40,6 +40,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DecompressingHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
@@ -59,13 +62,20 @@ import com.sun.syndication.io.FeedException;
  */
 public class RomeAdapter extends AbstractNewsAdapter {
 
+    private static final String HTTP_CLIENT_CONNECTION_TIMEOUT = "httpClientConnectionTimeout";
+    private static final String HTTP_CLIENT_SOCKET_TIMEOUT = "httpClientSocketTimeout";
+    private static final int DEFAULT_HTTP_CLIENT_CONNECTION_TIMEOUT = 10000;
+    private static final int DEFAULT_HTTP_CLIENT_SOCKET_TIMEOUT = 10000;
     protected final Log log = LogFactory.getLog(getClass());
-    
     private RomeNewsProcessorImpl processor;
-
     private String proxyHost = null;
     private String proxyPort = null;
-    
+    private HttpClient httpClient = null;
+
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
     public void setProxyHost(String proxyHost) {
         this.proxyHost = proxyHost;
     }
@@ -73,7 +83,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
     public void setProxyPort(String proxyPort) {
         this.proxyPort = proxyPort;
     }
-    
+
     public void setProcessor(RomeNewsProcessorImpl processor) {
         this.processor = processor;
     }
@@ -92,6 +102,9 @@ public class RomeAdapter extends AbstractNewsAdapter {
         PortletPreferences prefs = request.getPreferences();
         String titlePolicy = prefs.getValue( "titlePolicy", "antisamy-textonly");
         String descriptionPolicy = prefs.getValue( "descriptionPolicy", "antisamy-textonly");
+        if (this.httpClient == null || areDefaultTimeoutsOverridden(prefs)) {
+            this.httpClient = createHttpClientWithTimeouts(prefs);
+        }
 
         // Get the URL for this feed
         // If there is a 2nd URL, it is a fall-back in case the first does not work.
@@ -151,6 +164,12 @@ public class RomeAdapter extends AbstractNewsAdapter {
         return feed;
     }
 
+    private boolean areDefaultTimeoutsOverridden(PortletPreferences prefs) {
+        return ((DEFAULT_HTTP_CLIENT_CONNECTION_TIMEOUT != Integer.parseInt(prefs.getValue(HTTP_CLIENT_CONNECTION_TIMEOUT, String.valueOf(DEFAULT_HTTP_CLIENT_CONNECTION_TIMEOUT))))
+                 ||
+                (DEFAULT_HTTP_CLIENT_SOCKET_TIMEOUT != Integer.parseInt(prefs.getValue(HTTP_CLIENT_SOCKET_TIMEOUT, String.valueOf(DEFAULT_HTTP_CLIENT_SOCKET_TIMEOUT)))));
+    }
+
     /**
      * Retrieve the entire feed using HTTPClient and clean using AntiSamy,
      * build an SyndFeed object using ROME.
@@ -160,8 +179,6 @@ public class RomeAdapter extends AbstractNewsAdapter {
      * @return SyndFeed Feed object
      */
     protected NewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
-
-        HttpClient client = new DecompressingHttpClient(new DefaultHttpClient());
         HttpGet get = null;
         NewsFeed feed = null;
         String proxyHost = null;
@@ -182,15 +199,15 @@ public class RomeAdapter extends AbstractNewsAdapter {
             }
             
             if (!StringUtils.isBlank(proxyHost) && !StringUtils.isBlank(proxyPort)) {
-            	HttpHost proxy = new HttpHost(proxyHost, Integer.valueOf(proxyPort));
-                client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+                HttpHost proxy = new HttpHost(proxyHost, Integer.valueOf(proxyPort));
+                this.httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
                 log.debug("Using proxy configuration to retrieve news feeds: " + proxyHost + ":" + proxyPort);
             } else {
                 log.debug("No proxy configuration is set. Proceeding normally...");
             }
             
             get = new HttpGet(url);
-            HttpResponse httpResponse = client.execute(get);
+            HttpResponse httpResponse = this.httpClient.execute(get);
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.warn("HttpStatus for " + url + ":" + httpResponse);
             }
@@ -254,4 +271,15 @@ public class RomeAdapter extends AbstractNewsAdapter {
         this.cache = cache;
     }
 
+    private HttpClient createHttpClientWithTimeouts(PortletPreferences prefs) {
+        // The connection is attempted 5 times prior to stopping
+        // so the actual time before failure will be 5 times this setting
+        int httpClientConnectionTimeout = Integer.parseInt(prefs.getValue(HTTP_CLIENT_CONNECTION_TIMEOUT, String.valueOf(DEFAULT_HTTP_CLIENT_CONNECTION_TIMEOUT)));
+        int httpClientSocketTimeout = Integer.parseInt(prefs.getValue(HTTP_CLIENT_SOCKET_TIMEOUT, String.valueOf(DEFAULT_HTTP_CLIENT_SOCKET_TIMEOUT)));
+        final HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, httpClientConnectionTimeout);
+        HttpConnectionParams.setSoTimeout(httpParams, httpClientSocketTimeout);
+        return new DecompressingHttpClient(new DefaultHttpClient(httpParams));
+    }
+    
 }

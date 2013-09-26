@@ -68,6 +68,16 @@
                 <name>portalJsNamespace</name>
                 <value>up</value>
             </preference>
+            <!-- The connection is attempted 5 times prior to stopping
+                 so the actual time before failure will be 5 times this setting -->
+            <preference>
+              <name>httpClientConnectionTimeout</name>
+              <value>10000</value>
+            </preference>
+            <preference>
+              <name>httpClientSocketTimeout</name>
+              <value>10000</value>
+            </preference>
         </portlet-preferences>
         <security-role-ref>
             <role-name>everyone</role-name>
@@ -130,6 +140,16 @@
             <preference>
                 <name>portalJsNamespace</name>
                 <value>up</value>
+            </preference>
+            <!-- The connection is attempted 5 times prior to stopping
+                 so the actual time before failure will be 5 times this setting -->
+            <preference>
+              <name>httpClientConnectionTimeout</name>
+              <value>10000</value>
+            </preference>
+            <preference>
+              <name>httpClientSocketTimeout</name>
+              <value>10000</value>
             </preference>
         </portlet-preferences>
     </portlet>
