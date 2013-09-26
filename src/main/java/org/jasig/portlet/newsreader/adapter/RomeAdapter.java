@@ -273,8 +273,16 @@ public class RomeAdapter extends AbstractNewsAdapter {
 
     private HttpClient createHttpClientWithTimeouts(PortletPreferences prefs) {
         // The connection is attempted 5 times prior to stopping
-        // so the actual time before failure will be 5 times this setting
+        // so the actual time before failure will be 5 times this setting.
+        // Suggested way of testing Connection Timeout is by hitting a
+        // domain with a port that is firewalled:
+        // ie. http://www.google.com:81
         int httpClientConnectionTimeout = Integer.parseInt(prefs.getValue(HTTP_CLIENT_CONNECTION_TIMEOUT, String.valueOf(DEFAULT_HTTP_CLIENT_CONNECTION_TIMEOUT)));
+        // Suggested way of testing Socket Timeout is by using a tool locally to connect
+        // but not respond.  Example tool: bane
+        // http://blog.danielwellman.com/2010/09/introducing-bane-a-test-harness-for-server-connections.html
+        // usage: $bane 10010 NeverRespond
+        // ie http://localhost:10010
         int httpClientSocketTimeout = Integer.parseInt(prefs.getValue(HTTP_CLIENT_SOCKET_TIMEOUT, String.valueOf(DEFAULT_HTTP_CLIENT_SOCKET_TIMEOUT)));
         final HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, httpClientConnectionTimeout);
