@@ -21,6 +21,8 @@ package org.jasig.portlet.newsreader.adapter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
@@ -35,11 +37,17 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DecompressingHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HttpContext;
 import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
@@ -62,10 +70,24 @@ public class RomeAdapter extends AbstractNewsAdapter {
     protected final Log log = LogFactory.getLog(getClass());
     
     private RomeNewsProcessorImpl processor;
+    private AbstractHttpClient httpClient;   // External configuration sets this one
+    private HttpClient compressingClient;    // Internally we use this one
 
     private String proxyHost = null;
     private String proxyPort = null;
-    
+    private int connectionTimeout = 3000;   // Default connection timeout in ms
+    private int readTimeout = 10000; // Default read timeout in milliseconds
+    private long connectionManagerTimeout = 5000;  // Default timeout of getting connection from connection manager
+    private int timesToRetry = 2;
+
+    public AbstractHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public void setHttpClient(AbstractHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
     public void setProxyHost(String proxyHost) {
         this.proxyHost = proxyHost;
     }
@@ -73,9 +95,104 @@ public class RomeAdapter extends AbstractNewsAdapter {
     public void setProxyPort(String proxyPort) {
         this.proxyPort = proxyPort;
     }
-    
+
+    public int getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    public long getConnectionManagerTimeout() {
+        return connectionManagerTimeout;
+    }
+
+    public void setConnectionManagerTimeout(long connectionManagerTimeout) {
+        this.connectionManagerTimeout = connectionManagerTimeout;
+    }
+
+    public int getTimesToRetry() {
+        return timesToRetry;
+    }
+
+    public void setTimesToRetry(int timesToRetry) {
+        this.timesToRetry = timesToRetry;
+    }
+
     public void setProcessor(RomeNewsProcessorImpl processor) {
         this.processor = processor;
+    }
+
+    private class RetryHandler extends DefaultHttpRequestRetryHandler {
+        RetryHandler () {
+            super(timesToRetry, true);
+        }
+
+        @Override
+        public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+            if (executionCount >= timesToRetry) {
+                // Do not retry if over max retry count
+                return false;
+            }
+            if (exception instanceof NoHttpResponseException) {
+                // Retry if the server dropped connection on us
+                return true;
+            }
+            if (exception instanceof SocketException) {
+                // Retry if the server reset connection on us
+                return true;
+            }
+            if (exception instanceof SocketTimeoutException) {
+                // Retry if the read timed out
+                return true;
+            }
+            return super.retryRequest(exception, executionCount, context);
+        }
+    }
+    /* (non-Javadoc)
+     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    public void init() throws Exception {
+        final HttpParams params = httpClient.getParams();
+        params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, connectionTimeout);
+        params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, readTimeout);
+        params.setLongParameter(ClientPNames.CONN_MANAGER_TIMEOUT, connectionManagerTimeout);
+
+        httpClient.setHttpRequestRetryHandler(new RetryHandler());
+
+        String proxyHost = null;
+        String proxyPort = null;
+
+        if (StringUtils.isBlank(this.proxyHost) && StringUtils.isBlank(this.proxyPort)) {
+            log.trace("Checking for proxy configuration from system properties...");
+            proxyHost = System.getProperty("http.proxyHost");
+            proxyPort = System.getProperty("http.proxyPort");
+            if (StringUtils.isNotBlank(proxyHost) && StringUtils.isNotBlank(proxyPort)) {
+                log.debug("Found proxy configuration from system properties");
+            }
+        }
+
+        if (!StringUtils.isBlank(proxyHost) && !StringUtils.isBlank(proxyPort)) {
+            HttpHost proxy = new HttpHost(proxyHost, Integer.valueOf(proxyPort));
+            httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+            log.debug("Using proxy configuration to retrieve news feeds: " + proxyHost + ":" + proxyPort);
+        } else {
+            log.debug("No proxy configuration is set. Proceeding normally...");
+        }
+
+        // Spring configuration prevents us from using type AbstractHttpClient because we are wrapping the HTTP Client
+        // with DecompressingHttpClient which only implements HttpClient, so sadly we're getting around it with a
+        // second field.
+        compressingClient = new DecompressingHttpClient(httpClient);
     }
 
     /* (non-Javadoc)
@@ -156,41 +273,22 @@ public class RomeAdapter extends AbstractNewsAdapter {
      * build an SyndFeed object using ROME.
      *
      * @param url        String of the feed to be retrieved
-     * @param policyFile String the cleaning policy
+     * @param titlePolicy String the cleaning policy for the title
+     * @param descriptionPolicy String the cleaning policy for the description
      * @return SyndFeed Feed object
      */
     protected NewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
 
-        HttpClient client = new DecompressingHttpClient(new DefaultHttpClient());
         HttpGet get = null;
         NewsFeed feed = null;
-        String proxyHost = null;
-        String proxyPort = null;
         InputStream in = null;
         
         try {
 
             log.debug("Retrieving feed " + url);
             
-            if (StringUtils.isBlank(this.proxyHost) && StringUtils.isBlank(this.proxyPort)) {
-                log.trace("Checking for proxy configuration from system properties...");
-                proxyHost = System.getProperty("http.proxyHost");
-                proxyPort = System.getProperty("http.proxyPort");
-                if (StringUtils.isBlank(proxyHost) && StringUtils.isBlank(proxyPort)) {
-                    log.debug("Found proxy configuration from system properties");
-                }
-            }
-            
-            if (!StringUtils.isBlank(proxyHost) && !StringUtils.isBlank(proxyPort)) {
-            	HttpHost proxy = new HttpHost(proxyHost, Integer.valueOf(proxyPort));
-                client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-                log.debug("Using proxy configuration to retrieve news feeds: " + proxyHost + ":" + proxyPort);
-            } else {
-                log.debug("No proxy configuration is set. Proceeding normally...");
-            }
-            
             get = new HttpGet(url);
-            HttpResponse httpResponse = client.execute(get);
+            HttpResponse httpResponse = compressingClient.execute(get);
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.warn("HttpStatus for " + url + ":" + httpResponse);
             }
