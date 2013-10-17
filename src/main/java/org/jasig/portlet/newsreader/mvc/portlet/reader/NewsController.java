@@ -120,7 +120,7 @@ public class NewsController extends AbstractNewsController {
          * If this is a new session, perform any necessary
          * portlet initialization.
          */
-        if (session.getAttribute("initialized") == null) {
+        if (session.getAttribute(INITIALIZED) == null) {
 
             // get a set of all role names currently configured for
             // default newss
@@ -139,7 +139,7 @@ public class NewsController extends AbstractNewsController {
             // determine if this user belongs to the defined news
             // administration group and store the result in the session
             session.setAttribute("isAdmin",
-                    request.isUserInRole("newsAdmin"),
+                    request.isUserInRole(NEWS_ADMIN_ROLE),
                     PortletSession.PORTLET_SCOPE);
 
             // set the default number of days to display
@@ -151,7 +151,7 @@ public class NewsController extends AbstractNewsController {
             }
 
             // mark this session as initialized
-            session.setAttribute("initialized", "true");
+            session.setAttribute(INITIALIZED, true);
             session.setMaxInactiveInterval(60 * 60 * 2);
 
         } 

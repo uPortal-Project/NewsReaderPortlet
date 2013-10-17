@@ -40,16 +40,22 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  * @author awills
  */
 public class AbstractNewsController {
+	public static final String INITIALIZED = "initialized";
+	public static final String NEWS_ADMIN_ROLE = "newsAdmin";
 
     @ModelAttribute("isAdmin")
     public boolean isAdmin(PortletRequest req) {
+ 
         boolean rslt = false;  // default...
         final PortletSession session = req.getPortletSession(false);
-        if (session != null) {
+        if (session != null && session.getAttribute(INITIALIZED) != null && (Boolean) session.getAttribute(INITIALIZED)) {
             Boolean attr = (Boolean) session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE);
             rslt = attr != null
                     ? attr
                     : false;
+        } else {
+        	//if the session not initialized yet, try and get admin parameter direct from request
+        	rslt = req.isUserInRole(NEWS_ADMIN_ROLE);
         }
         return rslt;
     }    
