@@ -33,7 +33,7 @@
 
         var savePrefUrl = '<portlet:resourceURL/>';
 
-    	var $p = $("#news-single-preference");	//find the root element of the protlet to scope dom seraches
+    	var $p = $("#news-single-preference");	//find the root element of the portlet to scope dom searches
 		
 		$p.find("#name").change(function(e){
     		$.post(savePrefUrl, {prefName: 'name', prefValue: $(e.target).val()});
@@ -67,27 +67,27 @@
 	}
 </style>
 <div id="news-single-preference">
-	<h3>Preferences</h3>
+	<h3><spring:message code="preferences"/></h3>
 	
 
 	<div class="preference">
-		<label class="portlet-form-field-label">News feed name:</label>
+		<label class="portlet-form-field-label"><spring:message code="edit.news.feed.name"/></label>
 		<input type="text" name="name" value="${name.value}" id="name" size="50" ${ name.readOnly ? "disabled='disabled'" : '' }>
 	</div>
 		
 	<div class="preference">
-		<label class="portlet-form-field-label">News feed URL:</label>
+		<label class="portlet-form-field-label"><spring:message code="edit.news.feed.url"/></label>
 		<input type="text" name="url" value="${url.value}" id="url" size="50" ${ url.readOnly ? "disabled='disabled'" : '' }>
 	</div>
 	
 	<div class="preference">
-		<label class="portlet-form-field-label">News feed class:</label>		
+		<label class="portlet-form-field-label"><spring:message code="edit.news.feed.class"/></label>		
 		<input size="50" type="text" name="className" value="${className.value}" id="className"    
 		       ${ className.readOnly ? "disabled='disabled'" : '' }>
 	</div>
 	
 	<div class="preference">
-		<label>Maximum number of stories to display</label>
+		<label><spring:message code="edit.news.feed.maxstories"/></label>
 		<select id="max" ${ max.readOnly ? "disabled='disabled'" : ''}>
 			<c:forEach items="${max.options}" var="item">
 				<option value="${item}" ${ item == max.value ? "selected='selected'" : '' }>
@@ -98,7 +98,7 @@
 	</div>
 	
 	<div class="preference">
-		<label>Display stories as</label>
+		<label><spring:message code="edit.news.feed.storyview"/></label>
 		<select id="view" ${ view.readOnly ? "disabled='disabled'" : ''}>
 			<c:forEach items="${view.options}" var="entry" >
 				<option value="${entry.key}" ${entry.key == view.value ? "selected='selected'" : '' }>
@@ -109,11 +109,11 @@
 	</div>
 	
 	<div class="preference">
-		<label>Open stories in new window</label>
+		<label><spring:message code="edit.news.feed.newwindows"/></label>
 		<input type="checkbox" name="new-window" value="" id="new-window" 
 			${ newWindow.value == "true" ?  "checked='checked'" : '' } 
 			${ newWindow.readOnly ? "disabled='disabled'" : '' }>
 	</div>
 	
-	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>"> Return to feed</a>
+	<a style="text-decoration:none;" href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> <spring:message code="back"/></a>
 </div>

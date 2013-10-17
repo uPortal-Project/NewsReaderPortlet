@@ -32,13 +32,13 @@
 
     <div data-role="header" class="titlebar portlet-titlebar">
         <a href="<portlet:renderURL portletMode="view"/>" data-role="button" data-icon="back" data-inline="true"><spring:message code="back"/></a>
-        <h2>Preferences</h2>
+        <h2><spring:message code="preferences"/></h2>
     </div>
 
 	<div id="${n}" class="portlet-content" data-role="content">
 	    <div data-role="fieldcontain">
 	        <fieldset data-role="controlgroup">
-	        	<legend>Which feeds should be displayed?</legend>
+	        	<legend><spring:message code="edit.news.legend"/></legend>
                 <c:set var="count" value="0"/>
 	            <c:forEach items="${ model.predefinedNewsConfigurations }" var="feed" varStatus="status">
 	                <input type="checkbox" name="${ feed.id }" id="${n}${ count }" ${ feed.displayed ? 'checked' : '' } />

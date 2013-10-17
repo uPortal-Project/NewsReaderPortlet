@@ -24,13 +24,13 @@
     
 <div class="org-jasig-portlet-newsreader">
 	<div class="titlebar portlet-titlebar">
-		<h1 class="title story-title">${storyTitle}</h1>
+		<h3 class="title story-title">${storyTitle}</h3>
 	</div>
                 
 	${fullStory}
 	
 	<p>
-		<a href="<portlet:renderURL/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> Return to news feed</a>
+		<a style="text-decoration:none;" href="<portlet:renderURL/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
 	</p>
 </div>       
 

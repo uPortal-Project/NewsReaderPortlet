@@ -48,7 +48,7 @@
 	
     <div id="${n}newsContainer">
     	<c:if test="${prefs.showTitle}">
-       		<h2><a href="${ feed.link }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h2>
+       		<h3><a href="${ feed.link }" ${ prefs.newWindow ? 'target="_blank"' : '' }>${ feed.title }</a></h3>
        	</c:if>
         <div class="news-items-container">
             <c:choose>
@@ -103,7 +103,7 @@
 	</c:if>
 	 
     <c:if test="${supportsEdit && !isGuest}">
-        <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/>Edit Preferences</a>
+        <a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="render" /></portlet:renderURL>"/><spring:message code="viewSingleFeed.editpreferences"/></a>
     </c:if>
 </div>
 

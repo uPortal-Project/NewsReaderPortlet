@@ -23,6 +23,9 @@
 <c:set var="n"><portlet:namespace/></c:set>
 <portlet:resourceURL var="feedUrl"/>
 
+<c:set var="mobile" value="${ true }"/>
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
+
 <div id="${n}">
     <div class="news-reader-feed-list portlet ptl-newsreader view-news">
     
@@ -32,7 +35,7 @@
                 </div>
                 <c:if test="${supportsEdit && !isGuest}">
                     <div class="utilities">
-                        <a data-role="button" href="<portlet:renderURL portletMode='edit'/>">Preferences</a>
+                        <a data-role="button" href="<portlet:renderURL portletMode='edit'/>"><spring:message code="preferences"/></a>
                     </div>
                 </c:if>            
             </div>
@@ -40,8 +43,8 @@
         
         <div class="story-container" style="display:none">
             <div data-role="header" class="titlebar portlet-titlebar">
-                <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true">Back</a>
-                <h1 class="title story-title">Story Title</h1>
+                <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true"><spring:message code="back"/></a>
+                <h2 class="title story-title"><spring:message code="viewNews.storytitle"/></h2>
             </div>
             <div data-role="content" class="portlet-content">
                 <div class="story-content">
@@ -63,13 +66,13 @@
 
 <script type="text/template" id="${n}feed-detail-template">
     <div class="titlebar portlet-titlebar ui-header ui-bar-a" data-role="header">
-        <a href="javascript:;" data-role="button" data-icon="home" data-direction="reverse" data-transition="none" class="ui-btn-left ui-btn-inline feed-back-button">Back</a>
-        <h2 class="ui-title" role="heading">${"<%= title %>"}</h1>
+        <a href="javascript:;" data-role="button" data-icon="back" data-direction="reverse" data-transition="none" class="ui-btn-left ui-btn-inline feed-back-button"><spring:message code="back"/></a>
+        <h2 class="ui-title" role="heading">${"<%= title %>"}</h2>
     </div>
 
     <!-- Module content  -->
     <div data-role="content" class="portlet-content">
-        <ul class="news-stories" data-role="listview">
+        <ul class="news-stories feed" data-role="listview">
           ${"<%"} _(entries).each(function(story) { ${" %>"}
             <li>
                 <a href="${"<%="} story.link ${"%>"}">
@@ -82,8 +85,6 @@
     </div>
 </script>
 
-<c:set var="mobile" value="${ true }"/>        
-<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
     
     ${n}.jQuery(function(){
@@ -97,7 +98,6 @@
         var MobileNewsFeedDetailView = upnews.NewsFeedDetailView.extend({
             template: _.template($("#${n}feed-detail-template").html()),
             postRender: function () {
-            	console.log("post");
                 this.$el.trigger("create");
                 this.$(".feed-back-button").click(function () {
                     $("#${n} .news-stories-container").hide();

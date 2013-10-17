@@ -54,7 +54,7 @@
             <div class="story-container" style="display:none">
                 <div class="titlebar portlet-titlebar">
                     <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true"><spring:message code="back" /></a>
-                    <h1 class="title story-title"><spring:message code="story.title" /></h1>
+                    <h3 class="title story-title"><spring:message code="story.title" /></h3>
                 </div>
                 <div data-role="content" class="portlet-content">
                     <div class="story-content">
@@ -73,8 +73,7 @@
             &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><spring:message code="edit.news.feed" /></a>
         </c:if>
         <c:if test="${isAdmin}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>">
-            <spring:message code="administration" /></a>
+            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><spring:message code="administration" /></a>
         </c:if>
     </p>
 </div>
@@ -98,7 +97,7 @@
 
 <script type="text/template" id="${n}feed-detail-template">
     <div class="titlebar portlet-titlebar">
-        <h2 class="title">${"<%= title %>"}</h2>
+        <h3 class="title">${"<%= title %>"}</h3>
     </div>
 
     <c:choose>
@@ -201,6 +200,8 @@
                     },
                     selected: index
                 });
+                // Fix focus on active tab : up to top of page
+                $('html,body').animate({scrollTop: $("#portal").offset().top},'500');
             }
 
         };
