@@ -179,7 +179,11 @@ public class RomeAdapter extends AbstractNewsAdapter {
             if (StringUtils.isNotBlank(proxyHost) && StringUtils.isNotBlank(proxyPort)) {
                 log.debug("Found proxy configuration from system properties");
             }
-        }
+        } else {
+            	log.debug("Using proxy settings from fields");
+            	proxyHost = this.proxyHost;
+            	proxyPort = this.proxyPort;
+         }
 
         if (!StringUtils.isBlank(proxyHost) && !StringUtils.isBlank(proxyPort)) {
             HttpHost proxy = new HttpHost(proxyHost, Integer.valueOf(proxyPort));
