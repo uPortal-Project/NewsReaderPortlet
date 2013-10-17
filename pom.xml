@@ -72,7 +72,7 @@
     <properties>
         <icu4j.version>51.1</icu4j.version>
         <spring.version>3.1.4.RELEASE</spring.version>
-        <resource-server.version>1.0.26</resource-server.version>
+        <resource-server.version>1.0.31</resource-server.version>
         <httpclient.version>4.2.5</httpclient.version>
         <antisamy.version>1.5.2</antisamy.version>
         
@@ -204,6 +204,10 @@
                 <artifactId>resource-server-utils</artifactId>
                 <version>${resource-server.version}</version>            
                 <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>jcl-over-slf4j</artifactId>
+                    </exclusion>
                     <exclusion>
                         <groupId>net.sf.ehcache</groupId>
                         <artifactId>ehcache</artifactId>
