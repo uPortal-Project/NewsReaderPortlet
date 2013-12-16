@@ -21,18 +21,23 @@
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <c:set var="max" value="${ prefs.maxStories > fn:length(feed.entries) ? fn:length(feed.entries)-1 : prefs.maxStories-1 }"/>
-<c:if test="${max < 0}">	
+<c:if test="${max < 0}">
 	<c:set var="max" value="0"/>
 </c:if>
 
 <div class="portlet ptl-newsreader view-singlefeed">
 	<div data-role="content" class="portlet-content">
-		
+
 		<ul data-role="listview" class="feed">
 		    <c:forEach items="${ feed.entries }" var="entry" end="${ max }">
 		        <li>
-		        	<a href="${ entry.link }">
-			            <c:if test="${ not empty entry.imageUrl }"><img src="${ entry.imageUrl }"/></c:if>
+                    <c:choose><c:when test="${ not empty entry.imageUrl }">
+                        <a href="${ entry.link }">
+                        <img src="${ entry.imageUrl }"/>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${ entry.link }" style="padding-left:0">
+                    </c:otherwise></c:choose>
 			            <h3 class="title">${ entry.title }</h3>
 			            <p>
 			                ${ entry.description }
@@ -41,6 +46,6 @@
 		        </li>
 		    </c:forEach>
 		</ul>
-		
+
 	</div>
 </div>
