@@ -76,15 +76,15 @@
     		<td class="instruction">
     			<a href="<portlet:renderURL><portlet:param name="action" value="editUrl"/>
     					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
-    					title="Edit feed">
-    				<img alt="edit" src="<c:url value="/images/pencil.png"/>"/>
+    					title="<spring:message code="edit.news.edit.title"/>">
+    				<img alt="<spring:message code="edit.news.edit.alt"/>" src="<c:url value="/images/pencil.png"/>"/>
     			</a>
     		</td>
     		<td class="instruction">
     			<a href="<portlet:actionURL><portlet:param name="actionCode" value="delete"/>
     					<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
-    					title="Delete feed">
-    				<img alt="delete" src="<c:url value="/images/rss_delete.png"/>"/>
+    					title="<spring:message code="edit.news.delete.title"/>">
+    				<img alt="<spring:message code="edit.news.delete.alt"/>" src="<c:url value="/images/rss_delete.png"/>"/>
     			</a>
     		</td>
     		<td class="instruction">
@@ -92,14 +92,14 @@
     				<c:when test="${ feed.displayed }">
     					<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="hide"/>
     						<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-	        			<a href="${ displayURL }" title="Hide feed">
-	        				<img alt="show" src="<c:url value="/images/select-active.gif"/>"/>
+	        			<a href="${ displayURL }" title="<spring:message code="edit.news.hide.title"/>">
+	        				<img alt="<spring:message code="edit.news.hide.alt"/>" src="<c:url value="/images/select-active.gif"/>"/>
 	        			</a>
     				</c:when>
     				<c:otherwise>
 						 <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="show"/><portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-	        			<a href="${ displayURL }" title="Show feed">
-	        				<img alt="show" src="<c:url value="/images/select-inactive.gif"/>"/>
+	        			<a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
+	        				<img alt="<spring:message code="edit.news.show.alt"/>" src="<c:url value="/images/select-inactive.gif"/>"/>
 	        			</a>
 					</c:otherwise>
     			</c:choose>
@@ -129,8 +129,8 @@
 					<c:when test="${ not empty editAction }">
 	        			<a href="<portlet:renderURL><portlet:param name="action" value="${ editAction }"/>
 	        					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
-	        					title="Edit feed">
-        					<img alt="edit" src="<c:url value="/images/pencil.png"/>"/>
+	        					title="<spring:message code="edit.news.edit.title"/>">
+        					<img alt="<spring:message code="edit.news.edit.alt"/>" src="<c:url value="/images/pencil.png"/>"/>
     					</a>
 					</c:when>
 					<c:otherwise>&nbsp;</c:otherwise>
@@ -142,15 +142,15 @@
     				<c:when test="${ feed.displayed }">
     					<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="hide"/>
     						<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-	        			<a href="${ displayURL }" title="Hide feed">
-	        				<img alt="show" src="<c:url value="/images/select-active.gif"/>"/>
+	        			<a href="${ displayURL }" title="<spring:message code="edit.news.hide.title"/>">
+	        				<img alt="<spring:message code="edit.news.hide.alt"/>" src="<c:url value="/images/select-active.gif"/>"/>
 	        			</a>
     				</c:when>
     				<c:otherwise>
 						 <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="show"/>
 						 	<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-	        			<a href="${ displayURL }" title="Show feed">
-	        				<img alt="show" src="<c:url value="/images/select-inactive.gif"/>"/>
+	        			<a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
+	        				<img alt="<spring:message code="edit.news.show.alt"/>" src="<c:url value="/images/select-inactive.gif"/>"/>
 	        			</a>
 					</c:otherwise>
     			</c:choose>
@@ -165,8 +165,8 @@
     		<td>&nbsp;</td>
     		<td class="instruction">
 				<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="showNew"/><portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-    			<a href="${ displayURL }" title="Show feed">
-    				<img alt="show" src="<c:url value="/images/select-inactive.gif"/>"/>
+    			<a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
+    				<img alt="<spring:message code="edit.news.show.alt"/>" src="<c:url value="/images/select-inactive.gif"/>"/>
     			</a>
     		</td>
 		</tr>
@@ -216,6 +216,6 @@
 <br />
 <hr />
 <p>
-	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"><spring:message code="back.list"/></a>
+	<a style="text-decoration:none;" href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
 </p>
         

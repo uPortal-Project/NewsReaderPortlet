@@ -36,6 +36,7 @@
 <p>After clicking on the feed icon, copy the URL from the address bar in your browser into &quot;URL&quot; text box of the &quot;Edit Preferences&quot; area. Enter a name into the 
 &quot;News feed name&quot; text area and press the submit button to save your news feed.</p>
 
+<spring:message code="help.detail" htmlEscape="false"/>
 <p>
-	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> Return to news feeds</a>
+	<a style="text-decoration:none;" href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> <spring:message code="back.list"/></a>
 </p>

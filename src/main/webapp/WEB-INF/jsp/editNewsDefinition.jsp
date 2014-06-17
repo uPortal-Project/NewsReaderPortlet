@@ -110,7 +110,7 @@
 		<c:forEach items="${ newsDefinitionForm.role }" var="role">
 			<div style="padding-left: 5px;">
 				<input name="role" type="text" value="${ role }" size="20"/>
-				<a href="javascript:;" onclick="removeRole(this)">
+				<a style="text-decoration=none;" href="javascript:;" onclick="removeRole(this)">
 					<img style="vertical-align: middle;" src="<c:url value="/images/delete.png"/>"/>
 				</a>
 			</div>
@@ -127,7 +127,7 @@
 			<div style="padding-left: 5px">
 				<input name="parameterName" type="text" value="${ paramName }" size="20"/>
 				<input name="parameterValue" type="text" value="${ newsDefinitionForm.parameterValue[status.index] }" size="20"/>
-				<a href="javascript:;" onclick="removeParameter(this)">
+				<a style="text-decoration=none;" href="javascript:;" onclick="removeParameter(this)">
 					<img style="vertical-align: middle;" src="<c:url value="/images/delete.png"/>"/>
 				</a>
 			</div>
@@ -145,5 +145,5 @@
 <br />
 <hr />
 <p>
-	<a href="<portlet:renderURL><portlet:param name="action" value="administration"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> <spring:message code="administration.feed.back"/></a>
+	<a style="text-decoration:none;" href="<portlet:renderURL><portlet:param name="action" value="administration"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> <spring:message code="administration.feed.back"/></a>
 </p>

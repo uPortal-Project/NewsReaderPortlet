@@ -40,15 +40,15 @@
     		<td class="instruction">
     			<a href="<portlet:renderURL><portlet:param name="action" value="editNewsDefinition"/>
     					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
-    					title="Edit feed">
-					<img alt="edit" src="<c:url value="/images/pencil.png"/>"/>
+    					title="<spring:message code="edit.news.edit.title"/>">
+					<img alt="<spring:message code="edit.news.edit.alt"/>" src="<c:url value="/images/pencil.png"/>"/>
 				</a>
     		</td>
     		<td class="instruction">
     			<a href="<portlet:actionURL><portlet:param name="action" value="deletePredefinedFeed"/>
     					<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
-    					title="Delete feed">
-    				<img alt="delete" src="<c:url value="/images/rss_delete.png"/>"/>
+    					title="<spring:message code="edit.news.delete.title"/>">
+    				<img alt="<spring:message code="edit.news.delete.alt"/>" src="<c:url value="/images/rss_delete.png"/>"/>
     			</a>
     		</td>
     	</tr>
@@ -57,13 +57,12 @@
 
 <p>
 	<a href="<portlet:renderURL><portlet:param name="action" value="editNewsDefinition"/></portlet:renderURL>">
-		<img src="<c:url value="/images/rss_add.png"/>" style="vertical-align: middle"/>
-		<spring:message code="edit.news.add"/>
+		<img src="<c:url value="/images/rss_add.png"/>" style="vertical-align: middle"/> <spring:message code="edit.news.add"/>
 	</a>
 </p>
 
 <br />
 <hr />
 <p>
-	<a href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"><spring:message code="back.list"/></a>
+	<a style="text-decoration:none;" href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align:middle;"> <spring:message code="back.list"/></a>
 </p>

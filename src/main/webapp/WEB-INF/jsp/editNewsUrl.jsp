@@ -49,5 +49,5 @@
 <br />
 <hr />
 <p>
-	<a href="<portlet:renderURL><portlet:param name="action" value="editPrefences"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"><spring:message code="edit.news.feed.back"/></a>
+	<a style="text-decoration:none;" href="<portlet:renderURL><portlet:param name="action" value="editPrefences"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> <spring:message code="edit.news.feed.back"/></a>
 </p>
