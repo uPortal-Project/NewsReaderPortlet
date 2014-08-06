@@ -19,171 +19,133 @@
 var upnews = upnews || {};
 
 if (!upnews.init) {
-    
-    upnews.init = function ($, _, Backbone) {
 
-    upnews.NewsView = Backbone.View.extend({
-        onload: function () { },
-        setup: function () {
-        	var view = this;
-        	
-            $.ajax({
-                url: view.url,
-                dataType: "json",
-                type: "POST",
-                success: function (data) {
-                	
-                    // construct a news feed collection from the response
-                    var feedList = new upnews.NewsFeedList();
-                    $(data.feeds).each(function (idx, feed) {
-                        feedList.add(new upnews.NewsFeed(feed));
-                    });
+    upnews.init = function($, Handlebars) {
 
-                    // add empty detail view for each feed
-                    view.storyContainers = {};
-                    $(data.feeds).each(function (idx, feed) {
-                    	var detail = new view.feedDetailViewFn();
-                    	detail.$el.attr("id", view.namespace + "feed" + feed.id)
-                    		.addClass("news-stories-container");
-                    	$(".view-news").append(detail.$el);
-                    	view.storyContainers["feed" + feed.id] = detail;
-                    });
-    
-                    // construct a story list for the currently active feed
-                    var entryList = new upnews.NewsStoryList();
-                    $(data.feed.entries).each(function (idx, entry) {
-                        entryList.add(new upnews.NewsStory(entry));
-                    });
-                    data.feed.stories = entryList;
-                    data.feed.id = data.activeFeed;
-                    view.feedDetails = new upnews.NewsFeedDetails(data.feed);                
-                    
-                    // render the feed list view
-                    view.feedListView.model = feedList;
-                    view.feedListView.render();
-                    
-                    // render the story list view
-                    var activeStory = view.storyContainers["feed" + data.feed.id];
-                    activeStory.model = view.feedDetails;
-                    activeStory.populated = true;
-                    activeStory.render();
+        upnews.newsService = function(url) {
 
-                    // call any configured completion action
-                    if (view.onSuccessfulSetup) {
-                        view.onSuccessfulSetup();
-                    }
+            var promise = null, activeFeedCache = null, currentPage = 0, pages = 1;
+            var getNewsData = function(activeFeed, page) {
+                if (promise == null || activeFeed != activeFeedCache || page != currentPage) {
+                    var data = {};
+                    if (activeFeed)
+                        data.activeateNews = activeFeed;
+                    data.page = page ? page : 0;
+                    promise = $.ajax({
+                        url: url,
+                        dataType: "json",
+                        data: data,
+                        type: "POST"
+                    }).done(function(data) {
+                        activeFeedCache = data.activeFeed;
+                        currentPage = data.page;
+                        pages = data.pages;
+                    });
                 }
-            });
-        },
-        getFeed: function (id) {
-        	var view, data;        	
-            view = this;
+                return promise;
+            };
 
-            if (!view.storyContainers["feed" + id].populated) {
-	            
-	            data = { "activeateNews": id };
-	
-	            $.ajax({
-	                url: view.url,
-	                dataType: "json",
-	                data: data,
-	                type: "POST",
-	                success: function (data) {
-	                    
-	                    var entryList = new upnews.NewsStoryList();
-	                    $(data.feed.entries).each(function (idx, entry) {
-	                        entryList.add(new upnews.NewsStory(entry));
-	                    });
-	                    data.feed.stories = entryList;
-	                    data.feed.id = data.activeFeed;
+            this.getFeeds = function() {
+                var deferred = $.Deferred();
+                getNewsData().done(function(data) {
+                    deferred.resolve(data.feeds);
+                });
+                return deferred.promise();
+            };
 
-	                    var activeStory = view.storyContainers["feed" + data.activeFeed];
-	                    activeStory.model = new upnews.NewsFeedDetails(data.feed);
-	                    activeStory.populated = true;
-	                    activeStory.render();
-	                    
-	                    // render default feed
-	                    
-	                    if (view.onSuccessfulRetrieval) {
-	                        view.onSuccessfulRetrieval();
-	                    }
-	                }
-	            });  
-	            
+            this.getFeed = function(feed, page) {
+                var deferred = $.Deferred();
+                getNewsData(feed, page).done(function(data) {
+                    deferred.resolve(data.feed);
+                });
+                return deferred.promise();
+            };
+
+            this.getPage = function() {
+                return {
+                    current: currentPage,
+                    total: pages
+                };
+            };
+            this.getActiveFeed = function() {
+                return activeFeedCache;
             }
-        }
-    });
-    
-    upnews.NewsFeedList = Backbone.Collection.extend({
-        model: upnews.NewsFeed
-    });
 
-    upnews.NewsFeed = Backbone.Model.extend({
-        defaults: function () {
-            return {
-                id: null,
-                name: null
-            };
-        }
-    });
-    
-    upnews.NewsFeedDetails = Backbone.Model.extend({
-        defaults: function () {
-            return {
-                stories: new upnews.NewsStoryList(),
-                title: "Feed Title",
-                id: 0
-            };
-        }
-    });
-    
-    upnews.NewsStoryList = Backbone.Collection.extend({
-        model: upnews.NewsStory
-    });
+        };
 
-    upnews.NewsStory = Backbone.Model.extend({
-        defaults: function () {
-            return {
-                content: null,
-                description: null,
-                link: null,
-                title: null,
-                uri: null,
-                authors: [ ],
-                imageUrl: null,
-                videoUrl: null
-            };
-        }
-    });
-    
-    
-    upnews.NewsFeedDetailView = Backbone.View.extend({
-    	tagName: "div",
-        postRender: function () { },
-        render: function () {
-            // render the main feed detail template
-            this.$el.html(this.template(this.model.toJSON()));
+        upnews.NewsView = {
+            onload: function() {
+            },
+            setup: function() {
+                var view = this;
 
-            var view = this;
-            this.$(".titlebar a").click(function () { view.trigger("showList"); });
-            
-            // add any jQM decorator classes
-            this.postRender();
-            return this;
-        }
-    });
+                return this.newsService.getFeeds()
+                        .done(function(feeds) {
+                            // add empty detail view for each feed
+                            view.storyContainers = {};
+                            $(feeds).each(function(idx, feed) {
+                                var detail = $.extend({}, view.feedDetailView, {$el: $("<div/>")});
+                                detail.$el.attr("id", view.namespace + "feed" + feed.id)
+                                        .addClass("news-stories-container");
+                                $(".view-news").append(detail.$el);
+                                view.storyContainers["feed" + feed.id] = detail;
+                            });
+                            // render the feed list view
+                            view.feedListView.render(feeds);
 
-    upnews.NewsFeedListView = Backbone.View.extend({
-        postRender: function () { },
-        render: function () {
-            this.$el.html(this.template({ feeds: this.model.toJSON() }));
-            
-            this.postRender();
-            return this;
-        }
-    });
+                        })
+                        .done(function() {
+                            view.getFeed(view.newsService.getActiveFeed()).done(function() {
+                                if (view.onSuccessfulSetup) view.onSuccessfulSetup();
+                            });
+                        });
+            },
+            getFeed: function(id) {
+                var view = this;
+                if (!view.storyContainers["feed" + id].populated) {
+                    return view.newsService.getFeed(id).done(function(feed) {
+                        feed.id = view.newsService.getActiveFeed();
+                        // render the story list view
+                        var activeStory = view.storyContainers["feed" + feed.id];
+                        activeStory.populated = true;
+                        activeStory.render(feed);
+                    })
+                    .done(function() {
+                        if (view.onSuccessfulRetrieval) {
+                            view.onSuccessfulRetrieval();
+                        }
+                    });
 
-    
+                }
+            }
+        };
+
+        upnews.NewsFeedDetailView = {
+            $el: $("<div/>"),
+            postRender: function() {
+            },
+            render: function(feed) {
+                // render the main feed detail template
+                this.$el.html(this.template(feed));
+                var view = this;
+                $(".titlebar a", this.$el).click(function() {
+                    $(view).trigger("showList");
+                });
+                // add any jQM decorator classes
+                this.postRender();
+                return this;
+            }
+        };
+
+        upnews.NewsFeedListView = {
+            postRender: function() {
+            },
+            render: function(feeds) {
+                this.$el.html(this.template(feeds));
+                this.postRender();
+                return this;
+            }
+        };
 
     };
 

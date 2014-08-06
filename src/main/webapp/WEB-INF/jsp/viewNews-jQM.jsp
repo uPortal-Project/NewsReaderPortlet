@@ -41,7 +41,7 @@
             </div>
         </div>
         
-        <div class="story-container" style="display:none">
+<!--        <div class="story-container" style="display:none">
             <div data-role="header" class="titlebar portlet-titlebar">
                 <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true"><spring:message code="back"/></a>
                 <h2 class="title story-title"><spring:message code="viewNews.storytitle"/></h2>
@@ -50,37 +50,35 @@
                 <div class="story-content">
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 </div>
 
 <script type="text/template" id="${n}feed-list-template">
     <ul data-role="listview">
-      ${"<%"} _(feeds).each(function(feed) { ${" %>"}
-        <li>
-            <a href="javascript:;"><h3>${"<%="} feed.name ${"%>"}</h3></a>
-        </li>
-      ${"<%"} }); ${"%>"}
+       {{#each this}}
+            <li rel="{{id}}"><a href="javascript:;"><h3>{{name}}</h3></a></li>
+       {{/each}}
     </ul>
 </script>
 
 <script type="text/template" id="${n}feed-detail-template">
     <div class="titlebar portlet-titlebar ui-header ui-bar-a" data-role="header">
         <a href="javascript:;" data-role="button" data-icon="back" data-direction="reverse" data-transition="none" class="ui-btn-left ui-btn-inline feed-back-button"><spring:message code="back"/></a>
-        <h2 class="ui-title" role="heading">${"<%= title %>"}</h2>
+        <h2 class="ui-title" role="heading">{{title}}</h2>
     </div>
 
     <!-- Module content  -->
     <div data-role="content" class="portlet-content">
         <ul class="news-stories feed" data-role="listview">
-          ${"<%"} _(entries).each(function(story) { ${" %>"}
+        {{#each entries}}
             <li>
-                <a href="${"<%="} story.link ${"%>"}">
-                    <h3>${"<%="} story.title ${"%>"}</h3>
-                    <p>${"<%="} story.description ${"%>"}</p>
+                <a href="{{link}}">
+                    <h3>{{title}}</h3>
+                    <p>{{description}}</p>
                 </a>
             </li>
-          ${"<%"} }); ${"%>"}
+        {{/each}}
         </ul>
     </div>
 </script>
@@ -88,63 +86,58 @@
 <script type="text/javascript"><rs:compressJs>
     
     ${n}.jQuery(function(){
-        var $, _, Backbone, newsView;
+        var $, Handlebars, newsView, upnews;
         
         $ = ${n}.jQuery;
-        _ = ${n}._;
-        Backbone = ${n}.Backbone;
+        Handlebars = ${n}.Handlebars;
         upnews = ${n}.upnews;
-        
-        var MobileNewsFeedDetailView = upnews.NewsFeedDetailView.extend({
-            template: _.template($("#${n}feed-detail-template").html()),
-            postRender: function () {
-                this.$el.trigger("create");
-                this.$(".feed-back-button").click(function () {
-                    $("#${n} .news-stories-container").hide();
-                    $("#${n} .news-feeds-container").show();
-                });
-            }
-        });
-        
-        var MobileNewsFeedListView = upnews.NewsFeedListView.extend({
-            el: "#${n} .news-feed-list",
-            template: _.template($("#${n}feed-list-template").html()),
-            postRender: function () {
-                var view = this;
-                view.$("a").click(function () {
-                    var link, feedId;
-                    link = $(this);
-                    var div = $(link.parents("li").get(0));
-                    var index = $("#${n} .news-feeds-container li").index(div);
-                    feedId = view.model.at(index).get("id");
-                    view.trigger("feedSelected", feedId);
-                });
 
-                this.$el.trigger("create");
-            }
-        });
 
-        newsView = new upnews.NewsView();
-        newsView.url = "${feedUrl}";
-        newsView.feedDetailViewFn = MobileNewsFeedDetailView;
-        newsView.feedListView = new MobileNewsFeedListView();
-        newsView.namespace = "${n}";
-        
-        newsView.onSuccessfulSetup = function () {
+        newsView = $.extend(upnews.NewsView, {
+            newsService: new upnews.newsService("${feedUrl}"),
+            onSuccessfulSetup: function () {
         	$("#${n} .news-stories-container").hide();
-            $.mobile.hidePageLoadingMsg();
-        };
-        newsView.onSuccessfulRetrieval = function () {
-            $.mobile.hidePageLoadingMsg();
-        };
+                $.mobile.hidePageLoadingMsg();
+            },
+            onSuccessfulRetrieval: function () {
+                $.mobile.hidePageLoadingMsg();
+            },
+            feedDetailView: $.extend(upnews.NewsFeedDetailView, {
+                template: Handlebars.compile($("#${n}feed-detail-template").html()),
+                postRender: function () {
+                    this.$el.trigger("create");
+                    $(".feed-back-button", this.$el).click(function () {
+                        $("#${n} .news-stories-container").hide();
+                        $("#${n} .news-feeds-container").show();
+                    });
+                }
+            }),      
+            feedListView: $.extend(upnews.NewsFeedListView, {
+                $el: $("#${n} .news-feed-list"),
+                template: Handlebars.compile($("#${n}feed-list-template").html()),
+                postRender: function () {
+                    var view = this;
+                    $("a", view.$el).click(function () {
+                        var link, feedId;
+                        link = $(this);
+                        var div = $(link.parents("li").get(0));
+                        feedId = div.attr("rel");
+                        $(view).trigger("feedSelected", feedId);
+                    });
+
+                    this.$el.trigger("create");
+                }
+            }),
+            namespace: "${n}"
+        });
         
         $(document).ready(function () {
 
-            newsView.feedListView.bind("feedSelected", function (id) {
+            $(newsView.feedListView).bind("feedSelected", function (event,id) {
                 $("#${n} .news-feeds-container").hide();
                 $("#${n} .news-stories-container").hide();
                 $("#${n}feed" + id).show();
-                if (!newsView.feedDetails || newsView.feedDetails.get("id") !== id) {
+                if (newsView.newsService.getActiveFeed() !== id) {
                     $.mobile.showPageLoadingMsg();
                     newsView.getFeed(id);
                 }

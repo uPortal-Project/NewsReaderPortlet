@@ -51,7 +51,7 @@
                     <ul class="news-feeds-container"></ul>
                 </c:otherwise>
             </c:choose>
-            <div class="story-container" style="display:none">
+<!--            <div class="story-container" style="display:none">
                 <div class="titlebar portlet-titlebar">
                     <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true"><spring:message code="back" /></a>
                     <h3 class="title story-title"><spring:message code="story.title" /></h3>
@@ -60,7 +60,7 @@
                     <div class="story-content">
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 
@@ -79,62 +79,57 @@
 </div>
 
 <script type="text/template" id="${n}feed-list-template">
+    
+    {{#each this}}
     <c:choose>
         <c:when test="${ feedView == 'select' }">
-            ${"<%"} _(feeds).each(function(feed) { ${" %>"}
-            <option value="${"<%="} feed.id ${"%>"}">
-            ${"<%="} feed.name ${"%>"}
-            </option>
-            ${"<%"} }); ${"%>"}
+            <option value="{{id}}">{{name}}</option>
         </c:when>
         <c:otherwise>
-            ${"<%"} _(feeds).each(function(feed) { ${" %>"}
-            <li><a href="#${n}feed${"<%="} feed.id ${"%>"}">${"<%="} feed.name ${"%>"}</a></li>
-            ${"<%"} }); ${"%>"}
+            <li><a href="#${n}feed{{id}}">{{name}}</a></li>
         </c:otherwise>
     </c:choose>
+    {{/each}}
 </script>
-
+                
 <script type="text/template" id="${n}feed-detail-template">
-    <div class="titlebar portlet-titlebar">
-        <h3 class="title">${"<%= title %>"}</h3>
-    </div>
+        <div>
+            <div class="titlebar portlet-titlebar">
+                <h3 class="title">{{title}}</h3>
+            </div>
+        </div>
 
     <c:choose>
         <c:when test="${ storyView == 'flyout' }">
             <ul class="news-stories feed">
-                ${"<%"} _(entries).each(function(story) { ${" %>"}
-                <li>
-                    <a href="${"<%="} story.link ${"%>"}" title="${"<%="} story.description ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
-                    ${"<%="} story.title ${"%>"}
-                    </a>
-                </li>
-                ${"<%"} }); ${"%>"}
+                {{#each entries}}
+                    <li>
+                        <a href="{{link}}" title="{{description}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
+                    </li>
+                {{/each}}
             </ul>
         </c:when>
         <c:otherwise>
             <div class="news-stories feed">
-                ${"<%"} _(entries).each(function(story) { ${" %>"}
-                <h3>
-                    <a href="${"<%="} story.link ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
-                    ${"<%="} story.title ${"%>"}
-                    </a>
-                </h3>
-                <p>${"<%="} story.description ${"%>"}</p>
-                ${"<%"} }); ${"%>"}
+                {{#each entries}}
+                    <h3>
+                        <a href="{{link}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
+                    </h3>
+                    <p>{{description}}</p>
+                {{/each}}
             </div>
         </c:otherwise>
     </c:choose>
-</script>
 
+</script>
+                
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
     ${n}.jQuery(function(){
-        var $, _, Backbone, newsView, upnews;
+        var $, Handlebars, newsView, upnews;
 
         $ = ${n}.jQuery;
-        _ = ${n}._;
-        Backbone = ${n}.Backbone;
+        Handlebars = ${n}.Handlebars;
         upnews = ${n}.upnews;
 
         var adjustToolTipBasedOnSize = function () {
@@ -156,11 +151,6 @@
             </c:if>
         };
 
-        var DesktopNewsFeedDetailView = upnews.NewsFeedDetailView.extend({
-            template: _.template($("#${n}feed-detail-template").html()),
-            postRender: adjustToolTipBasedOnSize
-        });
-
         <c:if test="${ storyView == 'flyout' }">
                 $(window).resize(function() {
                     $(".news-stories li a").tooltip("destroy");
@@ -168,52 +158,56 @@
                 });
         </c:if>
 
-        var DesktopNewsFeedListView = upnews.NewsFeedListView.extend({
-            el: "#${n} .news-feeds-container",
-            template: _.template($("#${n}feed-list-template").html())
+
+        newsView = $.extend(upnews.NewsView, {
+            newsService: new upnews.newsService("${feedUrl}"),
+            onSuccessfulSetup: function () {
+                if (${ feedView  == 'select' }) {
+                    // set the current news feed to selected in the select menu
+                    $("#${n} option").removeAttr("selected");
+                    $("#${n} option[value=" + newsView.newsService.getActiveFeed() + "]").attr("selected", "selected");
+
+                    // event handler for select menu
+                    $("#${n} select").change(function () {
+                        var id = $(this).val();
+                        $(newsView.feedListView).trigger("feedSelected", id);
+                        $("#${n} .news-stories-container").hide();
+                        $("#${n}feed" + id).show();
+                    });
+                } else {
+                    // compute the index of the currently selected feed
+                    var index = $("#${n} .news-stories-container").index($("#${n}feed" + newsView.newsService.getActiveFeed()));
+                    // initialize the jQueryUI tabs widget and set the initially
+                    // selected tab
+                    $("#${n} .view-news").tabs({
+                        select: function (event, ui) {
+                            var id = ui.panel.id.split("feed")[1];
+                            $(newsView.feedListView).trigger("feedSelected", id);
+                        },
+                        selected: index
+                    });
+                    // Fix focus on active tab : up to top of page
+                    $('html,body').animate({scrollTop: $("#portal").offset().top},'500');
+                }
+
+            },
+            feedDetailView: $.extend(upnews.NewsFeedDetailView, {
+                template: Handlebars.compile($("#${n}feed-detail-template").html()),
+                postRender: adjustToolTipBasedOnSize    
+            }),
+            feedListView: $.extend(upnews.NewsFeedListView, {
+                $el: $("#${n} .news-feeds-container"),
+                template: Handlebars.compile($("#${n}feed-list-template").html())
+            }),
+            namespace: "${n}"
         });
 
-        newsView = new upnews.NewsView();
-        newsView.onSuccessfulSetup = function () {
-            if (${ feedView  == 'select' }) {
-                // set the current news feed to selected in the select menu
-                $("#${n} option").removeAttr("selected");
-                $("#${n} option[value=" + newsView.feedDetails.get("id") + "]").attr("selected", "selected");
-
-                // event handler for select menu
-                $("#${n} select").change(function () {
-                    var id = $(this).val();
-                    newsView.feedListView.trigger("feedSelected", id);
-                    $("#${n} .news-stories-container").hide();
-                    $("#${n}feed" + id).show();
-                });
-            } else {
-                // compute the index of the currently selected feed
-                var index = $("#${n} .news-stories-container").index($("#${n}feed" + newsView.feedDetails.get("id")));
-
-                // initialize the jQueryUI tabs widget and set the initially
-                // selected tab
-                $("#${n} .view-news").tabs({
-                    select: function (event, ui) {
-                        var id = ui.panel.id.split("feed")[1];
-                        newsView.feedListView.trigger("feedSelected", id);
-                    },
-                    selected: index
-                });
-                // Fix focus on active tab : up to top of page
-                $('html,body').animate({scrollTop: $("#portal").offset().top},'500');
-            }
-
-        };
-        newsView.url = "${feedUrl}";
-        newsView.feedDetailViewFn = DesktopNewsFeedDetailView;
-        newsView.feedListView = new DesktopNewsFeedListView();
-        newsView.namespace = "${n}";
 
         $(document).ready(function () {
 
-            newsView.feedListView.bind("feedSelected", function (id) {
-                if (!newsView.feedDetails || newsView.feedDetails.get("id") !== id) {
+//            newsView.feedListView.bind("feedSelected", function (id) {
+            $(newsView.feedListView).bind("feedSelected", function (event, id) {
+                if (newsView.newsService.getActiveFeed() !== id) {
                     newsView.getFeed(id);
                 }
             });
