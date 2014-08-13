@@ -132,10 +132,10 @@
         
         newsView.onSuccessfulSetup = function () {
         	$("#${n} .news-stories-container").hide();
-            $.mobile.hidePageLoadingMsg();
+            $.mobile.loading("hide");
         };
         newsView.onSuccessfulRetrieval = function () {
-            $.mobile.hidePageLoadingMsg();
+            $.mobile.loading("hide");
         };
         
         $(document).ready(function () {
@@ -145,12 +145,12 @@
                 $("#${n} .news-stories-container").hide();
                 $("#${n}feed" + id).show();
                 if (!newsView.feedDetails || newsView.feedDetails.get("id") !== id) {
-                    $.mobile.showPageLoadingMsg();
+                    $.mobile.loading("show");
                     newsView.getFeed(id);
                 }
             });
 
-            $.mobile.showPageLoadingMsg();
+            $.mobile.loading("show");
             newsView.setup();
             
         });
