@@ -24,9 +24,6 @@
 
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"> 
-	 var ${n} = ${n} || {};
-    ${n}.jQuery = jQuery.noConflict(true);
-
     ${n}.jQuery(function() {
     
         var $ = ${n}.jQuery;

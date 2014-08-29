@@ -108,15 +108,26 @@
 </div>
 
 <c:if test="${ prefs.summaryView == 'flyout' }">
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.6.1/jquery-1.6.1.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.8.13/jquery-ui-1.8.13.min.js"/>"></script>
-    <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.4.0/js/fluid-all-1.4.0.min.js"/>"></script>
+    <c:if test="${!usePortalJsLibs}">
+        <script type="text/javascript" src="<rs:resourceURL value="/rs/jquery/1.10.2/jquery-1.10.2.min.js"/>"></script>
+        <script type="text/javascript" src="<rs:resourceURL value="/rs/jqueryui/1.10.3/jquery-ui-1.10.3.min.js"/>"></script>
+        <script type="text/javascript" src="<rs:resourceURL value="/rs/fluid/1.5.0/js/fluid-custom.min.js"/>"></script>
+    </c:if>
     <script type="text/javascript"><rs:compressJs>
-        var ${n} = ${n} || {};
-        ${n}.jQuery = jQuery.noConflict(true);
-        ${n}.fluid = fluid;
-        fluid = null;
-        fluid_1_4 = null;
+    var ${n} = ${n} || {};
+    <c:choose>
+        <c:when test="${!usePortalJsLibs}">
+            ${n}.jQuery = jQuery.noConflict(true);
+            ${n}.fluid = fluid;
+            fluid = null;
+            fluid_1_4 = null;
+        </c:when>
+        <c:otherwise>
+            <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>
+            ${n}.jQuery = ${ ns }jQuery;
+            ${n}.fluid = ${ ns }fluid;
+        </c:otherwise>
+    </c:choose>
 
         ${n}.jQuery("#${n}newsContainer .news-item").tooltip({
             bodyHandler: function() { 
