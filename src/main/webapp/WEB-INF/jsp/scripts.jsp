@@ -28,7 +28,7 @@
             ${n}._ = _.noConflict();
             ${n}.Backbone = Backbone.noConflict();
             fluid = null;
-            fluid_1_4 = null;
+            fluid_1_5 = null;
         </c:when>
         <c:otherwise>
             <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>

@@ -180,7 +180,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
                 log.debug("Found proxy configuration from system properties");
             }
         } else {
-            	log.debug("Using proxy settings from fields");
+            	log.debug("Using proxy settings from fields set during bean construction");
             	proxyHost = this.proxyHost;
             	proxyPort = this.proxyPort;
          }

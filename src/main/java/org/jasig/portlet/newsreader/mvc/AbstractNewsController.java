@@ -21,7 +21,6 @@ package org.jasig.portlet.newsreader.mvc;
 
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -35,7 +34,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  * 
  * So I suggest factoring common code out of the subclasses (and into here) 
  * bit-by-bit until the controllers are no different, at which point we can 
- * loose this class if it seems like a good idea then.
+ * remove this class if it seems like a good idea then.
  * 
  * @author awills
  */
@@ -45,20 +44,8 @@ public class AbstractNewsController {
 
     @ModelAttribute("isAdmin")
     public boolean isAdmin(PortletRequest req) {
- 
-        boolean rslt = false;  // default...
-        final PortletSession session = req.getPortletSession(false);
-        if (session != null && session.getAttribute(INITIALIZED) != null && (Boolean) session.getAttribute(INITIALIZED)) {
-            Boolean attr = (Boolean) session.getAttribute("isAdmin", PortletSession.PORTLET_SCOPE);
-            rslt = attr != null
-                    ? attr
-                    : false;
-        } else {
-        	//if the session not initialized yet, try and get admin parameter direct from request
-        	rslt = req.isUserInRole(NEWS_ADMIN_ROLE);
-        }
-        return rslt;
-    }    
+        return req.isUserInRole(NEWS_ADMIN_ROLE);
+    }
 
     @ModelAttribute("isGuest")
     public boolean isGuest(PortletRequest req) {

@@ -39,9 +39,8 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 
 /**
- * AdminNewsController provides a main administrative view for the news
- * portlet.  The page is available to users in the configured "newsAdmin"
- * role.
+ * AdminNewsController provides a main administrative view for the news portlet.  The page is available
+ * to users in the configured <code>NEWS_ADMIN_ROLE</code> role.
  *
  * @author Anthony Colebourne
  * @author Jen Bourey

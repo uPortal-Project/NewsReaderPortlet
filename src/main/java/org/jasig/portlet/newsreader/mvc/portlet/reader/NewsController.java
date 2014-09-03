@@ -29,12 +29,9 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.portlet.PortletPreferences;
-import javax.portlet.PortletResponse;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-
-import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -123,7 +120,7 @@ public class NewsController extends AbstractNewsController {
         if (session.getAttribute(INITIALIZED) == null) {
 
             // get a set of all role names currently configured for
-            // default newss
+            // default news
             List<String> allRoles = newsStore.getUserRoles();
             log.debug("all roles: " + allRoles);
 
@@ -135,12 +132,6 @@ public class NewsController extends AbstractNewsController {
                     userRoles.add(role);
             }
             session.setAttribute("userRoles", userRoles, PortletSession.PORTLET_SCOPE);
-
-            // determine if this user belongs to the defined news
-            // administration group and store the result in the session
-            session.setAttribute("isAdmin",
-                    request.isUserInRole(NEWS_ADMIN_ROLE),
-                    PortletSession.PORTLET_SCOPE);
 
             // set the default number of days to display
             session.setAttribute("items", defaultItems);

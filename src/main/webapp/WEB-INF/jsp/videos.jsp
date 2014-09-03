@@ -62,12 +62,22 @@
 
 <script type="text/javascript"><rs:compressJs>
     var ${n} = ${n} || {};
-    ${n}.jQuery = jQuery.noConflict(true);
-    ${n}._ = _.noConflict();
-    ${n}.Backbone = Backbone.noConflict();
-    ${n}.fluid = fluid;
-    fluid = null;
-    fluid_1_4 = null;
+<c:choose>
+    <c:when test="${!usePortalJsLibs}">
+        ${n}.jQuery = jQuery.noConflict(true);
+        ${n}._ = _.noConflict();
+        ${n}.Backbone = Backbone.noConflict();
+        ${n}.fluid = fluid;
+        fluid = null;
+        fluid_1_5 = null;
+</c:when>
+    <c:otherwise>
+        <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>
+        ${n}.jQuery = ${ ns }jQuery;
+        ${n}._ = ${ ns }_;
+        ${n}.Backbone = ${ ns }Backbone;
+    </c:otherwise>
+</c:choose>
     ${n}.jQuery(document).ready(function(){
         var $ = ${n}.jQuery;
         var fluid = ${n}.fluid;
