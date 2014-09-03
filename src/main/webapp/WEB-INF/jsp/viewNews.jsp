@@ -139,7 +139,12 @@
 
         var adjustToolTipBasedOnSize = function () {
             <c:if test="${ storyView == 'flyout' }">
-                var tooltipPosition = { offset: "15 15" , collision: "fit" }
+                var tooltipPosition = {
+                    my: 'left center',
+                    at: 'right+10 center',
+                    collision: 'flipfit'
+                };
+
                 // If there is not enough width in the window to display as a flyout, switch to display the
                 // tooltip under the news item.  Set collision to none instead of 'fit' because fit has a flickering
                 // display when the tip can't cleanly display under the news item (at least with jQuery 1.8.13).

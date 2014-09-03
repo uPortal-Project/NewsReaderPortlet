@@ -121,6 +121,7 @@
             ${n}.fluid = fluid;
             fluid = null;
             fluid_1_4 = null;
+            fluid_1_5 = null;
         </c:when>
         <c:otherwise>
             <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>
@@ -129,11 +130,15 @@
         </c:otherwise>
     </c:choose>
 
-        ${n}.jQuery("#${n}newsContainer .news-item").tooltip({
-            bodyHandler: function() { 
-                return ${n}.jQuery(this).next().html(); 
+        ${n}.jQuery('#${n}newsContainer .news-item').tooltip({
+            content: function() {
+                return ${n}.jQuery(this).next().html();
             },
-            showURL: false
+            position: {
+                my: 'left center',
+                at: 'right+10 center',
+                collision: 'flipfit'
+            }
         });
     </rs:compressJs></script>
 </c:if>
