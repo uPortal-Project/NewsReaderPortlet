@@ -92,7 +92,7 @@ public class SingleFeedNewsController extends AbstractNewsController {
          * If this is a new session, perform any necessary
          * portlet initialization.
          */
-        if (session.getAttribute("initialized") == null) {
+        if (session.getAttribute(INITIALIZED) == null) {
 
             // perform any other configured initialization tasks
             for (IInitializationService service : initializationServices) {
@@ -100,7 +100,7 @@ public class SingleFeedNewsController extends AbstractNewsController {
             }
 
             // mark this session as initialized
-            session.setAttribute("initialized", "true");
+            session.setAttribute(INITIALIZED, true);
         }
 
         PortletPreferences prefs = request.getPreferences();
