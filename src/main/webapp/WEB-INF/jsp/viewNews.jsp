@@ -98,35 +98,39 @@
 </script>
 
 <script type="text/template" id="${n}feed-detail-template">
-    <div class="titlebar portlet-titlebar">
-        <h3 class="title">${"<%= title %>"}</h3>
-    </div>
+    ${"<% if (message) { %>"}
+        <span class="rss-error">${"<%-"} message ${"%>"}</span>
+    ${"<% } else { %>"}
+        <div class="titlebar portlet-titlebar">
+            <h3 class="title">${"<%- title %>"}</h3>
+        </div>
 
-    <c:choose>
-        <c:when test="${ storyView == 'flyout' }">
-            <ul class="news-stories feed">
-                ${"<%"} _(entries).each(function(story) { ${" %>"}
-                <li>
-                    <a href="${"<%="} story.link ${"%>"}" title="${"<%="} story.description ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
-                    ${"<%="} story.title ${"%>"}
-                    </a>
-                </li>
-                ${"<%"} }); ${"%>"}
-            </ul>
-        </c:when>
-        <c:otherwise>
-            <div class="news-stories feed">
-                ${"<%"} _(entries).each(function(story) { ${" %>"}
-                <h3>
-                    <a href="${"<%="} story.link ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
-                    ${"<%="} story.title ${"%>"}
-                    </a>
-                </h3>
-                <p>${"<%="} story.description ${"%>"}</p>
-                ${"<%"} }); ${"%>"}
-            </div>
-        </c:otherwise>
-    </c:choose>
+        <c:choose>
+            <c:when test="${ storyView == 'flyout' }">
+                <ul class="news-stories feed">
+                    ${"<%"} _(entries).each(function(story) { ${" %>"}
+                    <li>
+                        <a href="${"<%="} story.link ${"%>"}" title="${"<%-"} story.description ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
+                        ${"<%-"} story.title ${"%>"}
+                        </a>
+                    </li>
+                    ${"<%"} }); ${"%>"}
+                </ul>
+            </c:when>
+            <c:otherwise>
+                <div class="news-stories feed">
+                    ${"<%"} _(entries).each(function(story) { ${" %>"}
+                    <h3>
+                        <a href="${"<%="} story.link ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
+                        ${"<%="} story.title ${"%>"}
+                        </a>
+                    </h3>
+                    <p>${"<%-"} story.description ${"%>"}</p>
+                    ${"<%"} }); ${"%>"}
+                </div>
+            </c:otherwise>
+        </c:choose>
+    ${"<% } %>"}
 </script>
 
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>

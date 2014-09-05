@@ -49,24 +49,11 @@ if (!upnews.init) {
                     	view.storyContainers["feed" + feed.id] = detail;
                     });
     
-                    // construct a story list for the currently active feed
-                    var entryList = new upnews.NewsStoryList();
-                    $(data.feed.entries).each(function (idx, entry) {
-                        entryList.add(new upnews.NewsStory(entry));
-                    });
-                    data.feed.stories = entryList;
-                    data.feed.id = data.activeFeed;
-                    view.feedDetails = new upnews.NewsFeedDetails(data.feed);                
-                    
+                    view.feedDetails = new upnews.NewsFeedDetails(data.feed);
+
                     // render the feed list view
                     view.feedListView.model = feedList;
                     view.feedListView.render();
-                    
-                    // render the story list view
-                    var activeStory = view.storyContainers["feed" + data.feed.id];
-                    activeStory.model = view.feedDetails;
-                    activeStory.populated = true;
-                    activeStory.render();
 
                     // call any configured completion action
                     if (view.onSuccessfulSetup) {
@@ -79,7 +66,7 @@ if (!upnews.init) {
         	var view, data;        	
             view = this;
 
-            if (!view.storyContainers["feed" + id].populated) {
+            if (!view.storyContainers || !view.storyContainers["feed" + id] || !view.storyContainers["feed" + id].populated) {
 	            
 	            data = { "activeateNews": id };
 	
@@ -91,15 +78,23 @@ if (!upnews.init) {
 	                success: function (data) {
 	                    
 	                    var entryList = new upnews.NewsStoryList();
-	                    $(data.feed.entries).each(function (idx, entry) {
-	                        entryList.add(new upnews.NewsStory(entry));
-	                    });
-	                    data.feed.stories = entryList;
-	                    data.feed.id = data.activeFeed;
+
+                        if (data.feed && data.feed.entries) {
+                            $(data.feed.entries).each(function (idx, entry) {
+                                entryList.add(new upnews.NewsStory(entry));
+                            });
+                        } else {
+                            data.feed = {entries: []};
+                        }
+                        data.feed.id = data.activeFeed;
+                        data.feed.message = data.message;
+                        data.feed.stories = entryList;
 
 	                    var activeStory = view.storyContainers["feed" + data.activeFeed];
-	                    activeStory.model = new upnews.NewsFeedDetails(data.feed);
-	                    activeStory.populated = true;
+                        if (data.feed) {
+                            activeStory.model = new upnews.NewsFeedDetails(data.feed);
+                            activeStory.populated = true;
+                        }
 	                    activeStory.render();
 	                    
 	                    // render default feed
