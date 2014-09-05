@@ -26,7 +26,7 @@ This project includes:
   Batik utility library under The Apache Software License, Version 2.0
   Cernunnos - Core under Apache 2
   cglib under Apache License, Version 2.0
-  Codec under Apache License, Version 2.0
+  Commons Codec under The Apache Software License, Version 2.0
   Commons Collections under The Apache Software License, Version 2.0
   Commons DBCP under The Apache Software License, Version 2.0
   Commons FileUpload under The Apache Software License, Version 2.0
@@ -41,13 +41,13 @@ This project includes:
   Ehcache Core under The Apache Software License, Version 2.0
   Ehcache Web Filters under The Apache Software License, Version 2.0
   ezmorph under The Apache Software License, Version 2.0
-  FindBugs-jsr305 under The Apache Software License, Version 2.0
   Groovy under Apache License, Version 2.0
   groovy-engine under BSD License
   Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   Hamcrest Core under BSD style
   Hibernate under GNU LESSER GENERAL PUBLIC LICENSE
   HttpClient under Apache License
+  HttpCore under Apache License
   HyperSQL Database under HSQLDB License, a BSD open source license
   ICU4J under ICU License
   Jackson under The Apache Software License, Version 2.0
@@ -97,7 +97,7 @@ This project includes:
   spring-webmvc-portlet under The Apache Software License, Version 2.0
   standard under Apache License, Version 2.0
   xalan under Apache License, Version 2.0
-  Xerces2 Java Parser under The Apache Software License, Version 2.0
+  xercesImpl under Apache License, Version 2.0
   XML Commons External Components XML APIs under The Apache Software License, Version 2.0
   XML Commons External Components XML APIs Extensions under The Apache Software License, Version 2.0
   xmlParserAPIs under Apache License, Version 2.0

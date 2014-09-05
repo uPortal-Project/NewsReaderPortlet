@@ -491,6 +491,8 @@
                         <exclude>src/main/resources/antisamy/**</exclude>
                         <exclude>src/main/webapp/WEB-INF/dtd/**</exclude>
                         <exclude>src/main/webapp/WEB-INF/validator-rules.xml</exclude>
+                        <exclude>.idea/**</exclude> <!-- Exclude intelliJ files -->
+                        <exclude>overlays/**</exclude> <!-- Exclude intelliJ files -->
                     </excludes>
                     <mapping>
                         <channel>XML_STYLE</channel>
