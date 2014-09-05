@@ -89,7 +89,9 @@
         </c:when>
         <c:otherwise>
             ${"<%"} _(feeds).each(function(feed) { ${" %>"}
-            <li><a href="#${n}feed${"<%="} feed.id ${"%>"}">${"<%="} feed.name ${"%>"}</a></li>
+            <li data-feed-id="${"<%="} feed.id ${"%>"}">
+                <a href="#${n}feed${"<%="} feed.id ${"%>"}">${"<%="} feed.name ${"%>"}</a>
+            </li>
             ${"<%"} }); ${"%>"}
         </c:otherwise>
     </c:choose>
@@ -199,14 +201,18 @@
                 // initialize the jQueryUI tabs widget and set the initially
                 // selected tab
                 $("#${n} .view-news").tabs({
-                    select: function (event, ui) {
-                        var id = ui.panel.id.split("feed")[1];
+                    create: function(event, ui) {
+                        var id = ui.tab.data('feedId');
+                        newsView.feedListView.trigger('feedSelected', id);
+                    },
+                    activate: function (event, ui) {
+                        var id = ui.newTab.data("feedId");
                         newsView.feedListView.trigger("feedSelected", id);
                     },
                     selected: index
                 });
                 // Fix focus on active tab : up to top of page
-                $('html,body').animate({scrollTop: $("#portal").offset().top},'500');
+                $('html,body').animate({scrollTop: $(".portal").offset().top},'500');
             }
 
         };
