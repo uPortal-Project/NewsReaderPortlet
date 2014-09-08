@@ -53,10 +53,10 @@ public class RomeNewsProcessorImpl {
 
     private List<String> imageTypes;
 
-    private int ENTITRIES_PER_PAGE = 10;
+    private int ENTRIES_PER_PAGE = 10;
     
-    public void setEntiresPerPage(int perPage) {
-        this.ENTITRIES_PER_PAGE = perPage;
+    public void setEntriesPerPage(int perPage) {
+        this.ENTRIES_PER_PAGE = perPage;
     }
     
     public void setImageTypes(List<String> imageTypes) {
@@ -75,7 +75,7 @@ public class RomeNewsProcessorImpl {
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(reader);
 
-        PaginatingNewsFeed newsFeed = new PaginatingNewsFeed(ENTITRIES_PER_PAGE);
+        PaginatingNewsFeed newsFeed = new PaginatingNewsFeed(ENTRIES_PER_PAGE);
         newsFeed.setAuthor(feed.getAuthor());
         newsFeed.setLink(feed.getLink());
         newsFeed.setTitle(feed.getTitle());

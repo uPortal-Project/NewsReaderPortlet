@@ -45,10 +45,6 @@
         </portlet-info>
         <portlet-preferences>
             <preference>
-                <name>maxStories</name>
-                <value>10</value>
-            </preference>
-            <preference>
                 <name>storyView</name>
                 <value>select</value>
             </preference>
