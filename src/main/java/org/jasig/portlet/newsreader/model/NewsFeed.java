@@ -20,8 +20,8 @@
 package org.jasig.portlet.newsreader.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -29,7 +29,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class NewsFeed implements Serializable {
 
-    private List<NewsFeedItem> entries;
+    private List<NewsFeedItem> entries = new ArrayList<NewsFeedItem>();
     private String author;
     private String link;
     private String title;
@@ -39,9 +39,9 @@ public class NewsFeed implements Serializable {
         return entries;
     }
 
-    public void setEntries(List<NewsFeedItem> entries) {
-        this.entries = entries;
-    }
+//    public void setEntries(List<NewsFeedItem> entries) {
+//        this.entries = entries;
+//    }
     
     public String getAuthor() {
         return author;
@@ -74,7 +74,7 @@ public class NewsFeed implements Serializable {
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
-
+    
     /**
      * @see java.lang.Object#equals(Object)
      */

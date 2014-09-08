@@ -20,11 +20,55 @@ var upnews = upnews || {};
 
 if (!upnews.init) {
 
+    
+
     upnews.init = function($, Handlebars) {
+
+
+        $.fn.infiniteScroll = function(options) {
+
+            var settings = $.extend({
+                // These are the defaults.
+                autoLoad: false,
+                contentLoad: function() {
+                    var deferred =  $.Deferred();
+                    
+                    deferred.resolve("<h1>LOADED</h1>");
+                    
+                    return deferred.promise();
+                    
+                }
+            }, options );
+
+            if (settings.autoLoad) $(this).scroll();
+
+            $(this).css({"position":"relative"});
+            return this.each(function() {
+
+                var height = $(this).outerHeight();
+                this.on = true;
+                var that = this;
+                $(this).scroll(function() {
+                    if (this.on) {
+                        console.log(height + " :: " + $(":last", this).position().top);
+                        if ($(":last", this).position().top < height) {
+                            this.on = false;
+                            settings.contentLoad().done(function() {
+                                that.on = true;
+                            });
+                            console.log("Appended");
+                        }
+                    }
+                    console.log("scrolled");
+
+                });
+
+            });
+        };
 
         upnews.newsService = function(url) {
 
-            var promise = null, activeFeedCache = null, currentPage = 0, pages = 1;
+            var promise = null, activeFeedCache = null, currentPage = 0;
             var getNewsData = function(activeFeed, page) {
                 if (promise == null || activeFeed != activeFeedCache || page != currentPage) {
                     var data = {};
@@ -39,7 +83,6 @@ if (!upnews.init) {
                     }).done(function(data) {
                         activeFeedCache = data.activeFeed;
                         currentPage = data.page;
-                        pages = data.pages;
                     });
                 }
                 return promise;
@@ -62,10 +105,7 @@ if (!upnews.init) {
             };
 
             this.getPage = function() {
-                return {
-                    current: currentPage,
-                    total: pages
-                };
+                return currentPage;
             };
             this.getActiveFeed = function() {
                 return activeFeedCache;
@@ -95,15 +135,15 @@ if (!upnews.init) {
 
                         })
                         .done(function() {
-                            view.getFeed(view.newsService.getActiveFeed()).done(function() {
+                            view.getFeed(view.newsService.getActiveFeed(),0).done(function() {
                                 if (view.onSuccessfulSetup) view.onSuccessfulSetup();
                             });
                         });
             },
-            getFeed: function(id) {
+            getFeed: function(id,page) {
                 var view = this;
                 if (!view.storyContainers["feed" + id].populated) {
-                    return view.newsService.getFeed(id).done(function(feed) {
+                    return view.newsService.getFeed(id,page).done(function(feed) {
                         feed.id = view.newsService.getActiveFeed();
                         // render the story list view
                         var activeStory = view.storyContainers["feed" + feed.id];
@@ -124,6 +164,7 @@ if (!upnews.init) {
             $el: $("<div/>"),
             postRender: function() {
             },
+            page: 1,
             render: function(feed) {
                 // render the main feed detail template
                 this.$el.html(this.template(feed));
@@ -131,6 +172,15 @@ if (!upnews.init) {
                 $(".titlebar a", this.$el).click(function() {
                     $(view).trigger("showList");
                 });
+                $('.news-stories', this.$el).infiniteScroll({
+                    contentLoad: function() {
+                            return view.loader(feed.id).done(function(result) {
+                                if (result.success ) 
+                                    view.page = result.page+1;
+                            });
+                    }
+                });
+
                 // add any jQM decorator classes
                 this.postRender();
                 return this;

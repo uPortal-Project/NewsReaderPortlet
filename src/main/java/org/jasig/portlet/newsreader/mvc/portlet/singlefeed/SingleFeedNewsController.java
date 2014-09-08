@@ -22,14 +22,12 @@ package org.jasig.portlet.newsreader.mvc.portlet.singlefeed;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.portlet.ActionRequest;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -47,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.portlet.ModelAndView;
 
 @Controller
@@ -83,7 +82,7 @@ public class SingleFeedNewsController extends AbstractNewsController {
     }
     
     @RequestMapping
-    public ModelAndView showFeed(RenderRequest request, RenderResponse response) throws Exception {
+    public ModelAndView showFeed(RenderRequest request, RenderResponse response, @RequestParam(defaultValue = "0") Integer page) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
@@ -113,7 +112,7 @@ public class SingleFeedNewsController extends AbstractNewsController {
             // get an instance of the adapter for this feed
             INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName(), INewsAdapter.class);
             // retrieve the feed from this adaptor
-            feed = adapter.getSyndFeed(feedConfig, request);
+            feed = adapter.getSyndFeed(feedConfig, page);
 
             if ( feed != null )
             {
