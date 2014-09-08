@@ -97,10 +97,12 @@
             newsService: new upnews.newsService("${feedUrl}"),
             onSuccessfulSetup: function () {
         	$("#${n} .news-stories-container").hide();
-                $.mobile.hidePageLoadingMsg();
+//                $.mobile.hidePageLoadingMsg();
+                $.mobile.loading("hide");
             },
             onSuccessfulRetrieval: function () {
-                $.mobile.hidePageLoadingMsg();
+//                $.mobile.hidePageLoadingMsg();
+                $.mobile.loading("hide");
             },
             feedDetailView: $.extend(upnews.NewsFeedDetailView, {
                 template: Handlebars.compile($("#${n}feed-detail-template").html()),
