@@ -75,7 +75,7 @@
     <bean id="romeProcessor" 
         class="org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl"
         p:imageTypes-ref="imageTypes" p:videoTypes-ref="videoTypes" 
-        p:policies-ref="antisamyPolicies"/>
+        p:policies-ref="antisamyPolicies" p:entriesPerPage="10"/>
     
     <!-- RSS feed adapter -->
     <bean id="httpClientConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"

@@ -105,7 +105,6 @@ public class AjaxNewsController {
             prefs.store();
         }
 
-        int maxStories = Integer.parseInt(prefs.getValue("maxStories", "10"));
         int page = Integer.parseInt(request.getParameter("page"));
         
         // only bother to fetch the active feed

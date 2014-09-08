@@ -42,9 +42,6 @@
     		$.post(savePrefUrl, {prefName: 'className', prefValue: $(e.target).val()});
     	});	
 		
-    	$p.find("#max").change(function(e){
-    		$.post(savePrefUrl, {prefName: 'maxStories', prefValue: $(e.target).val()});
-    	});	
     	$p.find("#view").change(function(e){
     		$.post(savePrefUrl, {prefName: 'summaryView', prefValue: $(e.target).val()});
     	});	
@@ -83,16 +80,6 @@
 		       ${ className.readOnly ? "disabled='disabled'" : '' }>
 	</div>
 	
-	<div class="preference">
-		<label><spring:message code="edit.news.feed.maxstories"/></label>
-		<select id="max" ${ max.readOnly ? "disabled='disabled'" : ''}>
-			<c:forEach items="${max.options}" var="item">
-				<option value="${item}" ${ item == max.value ? "selected='selected'" : '' }>
-					${item}
-				</option>
-			</c:forEach>
-		</select>
-	</div>
 	
 	<div class="preference">
 		<label><spring:message code="edit.news.feed.storyview"/></label>
