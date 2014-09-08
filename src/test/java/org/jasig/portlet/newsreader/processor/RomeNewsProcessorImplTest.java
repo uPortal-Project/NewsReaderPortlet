@@ -19,13 +19,12 @@
 
 package org.jasig.portlet.newsreader.processor;
 
-import static org.junit.Assert.assertEquals;
-
+import com.sun.syndication.io.FeedException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,8 +35,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.sun.syndication.io.FeedException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/org/jasig/portlet/newsreader/processor/romeProcessorTestContext.xml")
@@ -61,7 +58,7 @@ public class RomeNewsProcessorImplTest {
         InputStream in = testFeed.getInputStream();
         NewsFeed feed = processor.getFeed(in, "antisamy-textonly", "antisamy-textonly");
         
-        assertEquals(20, feed.getEntries().size());
+        assertEquals(10, feed.getEntries().size());
         NewsFeedItem item = (NewsFeedItem) feed.getEntries().get(0);
         assertEquals("http://d.yimg.com/a/p/ap/20110310/capt.8a3eb82d06714371b5e5f23978453a1e-8a3eb82d06714371b5e5f23978453a1e-0.jpg?x=130&y=86&q=85&sig=PllYTfbufZhPAizTiij5GQ--", item.getImageUrl());
         

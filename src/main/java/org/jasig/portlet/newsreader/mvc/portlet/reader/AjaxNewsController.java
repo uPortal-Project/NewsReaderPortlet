@@ -134,8 +134,9 @@ public class AjaxNewsController {
                 // get an instance of the adapter for this feed
                 INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
                 // retrieve the feed from this adaptor
-                NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, request);
+                NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, page);
                 if (sharedFeed != null) {
+                    
 
                     List<NewsFeedItem> items = sharedFeed.getEntries();
                     for (int i = 0; i < items.size(); i++) {
@@ -148,22 +149,23 @@ public class AjaxNewsController {
                             item.setLink(link.toString());
                         }
                     }
-
-                    model.put("pages", Math.ceil(sharedFeed.getEntries().size() / maxStories));
-                    if (sharedFeed.getEntries().size() > maxStories) {
-                        int pageStart = page * maxStories;
-                        int pageEnd = pageStart + maxStories -1;
-                        
-                        NewsFeed limitedFeed = new NewsFeed();
-                        limitedFeed.setAuthor(sharedFeed.getAuthor());
-                        limitedFeed.setCopyright(sharedFeed.getCopyright());
-                        limitedFeed.setLink(sharedFeed.getLink());
-                        limitedFeed.setTitle(sharedFeed.getTitle());
-                        limitedFeed.setEntries(sharedFeed.getEntries().subList(pageStart, pageEnd));
-                        model.put("feed", limitedFeed);
-                    } else {
-                        model.put("feed", sharedFeed);
-                    }
+                    
+                    model.put("feed", sharedFeed);
+                    
+//                    if (sharedFeed.getEntries().size() > maxStories) {
+//                        int pageStart = page * maxStories;
+//                        int pageEnd = pageStart + maxStories -1;
+//                        
+//                        NewsFeed limitedFeed = new NewsFeed();
+//                        limitedFeed.setAuthor(sharedFeed.getAuthor());
+//                        limitedFeed.setCopyright(sharedFeed.getCopyright());
+//                        limitedFeed.setLink(sharedFeed.getLink());
+//                        limitedFeed.setTitle(sharedFeed.getTitle());
+//                        limitedFeed.setEntries(sharedFeed.getEntries().subList(pageStart, pageEnd));
+//                        model.put("feed", limitedFeed);
+//                    } else {
+//                        model.put("feed", sharedFeed);
+//                    }
                 } else {
                     log.warn("Failed to get feed from adapter.");
                     model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");

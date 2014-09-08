@@ -23,6 +23,10 @@
 <c:set var="n"><portlet:namespace/></c:set>
 
 <style>
+    .news-stories {
+        max-height: 200px;
+        overflow: auto;
+    }
     ul.news-stories li { padding-bottom:0.5em; list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');  }
     .ui-tooltip {
         padding:8px;
@@ -51,16 +55,6 @@
                     <ul class="news-feeds-container"></ul>
                 </c:otherwise>
             </c:choose>
-<!--            <div class="story-container" style="display:none">
-                <div class="titlebar portlet-titlebar">
-                    <a class="news-reader-back-link" href="javascript:;" data-role="button" data-icon="back" data-inline="true"><spring:message code="back" /></a>
-                    <h3 class="title story-title"><spring:message code="story.title" /></h3>
-                </div>
-                <div data-role="content" class="portlet-content">
-                    <div class="story-content">
-                    </div>
-                </div>
-            </div>-->
         </div>
     </div>
 
@@ -92,37 +86,53 @@
     {{/each}}
 </script>
                 
-<script type="text/template" id="${n}feed-detail-template">
-        <div>
-            <div class="titlebar portlet-titlebar">
-                <h3 class="title">{{title}}</h3>
-            </div>
-        </div>
+<c:choose>
+    <c:when test="${ storyView == 'flyout' }">
+        <script type="text/template" id="${n}feed-detail-template">
+                <div>
+                    <div class="titlebar portlet-titlebar">
+                        <h3 class="title">{{title}}</h3>
+                    </div>
+                </div>
+                <ul class="news-stories feed">
+                {{{news_stories entries}}}
+                </ul>
+        </script>
 
-    <c:choose>
-        <c:when test="${ storyView == 'flyout' }">
-            <ul class="news-stories feed">
-                {{#each entries}}
-                    <li>
-                        <a href="{{link}}" title="{{description}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </c:when>
-        <c:otherwise>
-            <div class="news-stories feed">
-                {{#each entries}}
-                    <h3>
-                        <a href="{{link}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
-                    </h3>
-                    <p>{{description}}</p>
-                {{/each}}
-            </div>
-        </c:otherwise>
-    </c:choose>
+        <script type="text/template" id="${n}news-story-template">
+            {{#each this}}
+                <li>
+                    <a href="{{link}}" title="{{description}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
+                </li>
+            {{/each}}
+        </script>
+    </c:when>
+    <c:otherwise>
+        <script type="text/template" id="${n}feed-detail-template">
+                <div>
+                    <div class="titlebar portlet-titlebar">
+                        <h3 class="title">{{title}}</h3>
+                    </div>
+                </div>
+                <div class="news-stories feed">
+                    {{{news_stories entries}}}
+                </div>
+        </script>
+        <script type="text/template" id="${n}news-story-template">
+            {{#each this}}
+                <h3>
+                    <a href="{{link}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
+                </h3>
+                <p>{{description}}</p>
+            {{/each}}
+        </script>
 
-</script>
-                
+    </c:otherwise>
+</c:choose>
+
+
+
+
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
     ${n}.jQuery(function(){
@@ -131,6 +141,12 @@
         $ = ${n}.jQuery;
         Handlebars = ${n}.Handlebars;
         upnews = ${n}.upnews;
+
+
+        var newsStoryTemplate = Handlebars.compile($("#${n}news-story-template").html())
+        Handlebars.registerHelper('news_stories', function(entries) {
+            return newsStoryTemplate(entries);
+        });
 
         var adjustToolTipBasedOnSize = function () {
             <c:if test="${ storyView == 'flyout' }">
@@ -162,6 +178,7 @@
         newsView = $.extend(upnews.NewsView, {
             newsService: new upnews.newsService("${feedUrl}"),
             onSuccessfulSetup: function () {
+                 $('#${n} .news-stories').scroll();
                 if (${ feedView  == 'select' }) {
                     // set the current news feed to selected in the select menu
                     $("#${n} option").removeAttr("selected");
@@ -193,7 +210,22 @@
             },
             feedDetailView: $.extend(upnews.NewsFeedDetailView, {
                 template: Handlebars.compile($("#${n}feed-detail-template").html()),
-                postRender: adjustToolTipBasedOnSize    
+                postRender: adjustToolTipBasedOnSize,
+                loader: function(id) {
+                    var view = this;
+                    var deferred = $.Deferred();
+                    
+                    newsView.newsService.getFeed(id, view.page).done(function(feed) {
+                        if (feed.entries.length > 0) {
+                            $('.news-stories',view.$el).append(newsStoryTemplate(feed.entries));
+                            deferred.resolve({page: view.page, success: true});
+                        } else {
+                            deferred.resolve({page: view.page, success: false});
+                        }
+                    });
+                    
+                    return deferred.promise();
+                }
             }),
             feedListView: $.extend(upnews.NewsFeedListView, {
                 $el: $("#${n} .news-feeds-container"),
@@ -201,7 +233,6 @@
             }),
             namespace: "${n}"
         });
-
 
         $(document).ready(function () {
 
