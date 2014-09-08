@@ -24,7 +24,7 @@
 
 <style>
     .news-stories {
-        max-height: 200px;
+        max-height: 20em;
         overflow: auto;
     }
     ul.news-stories li { padding-bottom:0.5em; list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');  }
@@ -40,6 +40,18 @@
     }
     * html .ui-tooltip { background-image: none; }
     body .ui-tooltip { border-width:2px; }
+    
+    #${n} .loading {
+        width:100%;
+        min-height: 20px;
+        background: #ffffff url('<c:url value="/images/loading.gif"/>') no-repeat center;
+        background-size: contain;
+        font-size: smaller;
+        text-align: center;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        
+    }
 </style>
 <portlet:resourceURL var="feedUrl"/>
 
@@ -215,7 +227,11 @@
                     var view = this;
                     var deferred = $.Deferred();
                     
+                    var loadingDiv = $("<div class='loading'></div>");
+                    view.$el.append(loadingDiv);
+                    
                     newsView.newsService.getFeed(id, view.page).done(function(feed) {
+                        loadingDiv.remove();
                         if (feed.entries.length > 0) {
                             $('.news-stories',view.$el).append(newsStoryTemplate(feed.entries));
                             deferred.resolve({page: view.page, success: true});
