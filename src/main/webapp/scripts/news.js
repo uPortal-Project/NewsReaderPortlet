@@ -173,6 +173,7 @@ if (!upnews.init) {
                     $(view).trigger("showList");
                 });
                 $('.news-stories', this.$el).infiniteScroll({
+                    autoLoad: true,
                     contentLoad: function() {
                             return view.loader(feed.id).done(function(result) {
                                 if (result.success ) 
