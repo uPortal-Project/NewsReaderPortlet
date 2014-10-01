@@ -81,49 +81,49 @@
 <script type="text/template" id="${n}feed-list-template">
     <c:choose>
         <c:when test="${ feedView == 'select' }">
-            ${"<%"} _(feeds).each(function(feed) { ${" %>"}
-            <option value="${"<%="} feed.id ${"%>"}">
-            ${"<%="} feed.name ${"%>"}
+            {% _(feeds).each(function(feed) { %}
+            <option value="{%= feed.id %}">
+            {%= feed.name %}
             </option>
-            ${"<%"} }); ${"%>"}
+            {% }); %}
         </c:when>
         <c:otherwise>
-            ${"<%"} _(feeds).each(function(feed) { ${" %>"}
-            <li data-feed-id="${"<%="} feed.id ${"%>"}">
-                <a href="#${n}feed${"<%="} feed.id ${"%>"}">${"<%="} feed.name ${"%>"}</a>
+            {% _(feeds).each(function(feed) { %}
+            <li data-feed-id="{%= feed.id %}">
+                <a href="#${n}feed{%= feed.id %}">{%= feed.name %}</a>
             </li>
-            ${"<%"} }); ${"%>"}
+            {% }); %}
         </c:otherwise>
     </c:choose>
 </script>
 
 <script type="text/template" id="${n}feed-detail-template">
     <div class="titlebar portlet-titlebar">
-        <h3 class="title">${"<%= title %>"}</h3>
+        <h3 class="title">{%= title %}</h3>
     </div>
 
     <c:choose>
         <c:when test="${ storyView == 'flyout' }">
             <ul class="news-stories feed">
-                ${"<%"} _(entries).each(function(story) { ${" %>"}
+                {% _(entries).each(function(story) { %}
                 <li>
-                    <a href="${"<%="} story.link ${"%>"}" title="${"<%="} story.description ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
-                    ${"<%="} story.title ${"%>"}
+                    <a href="{%= story.link %}" title="{%- story.description %}" ${ newWindow ? "target=\"_blank\"" : "" }>
+                    {%= story.title %}
                     </a>
                 </li>
-                ${"<%"} }); ${"%>"}
+                {% }); %}
             </ul>
         </c:when>
         <c:otherwise>
             <div class="news-stories feed">
-                ${"<%"} _(entries).each(function(story) { ${" %>"}
+                {% _(entries).each(function(story) { %}
                 <h3>
-                    <a href="${"<%="} story.link ${"%>"}" ${ newWindow ? "target=\"_blank\"" : "" }>
-                    ${"<%="} story.title ${"%>"}
+                    <a href="{%= story.link %}" ${ newWindow ? "target=\"_blank\"" : "" }>
+                    {%= story.title %}
                     </a>
                 </h3>
-                <p>${"<%="} story.description ${"%>"}</p>
-                ${"<%"} }); ${"%>"}
+                <p>{%= story.description %}</p>
+                {% }); %}
             </div>
         </c:otherwise>
     </c:choose>
@@ -163,8 +163,19 @@
             </c:if>
         };
 
+        // if usePortalJsLibs is true, the template settings for underscore are overwritten w/
+        // mustache style settings and the defaults break.  Can't depend on that always being
+        // available so make sure to pass template settings to the template() function.  Note:
+        // I actually use jinja style templates instead of mustache here just because I think
+        // it's a bit more readable
+        var templateSettings = {
+            evaluate: /{%([\s\S]+?)%}/g,
+            interpolate: /{%=([\s\S]+?)%}/g,
+            escape: /{%-([\s\S]+?)%}/g
+        };
+
         var DesktopNewsFeedDetailView = upnews.NewsFeedDetailView.extend({
-            template: _.template($("#${n}feed-detail-template").html()),
+            template: _.template($("#${n}feed-detail-template").html(), null, templateSettings),
             postRender: adjustToolTipBasedOnSize
         });
 
@@ -177,7 +188,7 @@
 
         var DesktopNewsFeedListView = upnews.NewsFeedListView.extend({
             el: "#${n} .news-feeds-container",
-            template: _.template($("#${n}feed-list-template").html())
+            template: _.template($("#${n}feed-list-template").html(), null, templateSettings)
         });
 
         newsView = new upnews.NewsView();
