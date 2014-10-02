@@ -25,38 +25,40 @@
 <rs:aggregatedResources path="${ usePortalJsLibs ? '/skin-shared.xml' : '/skin.xml' }"/>
 
 <div id="${n}" class="portlet">
-<div class="fl-pager">
-    <div class="view-pager flc-pager-top portlet-section-options">
-        <ul id="pager-top" class="fl-pager-ui">
-          <li class="flc-pager-previous"><a href="#">&lt; <spring:message code="videos.previous"/></a></li>
-          <li style="display:none">
-            <ul class="fl-pager-links flc-pager-links" style="margin:0; display:inline">
-              <li class="flc-pager-pageLink"><a href="javascript:;">1</a></li>
-              <li class="flc-pager-pageLink-disabled">2</li>
-              <li class="flc-pager-pageLink"><a href="javascript:;">3</a></li>
+    <div class="fl-pager">
+        <div class="view-pager flc-pager-top portlet-section-options">
+            <ul id="pager-top" class="fl-pager-ui">
+                <li class="flc-pager-previous"><a href="#">&lt; <spring:message code="videos.previous"/></a></li>
+                <li style="display:none">
+                    <ul class="fl-pager-links flc-pager-links" style="margin:0; display:inline">
+                        <li class="flc-pager-pageLink"><a href="javascript:;">1</a></li>
+                        <li class="flc-pager-pageLink-disabled">2</li>
+                        <li class="flc-pager-pageLink"><a href="javascript:;">3</a></li>
+                    </ul>
+                </li>
+                <li class="flc-pager-next"><a href="#"><spring:message code="videos.next"/> &gt;</a></li>
+                <li style="display:none">
+                    <span class="flc-pager-summary"><spring:message code="videos.show"/></span>
+                    <span>
+                        <select class="pager-page-size flc-pager-page-size">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </span> <spring:message code="videos.per.page"/>
+                </li>
             </ul>
-          </li>
-          <li class="flc-pager-next"><a href="#"><spring:message code="videos.next"/> &gt;</a></li>
-          <li style="display:none">
-            <span class="flc-pager-summary"><spring:message code="videos.show"/></span>
-            <span> <select class="pager-page-size flc-pager-page-size">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            </select></span> <spring:message code="videos.per.page"/>
-          </li>
-        </ul>
-    </div><!-- end: portlet-section-options -->
-    
-    <div class="videos">
-        <div class="video">
-            <h3><a href="javascript:;" class="video-title"></a></h3>
-            <img class="img"/>
-            <p class="description"></p>
+        </div><!-- end: portlet-section-options -->
+
+        <div class="videos">
+            <div class="video">
+                <h3><a href="javascript:;" class="video-title"></a></h3>
+                <img class="img"/>
+                <p class="description"></p>
+            </div>
         </div>
-    </div>
     </div>
 </div>
 
@@ -122,26 +124,27 @@
             dataModel: videos,
             annotateColumnRange: "title",
             columnDefs: columnDefs,
-            bodyRenderer: {
-                type: "fluid.pager.selfRender",
-                options: {
-                    selectors: {
-                        root: ".videos"
-                    },
-                    row: "video:",
-                    renderOptions: {
-                        cutpoints: cutpoints
+            components: {
+                bodyRenderer: {
+                    type: "fluid.table.selfRender",
+                    options: {
+                        selectors: {
+                            root: ".videos"
+                        },
+                        row: "video:",
+                        rendererOptions: {
+                            cutpoints: cutpoints
+                        }
                     }
-                }
-                
-            },
-            pagerBar: {
-                type: "fluid.pager.pagerBar", 
-                options: {
-                    pageList: {
-                        type: "fluid.pager.renderedPageList",
-                        options: { 
-                            linkBody: "a"
+                },
+                pagerBar: {
+                    type: "fluid.pager.pagerBar",
+                    options: {
+                        pageList: {
+                            type: "fluid.pager.renderedPageList",
+                            options: {
+                                linkBody: "a"
+                            }
                         }
                     }
                 }
@@ -149,7 +152,7 @@
         };
         
         // initialize the pager and set it to 6 items per page.
-        var pager = fluid.pager($("#${n}"), pagerOptions);
+        var pager = fluid.pagedTable($("#${n} .fl-pager"), pagerOptions);
         pager.events.initiatePageSizeChange.fire(1);
 
     }); 
