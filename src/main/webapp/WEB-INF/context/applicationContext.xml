@@ -79,7 +79,7 @@
     
     <!-- RSS feed adapter -->
     <bean id="httpClientConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"
-          p:maxTotal="200"/>
+          p:maxTotal="200" p:defaultMaxPerRoute="20"/>
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient"
           c:conman-ref="httpClientConnectionManager">
     </bean>
