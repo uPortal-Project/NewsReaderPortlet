@@ -54,7 +54,7 @@ import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
 
-import com.sun.syndication.io.FeedException;
+import com.rometools.rome.io.FeedException;;
 
 
 /**
