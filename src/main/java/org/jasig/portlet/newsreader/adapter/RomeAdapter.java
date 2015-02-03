@@ -18,7 +18,6 @@
  */
 package org.jasig.portlet.newsreader.adapter;
 
-import com.sun.syndication.io.FeedException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
@@ -57,6 +56,7 @@ import org.owasp.validator.html.ScanException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.portlet.context.PortletRequestAttributes;
+import com.rometools.rome.io.FeedException;;
 
 /**
  * RomeAdapter is a NewsAdapter for standard RSS and ATOM feeds available

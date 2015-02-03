@@ -71,10 +71,12 @@
 
     <properties>
         <icu4j.version>51.1</icu4j.version>
-        <spring.version>3.1.4.RELEASE</spring.version>
+        <spring.version>4.1.4.RELEASE</spring.version>
         <resource-server.version>1.0.42</resource-server.version>
         <httpclient.version>4.2.5</httpclient.version>
         <antisamy.version>1.5.2</antisamy.version>
+        <junit.version>4.12</junit.version>
+        <servlet-api.version>3.0.1</servlet-api.version>
         
         <!-- The JDBC Driver used by the portlet -->
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
@@ -155,15 +157,15 @@
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.5</version>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.8.2</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -173,25 +175,34 @@
                 <scope>runtime</scope>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-core-asl</artifactId>
-                <version>1.6.2</version>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>2.3.0</version>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>1.6.2</version>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.3.0</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate</artifactId>
-                <version>3.2.3.ga</version>
-                <exclusions>
-                    <exclusion>
-                          <groupId>net.sf.ehcache</groupId>
-                          <artifactId>ehcache</artifactId>
-                    </exclusion>
-                </exclusions>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>2.11.0</version>
+            </dependency>
+            <dependency>
+				<groupId>javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>3.12.1.GA</version>
+			</dependency>
+            <dependency>
+			    <groupId>org.hibernate</groupId>
+			    <artifactId>hibernate-core</artifactId>
+			    <version>3.6.10.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.10</version>
             </dependency>
             <dependency>
                 <groupId>org.jasig.resourceserver</groupId>
@@ -286,14 +297,14 @@
     			</exclusions>
             </dependency>
             <dependency>
-                <groupId>rome</groupId>
+                <groupId>com.rometools</groupId>
                 <artifactId>rome</artifactId>
-                <version>1.0</version>
+                <version>1.5.0</version>
             </dependency>
             <dependency>
-                <groupId>rome</groupId>
-                <artifactId>modules</artifactId>
-                <version>0.3.2</version>
+                <groupId>com.rometools</groupId>
+                <artifactId>rome-modules</artifactId>
+                <version>1.5.0</version>
             </dependency>
             <dependency>
                 <groupId>taglibs</groupId>
@@ -341,7 +352,7 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -353,16 +364,24 @@
             <artifactId>log4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jasig.resourceserver</groupId>
@@ -418,12 +437,12 @@
 			<artifactId>antisamy</artifactId>
         </dependency>
         <dependency>
-            <groupId>rome</groupId>
+            <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
         </dependency>
         <dependency>
-            <groupId>rome</groupId>
-            <artifactId>modules</artifactId>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome-modules</artifactId>
         </dependency>
         <dependency>
             <groupId>taglibs</groupId>
@@ -502,8 +521,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>

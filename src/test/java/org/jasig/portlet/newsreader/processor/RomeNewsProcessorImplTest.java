@@ -18,7 +18,6 @@
  */
 package org.jasig.portlet.newsreader.processor;
 
-import com.sun.syndication.io.FeedException;
 import java.io.IOException;
 import java.io.InputStream;
 import org.jasig.portlet.newsreader.model.NewsFeed;
@@ -34,6 +33,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.rometools.rome.io.FeedException;;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/org/jasig/portlet/newsreader/processor/romeProcessorTestContext.xml")
