@@ -73,7 +73,7 @@
         <icu4j.version>51.1</icu4j.version>
         <spring.version>4.1.4.RELEASE</spring.version>
         <resource-server.version>1.0.42</resource-server.version>
-        <httpclient.version>4.2.5</httpclient.version>
+        <httpclient.version>4.4</httpclient.version>
         <antisamy.version>1.5.2</antisamy.version>
         <junit.version>4.12</junit.version>
         <servlet-api.version>3.0.1</servlet-api.version>
@@ -119,6 +119,10 @@
                     <exclusion>
                         <groupId>rhino</groupId>
                         <artifactId>js</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>jdom</groupId>
+                        <artifactId>jdom</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
