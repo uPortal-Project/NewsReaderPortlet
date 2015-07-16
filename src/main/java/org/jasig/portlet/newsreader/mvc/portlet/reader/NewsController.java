@@ -26,13 +26,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -151,7 +149,14 @@ public class NewsController extends AbstractNewsController {
     }
 
     @RenderMapping(params="action=fullStory")
-    public ModelAndView fullStory(@RequestParam Long activeFeed, @RequestParam int itemIndex, RenderRequest request, RenderResponse response, Model model) throws Exception {
+    public ModelAndView fullStory(
+            @RequestParam Long activeFeed, 
+            @RequestParam int itemIndex, 
+            @RequestParam int page,
+            RenderRequest request, 
+            RenderResponse response, 
+            Model model
+    ) throws Exception {
     	log.debug("fullStory (NewsController)");
 			
     	//Security check that the feed belongs to the user
@@ -178,7 +183,7 @@ public class NewsController extends AbstractNewsController {
             // get an instance of the adapter for this feed
             INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
             // retrieve the feed from this adaptor
-            NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, request);
+            NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, page);
             if (sharedFeed != null) {
                	NewsFeedItem item = sharedFeed.getEntries().get(itemIndex);
                	model.addAttribute("storyTitle", item.getTitle());

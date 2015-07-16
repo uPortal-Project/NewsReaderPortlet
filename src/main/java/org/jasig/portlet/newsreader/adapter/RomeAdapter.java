@@ -19,17 +19,18 @@
 
 package org.jasig.portlet.newsreader.adapter;
 
+import com.sun.syndication.io.FeedException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -50,11 +51,13 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.model.NewsFeed;
+import org.jasig.portlet.newsreader.model.PaginatingNewsFeed;
 import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
-
-import com.sun.syndication.io.FeedException;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.portlet.context.PortletRequestAttributes;
 
 
 /**
@@ -68,6 +71,8 @@ import com.sun.syndication.io.FeedException;
 public class RomeAdapter extends AbstractNewsAdapter {
 
     protected final Log log = LogFactory.getLog(getClass());
+
+    protected final String defaultAntiSamyPolicy = "antisamy-textonly";
     
     private RomeNewsProcessorImpl processor;
     private AbstractHttpClient httpClient;   // External configuration sets this one
@@ -83,7 +88,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
     public AbstractHttpClient getHttpClient() {
         return httpClient;
     }
-
+    
     public void setHttpClient(AbstractHttpClient httpClient) {
         this.httpClient = httpClient;
     }
@@ -198,22 +203,57 @@ public class RomeAdapter extends AbstractNewsAdapter {
         // second field.
         compressingClient = new DecompressingHttpClient(httpClient);
     }
-
+    
+    protected String[] getPolicyPref(String... policyKey) {
+        String[] values = new String[policyKey.length];
+        
+        try {
+        
+            RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+            if (requestAttributes instanceof PortletRequestAttributes) {
+                PortletRequest request = ((PortletRequestAttributes) requestAttributes).getRequest();
+                PortletPreferences prefs = request.getPreferences();
+                List<String> valueList = new ArrayList<String>();
+                for (String key : policyKey) {
+                    valueList.add(prefs.getValue(key, defaultAntiSamyPolicy));
+                }
+                return valueList.toArray(values);
+            } 
+            
+            
+        } catch (IllegalStateException ex) {
+            
+            log.warn("Not Request Bound", ex);
+            
+        }
+        
+        
+        Arrays.fill(values, defaultAntiSamyPolicy);
+        return values;
+    }
+    
     /* (non-Javadoc)
       * @see org.jasig.portlet.newsreader.adapter.INewsAdapter#getSyndFeed(org.jasig.portlet.newsreader.NewsConfiguration, javax.portlet.PortletRequest)
       */
-    public NewsFeed getSyndFeed(NewsConfiguration config, PortletRequest request) throws NewsException {
+    @Override
+    public NewsFeed getSyndFeed(NewsConfiguration config, int page) throws NewsException {
 
-        NewsFeed feed = null;
+        PaginatingNewsFeed feed = null;
 
+        
+        
         // Look for an alternative AntiSamy policy file in the portlet preferences. If found, use it
         // otherwise use the default policyFile being injected into this class via Spring.
         // Note that a policy file string includes a path starting at the application context.
         // (e.g. /WEB-INF/antisamy/antisamy-manchester.xml)
-        PortletPreferences prefs = request.getPreferences();
-        String titlePolicy = prefs.getValue( "titlePolicy", "antisamy-textonly");
-        String descriptionPolicy = prefs.getValue( "descriptionPolicy", "antisamy-textonly");
-
+//        PortletPreferences prefs = request.getPreferences();
+//        String titlePolicy = prefs.getValue( "titlePolicy", "antisamy-textonly");
+//        String descriptionPolicy = prefs.getValue( "descriptionPolicy", "antisamy-textonly");
+        
+        String policy[] = getPolicyPref("titlePolicy", "descriptionPolicy");
+        String titlePolicy = policy[0];
+        String descriptionPolicy = policy[1];
+        
         // Get the URL for this feed
         // If there is a 2nd URL, it is a fall-back in case the first does not work.
         // Using two URLs is handy if your first URL happens to be a local file cache
@@ -265,9 +305,11 @@ public class RomeAdapter extends AbstractNewsAdapter {
             cache.put(cachedElement);
         } else {
             log.debug("Cache hit");
-            feed = (NewsFeed) cachedElement.getValue();
+            feed = (PaginatingNewsFeed) cachedElement.getValue();
         }
 
+        if (feed != null) feed.setPage(page);
+        
         // return the event list or null if the feed was not available.
         return feed;
     }
@@ -281,10 +323,10 @@ public class RomeAdapter extends AbstractNewsAdapter {
      * @param descriptionPolicy String the cleaning policy for the description
      * @return SyndFeed Feed object
      */
-    protected NewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
+    protected PaginatingNewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
 
         HttpGet get = null;
-        NewsFeed feed = null;
+        PaginatingNewsFeed feed = null;
         InputStream in = null;
         
         try {
