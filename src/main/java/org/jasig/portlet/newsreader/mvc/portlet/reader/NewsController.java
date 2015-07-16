@@ -40,6 +40,7 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.model.FullStory;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
@@ -182,7 +183,9 @@ public class NewsController extends AbstractNewsController {
             if (sharedFeed != null) {
                	NewsFeedItem item = sharedFeed.getEntries().get(itemIndex);
                	model.addAttribute("storyTitle", item.getTitle());
-               	model.addAttribute("fullStory", item.getFullStory());
+               	
+               	FullStory fullStory = item.getFullStory();              	
+               	model.addAttribute("fullStory", fullStory.getFullStory());
             } else {
                 log.warn("Failed to get feed from adapter.");
                 model.addAttribute("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
