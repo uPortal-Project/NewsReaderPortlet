@@ -84,6 +84,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
     private int readTimeout = 10000; // Default read timeout in milliseconds
     private long connectionManagerTimeout = 5000;  // Default timeout of getting connection from connection manager
     private int timesToRetry = 2;
+    private String cacheKeyPrefix;
 
     public AbstractHttpClient getHttpClient() {
         return httpClient;
@@ -135,6 +136,15 @@ public class RomeAdapter extends AbstractNewsAdapter {
 
     public void setProcessor(RomeNewsProcessorImpl processor) {
         this.processor = processor;
+    }
+
+    /**
+     * Cache prefix to support multiple instances of this class using the same cache.
+     *
+     * @param prefix    Unique prefix for cache entries for this particular instance
+     */
+    public void setCacheKeyPrefix(String prefix) {
+        this.cacheKeyPrefix = prefix;
     }
 
     private class RetryHandler extends DefaultHttpRequestRetryHandler {
@@ -387,7 +397,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
      */
     private String getCacheKey(String url) {
         StringBuffer key = new StringBuffer();
-        key.append("RomeFeed.");
+        key.append(this.cacheKeyPrefix);
         key.append(url);
         return key.toString();
     }

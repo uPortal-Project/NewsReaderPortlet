@@ -62,7 +62,7 @@ public class RomeNewsProcessorImpl {
     public void setImageTypes(List<String> imageTypes) {
         this.imageTypes = imageTypes;
     }
-    
+
     private List<String> videoTypes;
 
     public void setVideoTypes(List<String> videoTypes) {
@@ -80,7 +80,7 @@ public class RomeNewsProcessorImpl {
         newsFeed.setLink(feed.getLink());
         newsFeed.setTitle(feed.getTitle());
         newsFeed.setCopyright(feed.getCopyright());
-        
+
 //        List<NewsFeedItem> newEntries = new ArrayList<NewsFeedItem>();
         List<NewsFeedItem> newEntries = newsFeed.getEntries();
 
@@ -101,7 +101,7 @@ public class RomeNewsProcessorImpl {
         item.setAuthors(entry.getAuthors());
         item.setLink(entry.getLink());
         item.setUri(entry.getUri());
-        
+
         if (entry.getContents() != null) {
             for (SyndContent content : (List<SyndContent>) entry.getContents()) {
                 if ("html".equals(content.getType()) || "text".equals(content.getType())) {
