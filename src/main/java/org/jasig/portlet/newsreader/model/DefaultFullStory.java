@@ -14,7 +14,7 @@ public class DefaultFullStory implements FullStory {
 	}
 
 	@Override
-	public String getFullStory() {
+	public String getFullStoryText() {
 		return content;
 	}
 }

@@ -143,11 +143,11 @@
 </c:choose>
 
 
-
-
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
     ${n}.jQuery(function(){
+
+
         var $, Handlebars, newsView, upnews;
 
         $ = ${n}.jQuery;

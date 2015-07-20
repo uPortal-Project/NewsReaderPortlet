@@ -20,6 +20,7 @@
 package org.jasig.portlet.newsreader.adapter;
 
 import org.jasig.portlet.newsreader.NewsConfiguration;
+import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 
 /**
@@ -30,6 +31,8 @@ public interface INewsAdapter {
     /**
      * Provides the fully-qualified name of the concrete INewsAdapter class, 
      * which is used in creating a {@link NewsDefinition}.
+     *
+     * @see org.jasig.portlet.newsreader.NewsDefinition
      */
     String getClassName();
     

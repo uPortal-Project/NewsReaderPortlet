@@ -10,20 +10,29 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 
 public class RemoteHttpFullStory implements FullStory {
 	 
 	protected final Log log = LogFactory.getLog(getClass());
-	private String remoteHttpUrl;
+	private final String remoteHttpUrl;
 
-	public RemoteHttpFullStory(String remoteHttpUrl) {
+    @JsonCreator
+	public RemoteHttpFullStory(@JsonProperty("remoteHttpUrl") String remoteHttpUrl) {
 		super();
 		this.remoteHttpUrl = remoteHttpUrl;
 	}
 
+    public String getRemoteHttpUrl() {
+        return remoteHttpUrl;
+    }
+
 	@Override
-	public String getFullStory() {
+    @JsonIgnore
+	public String getFullStoryText() {
 		try  {
 		return fetchRemoteContent();
 		}
@@ -33,6 +42,7 @@ public class RemoteHttpFullStory implements FullStory {
 	}
 
 	private String fetchRemoteContent() throws ClientProtocolException, IOException {
+        log.warn("RemoteHttpFullStory.fetchRemoteContent()");
 		HttpClient httpclient = new DefaultHttpClient();
 		try {
 			HttpGet httpget = new HttpGet(remoteHttpUrl);

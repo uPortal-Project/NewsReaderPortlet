@@ -145,6 +145,7 @@ public class AjaxNewsController {
                             link.setParameter("action", "fullStory");
                             link.setParameter("activeFeed", feedConfig.getId().toString());
                             link.setParameter("itemIndex", String.valueOf(i));
+                            link.setParameter("page", Integer.toString(page));
                             item.setLink(link.toString());
                         }
                     }
