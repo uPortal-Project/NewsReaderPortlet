@@ -88,9 +88,9 @@ if (!upnews.init) {
                 return promise;
             };
 
-            this.getFeeds = function() {
+            this.getFeeds = function(activeFeed) {
                 var deferred = $.Deferred();
-                getNewsData().done(function(data) {
+                getNewsData(activeFeed).done(function(data) {
                     deferred.resolve(data.feeds);
                 });
                 return deferred.promise();
@@ -116,10 +116,10 @@ if (!upnews.init) {
         upnews.NewsView = {
             onload: function() {
             },
-            setup: function() {
+            setup: function(activeFeed) {
                 var view = this;
 
-                return this.newsService.getFeeds()
+                return this.newsService.getFeeds(activeFeed)
                         .done(function(feeds) {
                             // add empty detail view for each feed
                             view.storyContainers = {};

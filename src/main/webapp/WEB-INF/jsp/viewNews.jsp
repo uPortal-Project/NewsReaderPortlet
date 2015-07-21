@@ -264,7 +264,7 @@
                 }
             });
 
-            newsView.setup();
+            newsView.setup("${param.activeFeed}");
 
         });
 
