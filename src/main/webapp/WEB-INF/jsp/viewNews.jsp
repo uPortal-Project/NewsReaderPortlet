@@ -92,7 +92,7 @@
             <option value="{{id}}">{{name}}</option>
         </c:when>
         <c:otherwise>
-            <li><a href="#${n}feed{{id}}">{{name}}</a></li>
+            <li id="${n}feed{{id}}-tab"><a href="#${n}feed{{id}}">{{name}}</a></li>
         </c:otherwise>
     </c:choose>
     {{/each}}
@@ -214,11 +214,11 @@
                     // initialize the jQueryUI tabs widget and set the initially
                     // selected tab
                     $("#${n} .view-news").tabs({
-                        select: function (event, ui) {
-                            var id = ui.panel.id.split("feed")[1];
+                        activate: function (event, ui) {
+                            var id = ui.newPanel[0].id.split("feed")[1];
                             $(newsView.feedListView).trigger("feedSelected", id);
                         },
-                        selected: index
+                        active: index
                     });
                     // Fix focus on active tab : up to top of page
                     $('html,body').animate({scrollTop: $("#portal").offset().top},'500');

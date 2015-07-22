@@ -54,29 +54,32 @@
                     <ul class="news-feeds-container"></ul>
                 </c:otherwise>
             </c:choose>
+        <div class="tab-panels" style="height:0px;"></div>
+        </div>
+        <div class="titlebar portlet-titlebar">
+            <h3 class="title story-title">${storyTitle}</h3>
+            <a style="text-decoration:none;" href="<portlet:renderURL/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
+        </div>
+        <div id="${n}fullStory">
+            ${fullStory}
+        </div>
+        <div class="news-footer">
+            <p>
+                <a style="text-decoration:none;" href="<portlet:renderURL/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
+            </p>
+            <p>
+            <c:if test="${supportsHelp}">
+                <a href="<portlet:renderURL portletMode='help'/>"><spring:message code="help" /></a>
+            </c:if>
+            <c:if test="${supportsEdit && !isGuest}">
+                &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><spring:message code="edit.news.feed" /></a>
+            </c:if>
+            <c:if test="${isAdmin}">
+                &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><spring:message code="administration" /></a>
+            </c:if>
+            </p>
         </div>
     </div>
-    <div class="titlebar portlet-titlebar">
-        <h3 class="title story-title">${storyTitle}</h3>
-        <a style="text-decoration:none;" href="<portlet:renderURL/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
-    </div>
-<div id="${n}feeds{activeFeed}">
-    ${fullStory}
-</div>
-    <p>
-        <a style="text-decoration:none;" href="<portlet:renderURL/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
-    </p>
-    <p>
-        <c:if test="${supportsHelp}">
-            <a href="<portlet:renderURL portletMode='help'/>"><spring:message code="help" /></a>
-        </c:if>
-        <c:if test="${supportsEdit && !isGuest}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><spring:message code="edit.news.feed" /></a>
-        </c:if>
-        <c:if test="${isAdmin}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><spring:message code="administration" /></a>
-        </c:if>
-    </p>
 </div>
 
 <script type="text/template" id="${n}feed-list-template">
@@ -87,9 +90,16 @@
             <option value="{{id}}">{{name}} {{id}}</option>
         </c:when>
         <c:otherwise>
-            <li><a href="#${n}feed{{id}}">{{name}}</a></li>
+            <li id="${n}feed{{id}}-tab"><a href="#${n}feed{{id}}">{{name}}</a></li>
         </c:otherwise>
     </c:choose>
+    {{/each}}
+</script>
+
+<script type="text/template" id="${n}feed-tabs">
+    {{!-- create divs for tab UI to work --}}
+    {{#each this}}
+        <div id="${n}feed{{id}}"></div>
     {{/each}}
 </script>
 
@@ -101,48 +111,33 @@
     var template = ${n}.Handlebars.compile(source);
     $("#${n} .news-feeds-container").html(template(${feeds}));
 
-    /* Select current feed in dropdown/tabs */
     if (${ feedView == 'select' }) {
+        // Select current feed in dropdown
         $("#${n} option").removeAttr("selected");
         $("#${n} option[value=" + ${activeFeed} + "]").attr("selected", "selected");
-    } else {
-    }
 
-    /* Set up event handlers for dropdown/tabs */
-    if (${ feedView == 'select' }) {
+        // Set up change trigger for dropdown
         $("#${n} select").change(function () {
             var id = $(this).val();
             /***** jump to new feed *******/
             <portlet:renderURL var="newsListUrl">
             </portlet:renderURL>
             var url = "${newsListUrl}" + "&pP_activeFeed=" + id;
-            alert(url);
             window.location = url;
         });
     } else {
+        // initialize the jQueryUI tabs widget and set the initially selected tab
+        var index = $("#${n}feed${activeFeed}-tab").index();
+        source = $("#${n}feed-tabs").html();
+        template = ${n}.Handlebars.compile(source);
+        $("#${n} .tab-panels").html(template(${feeds}));
+        $("#${n} .view-news").tabs({
+            activate: function (event, ui) {
+                var id = ui.newPanel[0].id.split("feed")[1];
+                var url = "${newsListUrl}" + "&pP_activeFeed=" + id;
+                window.location = url;
+            },
+            active: index
+        });
     }
 </script>
-
-<script type="text/javascript"><rs:compressJs>
-    ${n}.jQuery(function() {
-       var $ = ${n}.jQuery;
-
-       if (${ feedView  == 'select' }) {
-       } else {
-            // compute the index of the currently selected feed
-            var index = $("#${n} .news-stories-container").index($("#${n}feed" + ${activeFeed}));
-            // initialize the jQueryUI tabs widget and set the initially
-            // selected tab
-            $("#${n} .view-news").tabs({
-                select: function (event, ui) {
-                    var id = ui.panel.id.split("feed")[1];
-                    $(newsView.feedListView).trigger("feedSelected", id);
-                },
-                selected: index
-            });
-            // Fix focus on active tab : up to top of page
-            $('html,body').animate({scrollTop: $("#portal").offset().top},'500');
-       }
-    });
-
-</rs:compressJs></script>
