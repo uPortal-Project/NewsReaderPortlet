@@ -54,14 +54,31 @@
                     <ul class="news-feeds-container"></ul>
                 </c:otherwise>
             </c:choose>
-        <div class="tab-panels" style="height:0px;"></div>
-        </div>
-        <div class="titlebar portlet-titlebar">
-            <h3 class="title story-title">${storyTitle}</h3>
-            <a style="text-decoration:none;" href="<portlet:renderURL/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
-        </div>
-        <div id="${n}fullStory">
-            ${fullStory}
+            <br />
+            <div class="titlebar portlet-titlebar">
+                <h3 class="title story-title">${storyTitle}</h3>
+                <a style="text-decoration:none;" href="<portlet:renderURL/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
+            </div>
+            <br />
+            <div id="${n}full-story">
+            <c:choose>
+                <c:when test="${ feedView == 'select' }">
+                    ${fullStory}
+                </c:when>
+                <c:otherwise>
+                    <c:forEach var="feed" items="${feeds}">
+                        <c:choose>
+                            <c:when test="${feed.id == activeFeed}">
+                                <div id="${n}feed${feed.id}">${fullStory}</div>
+                            </c:when>
+                            <c:otherwise>
+                                <div id="${n}feed${feed.id}"></div>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
+            </div>
         </div>
         <div class="news-footer">
             <p>
@@ -87,19 +104,12 @@
     {{#each this}}
     <c:choose>
         <c:when test="${ feedView == 'select' }">
-            <option value="{{id}}">{{name}} {{id}}</option>
+            <option value="{{id}}">{{name}}</option>
         </c:when>
         <c:otherwise>
             <li id="${n}feed{{id}}-tab"><a href="#${n}feed{{id}}">{{name}}</a></li>
         </c:otherwise>
     </c:choose>
-    {{/each}}
-</script>
-
-<script type="text/template" id="${n}feed-tabs">
-    {{!-- create divs for tab UI to work --}}
-    {{#each this}}
-        <div id="${n}feed{{id}}"></div>
     {{/each}}
 </script>
 
@@ -128,9 +138,6 @@
     } else {
         // initialize the jQueryUI tabs widget and set the initially selected tab
         var index = $("#${n}feed${activeFeed}-tab").index();
-        source = $("#${n}feed-tabs").html();
-        template = ${n}.Handlebars.compile(source);
-        $("#${n} .tab-panels").html(template(${feeds}));
         $("#${n} .view-news").tabs({
             activate: function (event, ui) {
                 var id = ui.newPanel[0].id.split("feed")[1];
