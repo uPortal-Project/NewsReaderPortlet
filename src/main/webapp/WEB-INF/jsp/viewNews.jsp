@@ -22,27 +22,27 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <c:set var="n"><portlet:namespace/></c:set>
 
-<style>
-    ul.news-stories li { padding-bottom:0.5em; list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');  }
-    .ui-tooltip {
-        padding:8px;
-        position:absolute;
-        z-index:9999;
-        -o-box-shadow: 0 0 5px #aaa;
-        -moz-box-shadow: 0 0 5px #aaa;
-        -webkit-box-shadow: 0 0 5px #aaa;
-        box-shadow: 0 0 5px #aaa;
-        max-width: 400px;
-    }
-    * html .ui-tooltip { background-image: none; }
-    body .ui-tooltip { border-width:2px; }
-</style>
 <portlet:resourceURL var="feedUrl"/>
 
-<div class="org-jasig-portlet-newsreader">
+<div id="newsreader-container" class="container-fluid">
+    <div class="row newsreader-portlet-toolbar">
+        <div class="col-md-12 no-col-padding">
+            <div class="nav-links">
+                <c:if test="${supportsHelp}">
+                    <a href="<portlet:renderURL portletMode='help'/>"><i class="fa fa-info-circle"></i> <spring:message code="help" /></a>
+                </c:if>
+                <c:if test="${supportsEdit && !isGuest}">
+                    &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><i class="fa fa-edit"></i> <spring:message code="edit.news.feed" /></a>
+                </c:if>
+                <c:if test="${isAdmin}">
+                    &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><i class="fa fa-cog"></i> <spring:message code="administration" /></a>
+                </c:if>
+            </div>
+        </div>
+    </div>
 
-    <div id="${n}">
-        <div class="news-reader-feed-list portlet ptl-newsreader view-news">
+    <div class="row" id="${n}">
+        <div class="news-reader-feed-list newsreader-content view-news col-md-12">
             <c:choose>
                 <c:when test="${ feedView == 'select' }">
                     <select class="news-feeds-container"></select>
@@ -63,19 +63,6 @@
             </div>
         </div>
     </div>
-
-    <br/>
-    <p>
-        <c:if test="${supportsHelp}">
-            <a href="<portlet:renderURL portletMode='help'/>"><spring:message code="help" /></a>
-        </c:if>
-        <c:if test="${supportsEdit && !isGuest}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><spring:message code="edit.news.feed" /></a>
-        </c:if>
-        <c:if test="${isAdmin}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><spring:message code="administration" /></a>
-        </c:if>
-    </p>
 </div>
 
 <script type="text/template" id="${n}feed-list-template">

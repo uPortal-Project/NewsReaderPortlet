@@ -20,15 +20,11 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <c:set var="n"><portlet:namespace/></c:set>
 
-<style type="text/css">
-	table.edit-news { width: 100%; }
-	table.edit-news td { font-size: 1.1em; }
-	table.edit-news td.instruction { color: #666; font-size: 1em; text-align: center; vertical-align: bottom; }
-</style>
+<link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
-<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
     ${n}.jQuery(function(){
 
@@ -52,170 +48,183 @@
     });
 </rs:compressJs></script>
     
-    
 <portlet:actionURL var="postUrl"></portlet:actionURL>
 
-<table class="edit-news">
-	<tr>
-		<td colspan="2"><h3><spring:message code="edit.title"/></h3></td>
-    	<c:choose>
-    		<c:when test="${ not empty model.myNewsConfigurations }">
-        		<td class="instruction"><spring:message code="edit.news.edit"/></td>
-        		<td class="instruction"><spring:message code="edit.news.delete"/></td>
-        		<td class="instruction"><spring:message code="edit.news.displayed"/></td>
-        	</c:when>
-        	<c:otherwise>
-        		<td colspan="3">&nbsp;</td>
-        	</c:otherwise>
-    	</c:choose>
-	</tr>
-	<c:forEach items="${ model.myNewsConfigurations }" var="feed">
-    	<tr>
-    		<td style="width: 7px;">&nbsp;</td>
-    		<td>${ feed.newsDefinition.name }</td>
-    		<td class="instruction">
-    			<a href="<portlet:renderURL><portlet:param name="action" value="editUrl"/>
-    					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
-    					title="<spring:message code="edit.news.edit.title"/>">
-    				<img alt="<spring:message code="edit.news.edit.alt"/>" src="<c:url value="/images/pencil.png"/>"/>
-    			</a>
-    		</td>
-    		<td class="instruction">
-    			<a href="<portlet:actionURL><portlet:param name="actionCode" value="delete"/>
-    					<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
-    					title="<spring:message code="edit.news.delete.title"/>">
-    				<img alt="<spring:message code="edit.news.delete.alt"/>" src="<c:url value="/images/rss_delete.png"/>"/>
-    			</a>
-    		</td>
-    		<td class="instruction">
-    			<c:choose>
-    				<c:when test="${ feed.displayed }">
-    					<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="hide"/>
-    						<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-	        			<a href="${ displayURL }" title="<spring:message code="edit.news.hide.title"/>">
-	        				<img alt="<spring:message code="edit.news.hide.alt"/>" src="<c:url value="/images/select-active.gif"/>"/>
-	        			</a>
-    				</c:when>
-    				<c:otherwise>
-						 <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="show"/><portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-	        			<a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
-	        				<img alt="<spring:message code="edit.news.show.alt"/>" src="<c:url value="/images/select-inactive.gif"/>"/>
-	        			</a>
-					</c:otherwise>
-    			</c:choose>
-    		</td>
-    	</tr>
-	</c:forEach>
-	<tr>
-		<td width="7px;">&nbsp;</td>
-		<td colspan="4" style="padding-top: 10px; padding-bottom: 15px; padding-left:5px;">
-	        	<a href="<portlet:renderURL><portlet:param name="action" value="editUrl"/></portlet:renderURL>"><img src="<c:url value="/images/rss_add.png"/>" style="vertical-align: middle"/> <spring:message code="edit.news.add"/></a>
-	        	<br/>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2"><h3><spring:message code="edit.news.exist"/></h3></td>
-		<td class="instruction"><spring:message code="edit.news.edit"/></td>
-		<td class="instruction">&nbsp;</td>
-		<td class="instruction"><spring:message code="edit.news.displayed"/></td>
-	</tr>
-	<c:forEach items="${ model.predefinedNewsConfigurations }" var="feed">
-    	<tr>
-    		<td>&nbsp;</td>
-    		<td>${ feed.newsDefinition.name }</td>
-    		<td class="instruction">
-    			<c:set var="editAction" value="${ model.predefinedEditActions[feed.newsDefinition.className] }"/>
-				<c:choose>
-					<c:when test="${ not empty editAction }">
-	        			<a href="<portlet:renderURL><portlet:param name="action" value="${ editAction }"/>
-	        					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
-	        					title="<spring:message code="edit.news.edit.title"/>">
-        					<img alt="<spring:message code="edit.news.edit.alt"/>" src="<c:url value="/images/pencil.png"/>"/>
-    					</a>
-					</c:when>
-					<c:otherwise>&nbsp;</c:otherwise>
-				</c:choose>
-    		</td>
-    		<td>&nbsp;</td>
-    		<td class="instruction">
-    			<c:choose>
-    				<c:when test="${ feed.displayed }">
-    					<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="hide"/>
-    						<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-	        			<a href="${ displayURL }" title="<spring:message code="edit.news.hide.title"/>">
-	        				<img alt="<spring:message code="edit.news.hide.alt"/>" src="<c:url value="/images/select-active.gif"/>"/>
-	        			</a>
-    				</c:when>
-    				<c:otherwise>
-						 <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="show"/>
-						 	<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-	        			<a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
-	        				<img alt="<spring:message code="edit.news.show.alt"/>" src="<c:url value="/images/select-inactive.gif"/>"/>
-	        			</a>
-					</c:otherwise>
-    			</c:choose>
-    		</td>
-    	</tr>
-	</c:forEach>
-	<c:forEach items="${ model.hiddenFeeds }" var="feed">
-		<tr>
-			<td>&nbsp;</td>
-    		<td>${ feed.name }</td>
-    		<td>&nbsp;</td>
-    		<td>&nbsp;</td>
-    		<td class="instruction">
-				<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="showNew"/><portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-    			<a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
-    				<img alt="<spring:message code="edit.news.show.alt"/>" src="<c:url value="/images/select-inactive.gif"/>"/>
-    			</a>
-    		</td>
-		</tr>
-	</c:forEach>
-</table>
-
-<h3 style="margin-left: 7px;"><spring:message code="edit.news.pref"/></h3>
-
-<div style="margin-left: 25px">
-    <p>
-        <label for="${n}maxStories"><spring:message code="edit.news.maxstories"/></label>
-        <c:set var="maxStories" value="${renderRequest.preferences.map['maxStories'][0]}"/>
-        <select id="${n}maxStories">
-            <c:forTokens items="5,10,15,20" delims="," var="item">
-                <option ${ maxStories == item ? 'selected="selected"' : '' }>${item}</option>
-            </c:forTokens>
-        </select>
-    </p>
-
-    <p>
-        <label for="${n}feedView"><spring:message code="edit.news.feedView"/></label>
-        <c:set var="feedView" value="${renderRequest.preferences.map['feedView'][0]}"/>
-        <select id="${n}feedView">
-            <option value="tabs" ${ feedView == 'tabs' ? 'selected="selected"' : '' }><spring:message code="edit.news.feedView.tab"/></option>
-            <option value="select" ${ feedView == 'select' ? 'selected="selected"' : '' }><spring:message code="edit.news.feedView.menu"/></option>
-        </select>
-    </p>
-
-    <p>
-        <label for="${n}storyView"><spring:message code="edit.news.storyview"/></label>
-        <c:set var="storyView" value="${renderRequest.preferences.map['summaryView'][0]}"/>
-        <select id="${n}storyView">
-            <option value="flyout" ${ storyView == 'flyout' ? 'selected="selected"' : '' }><spring:message code="edit.news.storyview.flyout"/></option>
-            <option value="summaries" ${ storyView == 'summaries' ? 'selected="selected"' : '' }><spring:message code="edit.news.storyview.scrolldiv"/></option>
-        </select>
-    </p>
-    
-    <p>
-        <label for="${n}newWindow"><spring:message code="edit.news.newwindows"/></label>
-        <c:set var="newWindow" value="${renderRequest.preferences.map['newWindow'][0]}"/>
-        <input type="checkbox" id="${n}newWindow" ${ newWindow == "true" ? "checked='checked'" : ""} />
-    </p>
+<div id="newsreader-container" class="container-fluid">
+  <div class="row newsreader-portlet-toolbar">
+    <div class="col-md-6 no-col-padding">
+      <h3><spring:message code="edit.news.pref"/></h3>
+    </div>
+    <div class="col-md-6 no-col-padding">
+      <div class="nav-links">
+        <a href="<portlet:renderURL portletMode="help"/>"><i class="fa fa-info-circle"></i> <spring:message code="help.need"/></a>
+        &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="view"/>"><i class="fa fa-arrow-left"></i> <spring:message code="back.list"/></a>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-condensed table-striped">
+        <thead>
+          <tr>
+            <th class="col-md-9"><spring:message code="edit.title"/></th>
+            <th class="col-md-1 text-center"><spring:message code="edit.news.edit"/></th>
+            <th class="col-md-1 text-center"><spring:message code="edit.news.delete"/></th>
+            <th class="col-md-1 text-center"><spring:message code="edit.news.displayed"/></th>
+          </tr>
+        </thead>
+        <tbody>
+          <c:forEach items="${ model.myNewsConfigurations }" var="feed">
+            <tr>
+              <td>${ feed.newsDefinition.name }</td>
+              <td class="text-center">
+                <a href="<portlet:renderURL><portlet:param name="action" value="editUrl"/>
+                  <portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
+                  title="<spring:message code="edit.news.edit.title"/>">
+                  <i class="fa fa-lg fa-edit"></i>
+                </a>
+              </td>
+            <td class="text-center">
+              <a href="<portlet:actionURL><portlet:param name="actionCode" value="delete"/>
+                <portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
+                title="<spring:message code="edit.news.delete.title"/>">
+                  <i class="fa fa-lg fa-trash-o"></i>
+              </a>
+            </td>
+            <td class="text-center">
+              <c:choose>
+                <c:when test="${ feed.displayed }">
+                  <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="hide"/>
+                    <portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
+                    <a href="${ displayURL }" title="<spring:message code="edit.news.hide.title"/>">
+                      <i class="fa fa-lg-eye-slash"></i>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                  <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="show"/><portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
+                  <a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
+                  <img alt="<spring:message code="edit.news.show.alt"/>" src="<c:url value="/images/select-inactive.gif"/>"/>
+                  </a>
+                </c:otherwise>
+              </c:choose>
+            </td>
+          </tr>
+        </c:forEach>
+      </tbody>
+    </table>
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th class="col-md-10"><spring:message code="edit.news.exist"/></th>
+          <th class="col-md-1 text-center"><spring:message code="edit.news.edit"/></th>
+          <th class="col-md=1 text-center"><spring:message code="edit.news.displayed"/></th>
+        </tr>
+      </thead>
+      <tbody>
+        <c:forEach items="${ model.predefinedNewsConfigurations }" var="feed">
+          <tr>
+            <td>${ feed.newsDefinition.name }</td>
+            <td class="text-center">
+              <c:set var="editAction" value="${ model.predefinedEditActions[feed.newsDefinition.className] }"/>
+              <c:choose>
+                <c:when test="${ not empty editAction }">
+                  <a href="<portlet:renderURL><portlet:param name="action" value="${ editAction }"/>
+                    <portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>" title="<spring:message code="edit.news.edit.title"/>">
+                    <i class="fa fa-lg fa-edit"></i>
+                  </a>
+                </c:when>
+                <c:otherwise>&nbsp;</c:otherwise>
+              </c:choose>
+            </td>
+            <td class="text-center">
+              <c:choose>
+                <c:when test="${ feed.displayed }">
+                  <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="hide"/>
+                  <portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
+                  <a href="${ displayURL }" title="<spring:message code="edit.news.hide.title"/>">
+                    <i class="fa fa-lg fa-eye-slash"></i>
+                  </a>
+                </c:when>
+                <c:otherwise>
+                  <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="show"/>
+                  <portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
+                  <a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
+                    <i class="fa fa-lg fa-eye"></i>
+                  </a>
+                </c:otherwise>
+              </c:choose>
+              </td>
+            </tr>
+          </c:forEach>
+        <c:forEach items="${ model.hiddenFeeds }" var="feed">
+          <tr>
+            <td>${ feed.name }</td>
+            <td class="text-center">
+              <portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="showNew"/><portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
+              <a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
+                <i class="fa fa-lg fa-eye"></i>
+              </a>
+            </td>
+          </tr>
+        </c:forEach>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-md-12">
+      <a href="<portlet:renderURL><portlet:param name="action" value="editUrl"/></portlet:renderURL>" class="btn btn-primary"><i class="fa fa-lg fa-edit"></i> <spring:message code="edit.news.add"/></a>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-md-12">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label for="${n}maxStories" class="col-md-7"><spring:message code="edit.news.maxstories"/></label>
+          <c:set var="maxStories" value="${renderRequest.preferences.map['maxStories'][0]}"/>
+          <div class="col-md-5">
+            <select id="${n}maxStories" class="form-control">
+                <c:forTokens items="5,10,15,20" delims="," var="item">
+                    <option ${ maxStories == item ? 'selected="selected"' : '' }>${item}</option>
+                </c:forTokens>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="${n}feedView" class="col-md-7"><spring:message code="edit.news.feedView"/></label>
+          <c:set var="feedView" value="${renderRequest.preferences.map['feedView'][0]}"/>
+          <div class="col-md-5">
+            <select id="${n}feedView" class="form-control">
+                <option value="tabs" ${ feedView == 'tabs' ? 'selected="selected"' : '' }><spring:message code="edit.news.feedView.tab"/></option>
+                <option value="select" ${ feedView == 'select' ? 'selected="selected"' : '' }><spring:message code="edit.news.feedView.menu"/></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="${n}storyView" class="col-md-7"><spring:message code="edit.news.storyview"/></label>
+          <c:set var="storyView" value="${renderRequest.preferences.map['summaryView'][0]}"/>
+          <div class="col-md-5">
+            <select id="${n}storyView" class="form-control">
+                <option value="flyout" ${ storyView == 'flyout' ? 'selected="selected"' : '' }><spring:message code="edit.news.storyview.flyout"/></option>
+                <option value="summaries" ${ storyView == 'summaries' ? 'selected="selected"' : '' }><spring:message code="edit.news.storyview.scrolldiv"/></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="${n}newWindow" class="col-md-7"><spring:message code="edit.news.newwindows"/></label>
+          <div class="col-md-5">
+            <c:set var="newWindow" value="${renderRequest.preferences.map['newWindow'][0]}"/>
+            <input type="checkbox" id="${n}newWindow" ${ newWindow == "true" ? "checked='checked'" : ""} />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> <spring:message code="edit.news.pref.sav"/></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-
-<p><a href="<portlet:renderURL portletMode="help"/>"><spring:message code="help.need"/></a></p>
-
-<br />
-<hr />
-<p>
-	<a style="text-decoration:none;" href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle;"> <spring:message code="back.list"/></a>
-</p>
-        
