@@ -23,7 +23,7 @@
   <className>org.jasig.portlet.newsreader.adapter.RomeAdapter</className>
   <name>Unicon News</name>
   <parameters>
-    <parameter name="url">http://www.unicon.net/company/news/feed</parameter>
+    <parameter name="url">https://www.unicon.net/about/news/feed</parameter>
   </parameters>
   <predefinedRoles>
     <role>Everyone</role>
