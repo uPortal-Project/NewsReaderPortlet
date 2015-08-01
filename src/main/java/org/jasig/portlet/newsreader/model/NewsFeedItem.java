@@ -21,7 +21,7 @@ package org.jasig.portlet.newsreader.model;
 
 import java.util.List;
 
-import com.sun.syndication.feed.synd.SyndPerson;
+import com.rometools.rome.feed.synd.SyndPerson;;
 
 /**
  * 

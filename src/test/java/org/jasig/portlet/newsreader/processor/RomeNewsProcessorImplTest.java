@@ -37,7 +37,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.sun.syndication.io.FeedException;
+import com.rometools.rome.io.FeedException;;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/org/jasig/portlet/newsreader/processor/romeProcessorTestContext.xml")
