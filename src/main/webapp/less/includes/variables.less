@@ -1,0 +1,29 @@
+// Basic Color Variables
+@white: #fff;
+@black: #000;
+
+// 14 Shades of gray
+@grayE: #eee; // lightest gray
+@grayD: #ddd; //       Λ
+@grayC: #ccc; //      /|\
+@grayB: #bbb; //       |
+@grayA: #aaa; //       |
+@gray9: #999; //       |
+@gray8: #888; //       |
+@gray7: #777; //       |
+@gray6: #666; //       |
+@gray5: #555; //       |
+@gray4: #444; //       |
+@gray3: #333; //      \|/
+@gray2: #222; //       V
+@gray1: #111; // darkest gray
+
+// Primary color with 3 lightened shades and 3 darkened shades.
+@color1:            #4065b0; // uPortal blue
+@color1-light:      lighten(@color1, 10%);
+@color1-lighter:    lighten(@color1, 25%);
+@color1-lightest:   lighten(@color1, 50%);
+
+@color1-dark:       darken(@color1, 10%);
+@color1-darker:     darken(@color1, 25%);
+@color1-darkest:    darken(@color1, 50%);

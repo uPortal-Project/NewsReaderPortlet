@@ -21,7 +21,13 @@
 
 <resources xmlns="http://www.jasig.org/uportal/web/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.jasig.org/uportal/web/skin https://source.jasig.org/schemas/resource-server/skin-configuration/skin-configuration-v1.2.xsd">
+    <css included="aggregated" resource="true">/rs/bootstrap/3.3.5/css/bootstrap.min.css</css>
+    <css included="plain" resource="true">/rs/bootstrap/3.3.5/css/bootstrap.css</css>
 
+    <css included="aggregated" resource="true">/rs/fontawesome/4.0.3/css/font-awesome.min.css</css>
+    <css included="plain" resource="true">/rs/fontawesome/4.0.3/css/font-awesome.min.css</css>
+
+    <css>css/newsreader.css</css>
 
     <js included="aggregated" resource="true">/rs/jquery/1.10.2/jquery-1.10.2.min.js</js>
     <js included="plain" resource="true">/rs/jquery/1.10.2/jquery-1.10.2.js</js>
@@ -37,6 +43,9 @@
 
     <js included="plain" resource="true">/rs/backbone/0.9.2/backbone-0.9.2.js</js>
     <js included="aggregated" resource="true">/rs/backbone/0.9.2/backbone-0.9.2.min.js</js>
+
+    <js included="plain" resource="true">/rs/bootstrap/3.3.5/bootstrap.js</js>
+    <js included="aggregated" resource="true">/rs/bootstrap/3.3.5/bootstrap.min.js</js>
 
     <!--  Fluid required for the tool tip (a.k.a list with flyouts) -->
     <js included="plain" resource="true">/rs/fluid/1.5.0/js/fluid-custom.js</js>

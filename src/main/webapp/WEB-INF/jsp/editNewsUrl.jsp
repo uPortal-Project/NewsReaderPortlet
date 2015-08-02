@@ -20,34 +20,50 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
 <portlet:actionURL var="postUrl"><portlet:param name="action" value="editUrl"/></portlet:actionURL>
 
-<h3><spring:message code="edit.news.feed.edit"/></h3>
+<div id="newsreader-container" class="container-fluid">
+  <div class="row newsreader-portlet-toolbar">
+    <div class="col-md-8 no-col-padding">
+      <h3><spring:message code="edit.news.feed.edit"/></h3>
+    </div>
+    <div class="col-md-4 no-col-padding">
+      <div class="nav-links">
+        <a href="<portlet:renderURL><portlet:param name="action" value="editPrefences"/></portlet:renderURL>"><i class="fa fa-arrow-left"></i> <spring:message code="edit.news.feed.back"/></a>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <form:form name="news" commandName="newsListingCommand" action="${postUrl}" class="form-horizontal">
+        <form:hidden path="id"/>
+        <div class="form-group">
+          <label class="col-md-3 control-label"><spring:message code="edit.news.feed.name"/></label>
+          <div class="col-md-9">
+            <form:input path="name" class="form-control" />
+            <form:errors path="name" cssClass="portlet-msg-error"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label"><spring:message code="edit.news.feed.url"/></label>
+          <div class="col-md-9">
+            <form:input path="url" class="form-control" />
+            <form:errors path="url" cssClass="portlet-msg-error"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="alert alert-warning" role="alert">
+            <spring:message code="edit.news.feed.note"/>
+          </div>
+        </div>
 
-<form:form name="news" commandName="newsListingCommand" action="${postUrl}">
-	<form:hidden path="id"/>
-	<p>
-		<label class="portlet-form-field-label"><spring:message code="edit.news.feed.name"/></label>
-		<form:input path="name" size="50"/>
-		<form:errors path="name" cssClass="portlet-msg-error"/>
-	</p>
-   	<p>
-        <label class="portlet-form-field-label"><spring:message code="edit.news.feed.url"/></label>
-        <form:input path="url" size="50"/>
-		<form:errors path="url" cssClass="portlet-msg-error"/>
-	</p>
-	<br/>
-	<p>
-		<spring:message code="edit.news.feed.note"/>
-	</p>
-	<br/>
-    <p>
-        <button type="submit" class="portlet-form-button"><spring:message code="edit.news.feed.sav"/></button>
-    </p>
-</form:form>
-<br />
-<hr />
-<p>
-	<a style="text-decoration:none;" href="<portlet:renderURL><portlet:param name="action" value="editPrefences"/></portlet:renderURL>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> <spring:message code="edit.news.feed.back"/></a>
-</p>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> <spring:message code="edit.news.feed.sav"/></button>
+        </div>
+      </form:form>
+    </div>
+  </div>
+</div>

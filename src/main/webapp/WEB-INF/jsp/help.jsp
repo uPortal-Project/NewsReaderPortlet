@@ -20,8 +20,19 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
-<spring:message code="help.detail" htmlEscape="false"/>
-<p>
-	<a style="text-decoration:none;" href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align: middle"> <spring:message code="back.list"/></a>
-</p>
+<div id="newsreader-container" class="container-fluid">
+  <div class="row newsreader-portlet-toolbar">
+    <div class="col-md-12 no-col-padding">
+      <div class="nav-links">
+        <a href="<portlet:renderURL portletMode="view"/>"><i class="fa fa-arrow-left"></i> <spring:message code="back.list"/></a>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p><spring:message code="help.detail" htmlEscape="false"/></p>
+    </div>
+  </div>
+</div>

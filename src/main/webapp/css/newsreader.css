@@ -1,0 +1,121 @@
+/*---------------------------------------------------
+    LESS Elements 0.9
+  ---------------------------------------------------
+    A set of useful LESS mixins
+    More info at: http://lesselements.com
+  ---------------------------------------------------*/
+#newsreader-container {
+  /* Mobile */
+  /* Theme overrides */
+}
+#newsreader-container .no-col-padding {
+  padding: 0;
+}
+#newsreader-container .newsreader-portlet-toolbar {
+  border-bottom: 1px solid #5e80c5;
+  margin: 0 0 10px 0;
+  height: 100%;
+}
+#newsreader-container .newsreader-portlet-toolbar .nav-links {
+  height: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: right;
+}
+#newsreader-container .newsreader-content {
+  border: none;
+  background: #ffffff;
+}
+#newsreader-container .newsreader-content .news-feeds-container {
+  border: none;
+  background: #ffffff;
+}
+#newsreader-container .newsreader-content .news-stories-container {
+  border: 1px solid #eeeeee;
+}
+#newsreader-container .ui-corner-all {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+#newsreader-container .announcements-container .announcements-table thead {
+  text-align: center;
+  background-color: #97acd9;
+}
+#newsreader-container .announcements-container .announcements-table .action-icon-table {
+  width: 100%;
+}
+#newsreader-container .announcements-container .announcements-table .action-icon-table .action-icon {
+  padding: 6px;
+}
+#newsreader-container .announcements-container .approval-count {
+  background-color: #4065b0;
+  border: #1e2f53 1px solid;
+  color: #ffffff;
+  padding: 0 4px;
+}
+#newsreader-container .announcements-container form input[type="text"],
+#newsreader-container .announcements-container form input[type="password"],
+#newsreader-container .announcements-container form textarea {
+  width: 100%;
+}
+#newsreader-container .announcements-container form .announcements-error {
+  margin-top: 10px;
+  display: block;
+  text-align: left;
+  padding: .5em .8em;
+  font-size: 85%;
+}
+#newsreader-container .announcements-container form .mceLayout {
+  border: 1px solid #ccc !important;
+}
+#newsreader-container .announcements-container form .attachments-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#newsreader-container .announcements-container .ann-display-item-summary,
+#newsreader-container .announcements-container .ann-display-item-full {
+  margin-bottom: 10px;
+}
+#newsreader-container .announcements-container .ann-display-item-summary .ann-item-header,
+#newsreader-container .announcements-container .ann-display-item-full .ann-item-header {
+  font-weight: bold;
+  height: 100%;
+  display: block;
+}
+#newsreader-container .announcements-container .ann-display-item-summary .ann-item-header .ann-item-topic,
+#newsreader-container .announcements-container .ann-display-item-full .ann-item-header .ann-item-topic {
+  float: left;
+}
+#newsreader-container .announcements-container .ann-display-item-summary .ann-item-header .ann-item-date,
+#newsreader-container .announcements-container .ann-display-item-full .ann-item-header .ann-item-date {
+  text-align: right;
+}
+#newsreader-container .announcements-container .ann-display-item-summary h1,
+#newsreader-container .announcements-container .ann-display-item-full h1 {
+  font-size: 135%;
+  margin-top: 6px;
+  margin-bottom: 3px;
+  border-bottom: none;
+}
+#newsreader-container .announcements-container .ann-display-item-summary {
+  border-bottom: 1px solid #eee;
+}
+#newsreader-container .announcements-container .announcement-list-nav {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#newsreader-container .announcements-container .permissions-group-padding {
+  padding: 3px;
+}
+#newsreader-container .announcements-container .permissions-group-container {
+  width: 25%;
+  padding: 5px;
+  border: 1px solid #eee;
+}
+#newsreader-container .announcements-container .announcements-scrolling {
+  overflow: auto;
+}
+#newsreader-container .announcements-container .announcements-scrolling .row {
+  margin: 0;
+}
