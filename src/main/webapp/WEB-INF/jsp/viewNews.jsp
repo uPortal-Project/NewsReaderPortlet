@@ -23,12 +23,15 @@
 <c:set var="n"><portlet:namespace/></c:set>
 
 <style>
-    .news-stories {
+    .org-jasig-portlet-newsreader .news-stories {
         max-height: 20em;
         overflow: auto;
     }
-    ul.news-stories li { padding-bottom:0.5em; list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');  }
-    .ui-tooltip {
+    .org-jasig-portlet-newsreader ul.news-stories li {
+        padding-bottom:0.5em;
+        list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');
+    }
+    .org-jasig-portlet-newsreader .ui-tooltip {
         padding:8px;
         position:absolute;
         z-index:9999;
@@ -37,10 +40,9 @@
         -webkit-box-shadow: 0 0 5px #aaa;
         box-shadow: 0 0 5px #aaa;
         max-width: 400px;
+        border-width:2px;
+        background-image: none;
     }
-    * html .ui-tooltip { background-image: none; }
-    body .ui-tooltip { border-width:2px; }
-    
     #${n} .loading {
         width:100%;
         min-height: 20px;
@@ -50,7 +52,6 @@
         text-align: center;
         padding-top: 2px;
         padding-bottom: 2px;
-        
     }
 </style>
 <portlet:resourceURL var="feedUrl"/>
@@ -85,7 +86,7 @@
 </div>
 
 <script type="text/template" id="${n}feed-list-template">
-    
+
     {{#each this}}
     <c:choose>
         <c:when test="${ feedView == 'select' }">
@@ -97,7 +98,7 @@
     </c:choose>
     {{/each}}
 </script>
-                
+
 <c:choose>
     <c:when test="${ storyView == 'flyout' }">
         <script type="text/template" id="${n}feed-detail-template">
@@ -142,10 +143,9 @@
     </c:otherwise>
 </c:choose>
 
-
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
-    ${n}.jQuery(function(){
+    ${n}.jQuery(function() {
 
 
         var $, Handlebars, newsView, upnews;
@@ -244,7 +244,7 @@
                             deferred.resolve({page: view.page, success: false});
                         }
                     });
-                    
+
                     return deferred.promise();
                 }
             }),
@@ -257,7 +257,6 @@
 
         $(document).ready(function () {
 
-//            newsView.feedListView.bind("feedSelected", function (id) {
             $(newsView.feedListView).bind("feedSelected", function (event, id) {
                 if (newsView.newsService.getActiveFeed() !== id) {
                     newsView.getFeed(id);
@@ -269,5 +268,4 @@
         });
 
     });
-
-    </rs:compressJs></script>
+</rs:compressJs></script>
