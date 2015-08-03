@@ -220,8 +220,6 @@
                         },
                         active: index
                     });
-                    // Fix focus on active tab : up to top of page
-                    $('html,body').animate({scrollTop: $("#portal").offset().top},'500');
                 }
 
             },

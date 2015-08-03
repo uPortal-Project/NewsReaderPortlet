@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import java.util.ArrayList;
@@ -53,21 +54,21 @@ public class AjaxNewsController {
 
     private NewsStore newsStore;
 
-    @Autowired(required = true)
+    @Autowired
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }
 
     private NewsSetResolvingService setCreationService;
 
-    @Autowired(required = true)
+    @Autowired
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
         this.setCreationService = setCreationService;
     }
 
     private ApplicationContext applicationContext;
 
-    @Autowired(required = true)
+    @Autowired
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         this.applicationContext = applicationContext;
@@ -135,8 +136,6 @@ public class AjaxNewsController {
                 // retrieve the feed from this adaptor
                 NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, page);
                 if (sharedFeed != null) {
-                    
-
                     List<NewsFeedItem> items = sharedFeed.getEntries();
                     for (int i = 0; i < items.size(); i++) {
                         NewsFeedItem item = items.get(i);
@@ -149,23 +148,8 @@ public class AjaxNewsController {
                             item.setLink(link.toString());
                         }
                     }
-                    
+
                     model.put("feed", sharedFeed);
-                    
-//                    if (sharedFeed.getEntries().size() > maxStories) {
-//                        int pageStart = page * maxStories;
-//                        int pageEnd = pageStart + maxStories -1;
-//                        
-//                        NewsFeed limitedFeed = new NewsFeed();
-//                        limitedFeed.setAuthor(sharedFeed.getAuthor());
-//                        limitedFeed.setCopyright(sharedFeed.getCopyright());
-//                        limitedFeed.setLink(sharedFeed.getLink());
-//                        limitedFeed.setTitle(sharedFeed.getTitle());
-//                        limitedFeed.setEntries(sharedFeed.getEntries().subList(pageStart, pageEnd));
-//                        model.put("feed", limitedFeed);
-//                    } else {
-//                        model.put("feed", sharedFeed);
-//                    }
                 } else {
                     log.warn("Failed to get feed from adapter.");
                     model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");

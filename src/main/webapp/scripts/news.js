@@ -20,10 +20,7 @@ var upnews = upnews || {};
 
 if (!upnews.init) {
 
-    
-
     upnews.init = function($, Handlebars) {
-
 
         $.fn.infiniteScroll = function(options) {
 
@@ -109,7 +106,7 @@ if (!upnews.init) {
             };
             this.getActiveFeed = function() {
                 return activeFeedCache;
-            }
+            };
 
         };
 
@@ -143,7 +140,7 @@ if (!upnews.init) {
             getFeed: function(id,page) {
                 var view = this;
                 if (!view.storyContainers["feed" + id].populated) {
-                    return view.newsService.getFeed(id,page).done(function(feed) {
+                    return view.newsService.getFeed(id, page).done(function(feed) {
                         feed.id = view.newsService.getActiveFeed();
                         // render the story list view
                         var activeStory = view.storyContainers["feed" + feed.id];

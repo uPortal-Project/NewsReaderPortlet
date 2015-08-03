@@ -72,7 +72,7 @@ public class NewsController extends AbstractNewsController {
 
     private NewsStore newsStore;
     
-    @Autowired(required = true)
+    @Autowired
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }
@@ -91,7 +91,7 @@ public class NewsController extends AbstractNewsController {
     
     private IViewResolver viewResolver;
     
-    @Autowired(required = true)
+    @Autowired
     public void setViewResolver(IViewResolver viewResolver) {
         this.viewResolver = viewResolver;
     }
@@ -103,7 +103,7 @@ public class NewsController extends AbstractNewsController {
     
     @ModelAttribute
     public void getPreferences(RenderRequest request, Model model) {
-    	 PortletPreferences prefs = request.getPreferences();
+         PortletPreferences prefs = request.getPreferences();
          model.addAttribute("storyView", prefs.getValue("summaryView", "flyout"));
          model.addAttribute("feedView", prefs.getValue("feedView", "select"));
          model.addAttribute("newWindow", Boolean.valueOf(prefs.getValue("newWindow", "true")));
@@ -161,12 +161,12 @@ public class NewsController extends AbstractNewsController {
             RenderResponse response, 
             Model model
     ) throws Exception {
-    	log.warn("fullStory (NewsController)");
-			
-    	//Security check that the feed belongs to the user
+        log.trace("fullStory (NewsController)");
+
+        //Security check that the feed belongs to the user
         String setName = request.getPreferences().getValue("newsSetName", "default");
-    	NewsSet set = setCreationService.getNewsSet(setName, request);
-    	List<NewsConfiguration> feeds = new ArrayList<NewsConfiguration>();
+        NewsSet set = setCreationService.getNewsSet(setName, request);
+        List<NewsConfiguration> feeds = new ArrayList<NewsConfiguration>();
         feeds.addAll(set.getNewsConfigurations());
         Collections.sort(feeds);
         JSONArray jsonFeeds = new JSONArray();
@@ -184,11 +184,11 @@ public class NewsController extends AbstractNewsController {
         model.addAttribute("feeds", jsonFeeds);
         if (!knownFeeds.contains(activeFeed.toString())) {
             activeFeed = null;
-        	model.addAttribute("message", "Not allowed.");
-    		log.debug("Not allowd.");
+            model.addAttribute("message", "Not allowed.");
+            log.debug("Not allowd.");
         }
         model.addAttribute("activeFeed", activeFeed);
-    	
+        
         NewsConfiguration feedConfig = newsStore.getNewsConfiguration(activeFeed); 
         log.debug("On render Active feed is " + feedConfig.getId());
         
@@ -198,11 +198,11 @@ public class NewsController extends AbstractNewsController {
             // retrieve the feed from this adaptor
             NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, page);
             if (sharedFeed != null) {
-               	NewsFeedItem item = sharedFeed.getEntries().get(itemIndex);
-               	model.addAttribute("storyTitle", item.getTitle());
-               	
-               	FullStory fullStory = item.getFullStory();              	
-               	model.addAttribute("fullStory", fullStory.getFullStoryText());
+               NewsFeedItem item = sharedFeed.getEntries().get(itemIndex);
+               model.addAttribute("storyTitle", item.getTitle());
+
+               FullStory fullStory = item.getFullStory();                  
+               model.addAttribute("fullStory", fullStory.getFullStoryText());
             } else {
                 log.warn("Failed to get feed from adapter.");
                 model.addAttribute("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
@@ -243,15 +243,15 @@ public class NewsController extends AbstractNewsController {
         return new ModelAndView(viewName, model.asMap());
     }
     
-	private ApplicationContext applicationContext;
-	@Autowired(required = true)
-	public void setApplicationContext(ApplicationContext applicationContext)
-	        throws BeansException {
-	    this.applicationContext = applicationContext;
-	}
-	
-	private NewsSetResolvingService setCreationService;
-    @Autowired(required = true)
+    private ApplicationContext applicationContext;
+    @Autowired
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+    
+    private NewsSetResolvingService setCreationService;
+    @Autowired
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
         this.setCreationService = setCreationService;
     }

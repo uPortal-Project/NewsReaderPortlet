@@ -59,7 +59,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.portlet.context.PortletRequestAttributes;
 
-
 /**
  * RomeAdapter is a NewsAdapter for standard RSS and ATOM feeds available
  * online via http or https.
@@ -72,8 +71,10 @@ public class RomeAdapter extends AbstractNewsAdapter {
 
     protected final Log log = LogFactory.getLog(getClass());
 
-    protected final String defaultAntiSamyPolicy = "antisamy-textonly";
-    
+    public static final String PREFERENCE_TITLE_POLICY = "titlePolicy";
+    public static final String PREFERENCE_DESCRIPTION_POLICY = "descriptionPolicy";
+    public static final String DEFAULT_ANTISAMY_POLICY = "antisamy-textonly";
+
     private RomeNewsProcessorImpl processor;
     private AbstractHttpClient httpClient;   // External configuration sets this one
     private HttpClient compressingClient;    // Internally we use this one
@@ -84,7 +85,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
     private int readTimeout = 10000; // Default read timeout in milliseconds
     private long connectionManagerTimeout = 5000;  // Default timeout of getting connection from connection manager
     private int timesToRetry = 2;
-    private String cacheKeyPrefix;
+    private String cacheKeyPrefix = "";  // default is no prefix
 
     public AbstractHttpClient getHttpClient() {
         return httpClient;
@@ -213,35 +214,30 @@ public class RomeAdapter extends AbstractNewsAdapter {
         // second field.
         compressingClient = new DecompressingHttpClient(httpClient);
     }
-    
+
     protected String[] getPolicyPref(String... policyKey) {
         String[] values = new String[policyKey.length];
-        
         try {
-        
             RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
             if (requestAttributes instanceof PortletRequestAttributes) {
                 PortletRequest request = ((PortletRequestAttributes) requestAttributes).getRequest();
                 PortletPreferences prefs = request.getPreferences();
                 List<String> valueList = new ArrayList<String>();
                 for (String key : policyKey) {
-                    valueList.add(prefs.getValue(key, defaultAntiSamyPolicy));
+                    valueList.add(prefs.getValue(key, DEFAULT_ANTISAMY_POLICY));
                 }
                 return valueList.toArray(values);
             } 
-            
-            
         } catch (IllegalStateException ex) {
-            
-            log.warn("Not Request Bound", ex);
-            
+            log.warn("Call to RomeAdapter.getPolicyPref that was not within a request", ex);
         }
-        
-        
-        Arrays.fill(values, defaultAntiSamyPolicy);
+        /* In other words, if we're not in a PortletRequest you get
+         * the DEFAULT_ANTISAMY_POLICY for every value requested.
+         */
+        Arrays.fill(values, DEFAULT_ANTISAMY_POLICY);
         return values;
     }
-    
+
     /* (non-Javadoc)
       * @see org.jasig.portlet.newsreader.adapter.INewsAdapter#getSyndFeed(org.jasig.portlet.newsreader.NewsConfiguration, javax.portlet.PortletRequest)
       */
@@ -250,20 +246,12 @@ public class RomeAdapter extends AbstractNewsAdapter {
 
         PaginatingNewsFeed feed = null;
 
-        
-        
         // Look for an alternative AntiSamy policy file in the portlet preferences. If found, use it
         // otherwise use the default policyFile being injected into this class via Spring.
-        // Note that a policy file string includes a path starting at the application context.
-        // (e.g. /WEB-INF/antisamy/antisamy-manchester.xml)
-//        PortletPreferences prefs = request.getPreferences();
-//        String titlePolicy = prefs.getValue( "titlePolicy", "antisamy-textonly");
-//        String descriptionPolicy = prefs.getValue( "descriptionPolicy", "antisamy-textonly");
-        
-        String policy[] = getPolicyPref("titlePolicy", "descriptionPolicy");
+        String policy[] = getPolicyPref(PREFERENCE_TITLE_POLICY, PREFERENCE_DESCRIPTION_POLICY);
         String titlePolicy = policy[0];
         String descriptionPolicy = policy[1];
-        
+
         // Get the URL for this feed
         // If there is a 2nd URL, it is a fall-back in case the first does not work.
         // Using two URLs is handy if your first URL happens to be a local file cache
@@ -315,11 +303,11 @@ public class RomeAdapter extends AbstractNewsAdapter {
             cache.put(cachedElement);
         } else {
             log.debug("Cache hit");
-            feed = (PaginatingNewsFeed) cachedElement.getValue();
+            feed = (PaginatingNewsFeed) cachedElement.getObjectValue();
         }
 
         if (feed != null) feed.setPage(page);
-        
+
         // return the event list or null if the feed was not available.
         return feed;
     }

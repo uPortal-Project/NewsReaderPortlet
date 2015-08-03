@@ -26,11 +26,8 @@ import com.sun.syndication.feed.synd.SyndPerson;
 /**
  * 
  * @author Jen Bourey, jennifer.bourey@gmail.com
- * @version $Revision$
  */
 public class NewsFeedItem {
-
-    private static final long serialVersionUID = 9169435530958004414L;
 
     private String imageUrl;
     private List<SyndPerson> authors;

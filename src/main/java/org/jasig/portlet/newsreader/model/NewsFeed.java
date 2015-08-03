@@ -29,6 +29,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class NewsFeed implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private List<NewsFeedItem> entries = new ArrayList<NewsFeedItem>();
     private String author;
     private String link;
@@ -39,10 +41,6 @@ public class NewsFeed implements Serializable {
         return entries;
     }
 
-//    public void setEntries(List<NewsFeedItem> entries) {
-//        this.entries = entries;
-//    }
-    
     public String getAuthor() {
         return author;
     }

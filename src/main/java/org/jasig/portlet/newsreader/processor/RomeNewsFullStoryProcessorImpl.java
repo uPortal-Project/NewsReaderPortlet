@@ -40,6 +40,7 @@ public class RomeNewsFullStoryProcessorImpl extends RomeNewsProcessorImpl {
 
     protected final Log log = LogFactory.getLog(getClass());
 
+    @Override
     protected NewsFeedItem getNewsFeedItem(SyndEntry entry, String titlePolicy, String descriptionPolicy) throws PolicyException, ScanException {
         log.debug("getNewsFeedItem() in full story method");
         NewsFeedItem item = super.getNewsFeedItem(entry, titlePolicy, descriptionPolicy);

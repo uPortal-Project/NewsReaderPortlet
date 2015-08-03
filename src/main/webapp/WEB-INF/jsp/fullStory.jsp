@@ -32,6 +32,7 @@
         <c:when test="${!usePortalJsLibs}">
             ${n}.jQuery = jQuery.noConflict(true);
             ${n}.Handlebars = Handlebars;
+            Handlebars.noConflict();
             fluid = null;
             fluid_1_5 = null;
         </c:when>
@@ -39,10 +40,11 @@
             <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>
             ${n}.jQuery = ${ ns }jQuery;
             ${n}.Handlebars = Handlebars;
+            Handlebars.noConflict();
         </c:otherwise>
     </c:choose>
 </rs:compressJs></script>
-    
+
 <div class="org-jasig-portlet-newsreader">
     <div id="${n}">
         <div class="news-reader-feed-list portlet ptl-newsreader view-news">

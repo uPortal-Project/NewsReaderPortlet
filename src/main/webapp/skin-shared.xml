@@ -23,8 +23,7 @@
     xsi:schemaLocation="http://www.jasig.org/uportal/web/skin https://source.jasig.org/schemas/resource-server/skin-configuration/skin-configuration-v1.2.xsd">
 
     <js>scripts/news.js</js>
-    
-    <js included="plain" resource="true">/rs/handlebars/1.3.0/handlebars-v1.3.0.js</js>
-    <js included="aggregated" resource="true">/rs/handlebars/1.3.0/handlebars-v1.3.0.js</js>
+
+    <js resource="true">/rs/handlebars/3.0.3/handlebars-v3.0.3.js</js>
 
 </resources>

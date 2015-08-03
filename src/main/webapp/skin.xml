@@ -32,13 +32,12 @@
     <js included="aggregated" resource="true">/rs/jqueryui/1.10.3/jquery-ui-1.10.3.min.js</js>
     <js included="plain" resource="true">/rs/jqueryui/1.10.3/jquery-ui-1.10.3.js</js>
 
-    <js included="plain" resource="true">/rs/handlebars/1.3.0/handlebars-v1.3.0.js</js>
-    <js included="aggregated" resource="true">/rs/handlebars/1.3.0/handlebars-v1.3.0.js</js>
+    <js resource="true">/rs/handlebars/3.0.3/handlebars-v3.0.3.js</js>
 
     <!--  Fluid required for the tool tip (a.k.a list with flyouts) -->
     <js included="plain" resource="true">/rs/fluid/1.5.0/js/fluid-custom.js</js>
     <js included="aggregated" resource="true">/rs/fluid/1.5.0/js/fluid-custom.min.js</js>
-    
+
     <js>scripts/news.js</js>
 
 </resources>

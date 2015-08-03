@@ -48,17 +48,17 @@ import org.owasp.validator.html.ScanException;
 import org.springframework.core.io.Resource;
 
 public class RomeNewsProcessorImpl {
-    
+
     protected final Log log = LogFactory.getLog(getClass());
 
     private List<String> imageTypes;
 
-    private int ENTRIES_PER_PAGE = 10;
-    
+    private int entriesPerPage = 10;
+
     public void setEntriesPerPage(int perPage) {
-        this.ENTRIES_PER_PAGE = perPage;
+        this.entriesPerPage = perPage;
     }
-    
+
     public void setImageTypes(List<String> imageTypes) {
         this.imageTypes = imageTypes;
     }
@@ -75,13 +75,12 @@ public class RomeNewsProcessorImpl {
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(reader);
 
-        PaginatingNewsFeed newsFeed = new PaginatingNewsFeed(ENTRIES_PER_PAGE);
+        PaginatingNewsFeed newsFeed = new PaginatingNewsFeed(entriesPerPage);
         newsFeed.setAuthor(feed.getAuthor());
         newsFeed.setLink(feed.getLink());
         newsFeed.setTitle(feed.getTitle());
         newsFeed.setCopyright(feed.getCopyright());
 
-//        List<NewsFeedItem> newEntries = new ArrayList<NewsFeedItem>();
         List<NewsFeedItem> newEntries = newsFeed.getEntries();
 
         // translate the default entries into our implementation
@@ -91,7 +90,6 @@ public class RomeNewsProcessorImpl {
             NewsFeedItem item = getNewsFeedItem(entry, titlePolicy, descriptionPolicy);
             newEntries.add(item);
         }
-//        newsFeed.setEntries(newEntries);
 
         return newsFeed;
     }
@@ -115,7 +113,6 @@ public class RomeNewsProcessorImpl {
         // can use different policy files.
         AntiSamy as = new AntiSamy();
         CleanResults cr = null;
-        double scanTime = 0;
 
         // When working with AntiSamy filter changes, it helps to know what things were
         // before AntiSamy messes them up...
@@ -162,7 +159,6 @@ public class RomeNewsProcessorImpl {
             // Have AntiSamy scan the description and clean out unwanted HTML tags...
             cr = as.scan(entry.getDescription().getValue(), asDescriptionPolicy);
             item.setDescription(cr.getCleanHTML());
-            scanTime += cr.getScanTime();
         } else if (item.getContent() != null) {
             cr = as.scan(item.getContent(), policies.get(descriptionPolicy));
             String desc = cr.getCleanHTML();
@@ -170,7 +166,6 @@ public class RomeNewsProcessorImpl {
                 desc = desc.substring(0, 197).concat("...");
             }
             item.setDescription(desc);
-            scanTime += cr.getScanTime();
         }
 
         if (log.isDebugEnabled() && cr != null)
@@ -198,7 +193,6 @@ public class RomeNewsProcessorImpl {
             // Have AntiSamy scan the description and clean out unwanted HTML tags...
             cr = as.scan(entry.getTitle(), asTitlePolicy);
             item.setTitle(cr.getCleanHTML());
-            scanTime += cr.getScanTime();
         }
 
         if (log.isDebugEnabled() && cr != null)
