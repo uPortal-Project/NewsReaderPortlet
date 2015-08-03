@@ -19,9 +19,8 @@
 
 package org.jasig.portlet.newsreader.adapter;
 
-import javax.portlet.PortletRequest;
-
 import org.jasig.portlet.newsreader.NewsConfiguration;
+import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 
 /**
@@ -32,6 +31,8 @@ public interface INewsAdapter {
     /**
      * Provides the fully-qualified name of the concrete INewsAdapter class, 
      * which is used in creating a {@link NewsDefinition}.
+     *
+     * @see org.jasig.portlet.newsreader.NewsDefinition
      */
     String getClassName();
     
@@ -47,6 +48,6 @@ public interface INewsAdapter {
      */
     String getDescriptionKey();
 
-    NewsFeed getSyndFeed(NewsConfiguration config, PortletRequest request) throws NewsException;
+    NewsFeed getSyndFeed(NewsConfiguration config, int page) throws NewsException;
 
 }

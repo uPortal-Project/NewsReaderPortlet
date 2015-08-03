@@ -19,25 +19,6 @@
 
 package org.jasig.portlet.newsreader.processor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jasig.portlet.newsreader.model.NewsFeed;
-import org.jasig.portlet.newsreader.model.NewsFeedItem;
-import org.owasp.validator.html.AntiSamy;
-import org.owasp.validator.html.CleanResults;
-import org.owasp.validator.html.Policy;
-import org.owasp.validator.html.PolicyException;
-import org.owasp.validator.html.ScanException;
-import org.springframework.core.io.Resource;
-
 import com.sun.syndication.feed.module.Module;
 import com.sun.syndication.feed.module.mediarss.MediaEntryModule;
 import com.sun.syndication.feed.module.mediarss.types.MediaContent;
@@ -49,6 +30,22 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.newsreader.model.NewsFeedItem;
+import org.jasig.portlet.newsreader.model.PaginatingNewsFeed;
+import org.owasp.validator.html.AntiSamy;
+import org.owasp.validator.html.CleanResults;
+import org.owasp.validator.html.Policy;
+import org.owasp.validator.html.PolicyException;
+import org.owasp.validator.html.ScanException;
+import org.springframework.core.io.Resource;
 
 public class RomeNewsProcessorImpl {
     
@@ -56,29 +53,36 @@ public class RomeNewsProcessorImpl {
 
     private List<String> imageTypes;
 
+    private int ENTRIES_PER_PAGE = 10;
+    
+    public void setEntriesPerPage(int perPage) {
+        this.ENTRIES_PER_PAGE = perPage;
+    }
+    
     public void setImageTypes(List<String> imageTypes) {
         this.imageTypes = imageTypes;
     }
-    
+
     private List<String> videoTypes;
 
     public void setVideoTypes(List<String> videoTypes) {
         this.videoTypes = videoTypes;
     }
 
-    public NewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
+    public PaginatingNewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(reader);
 
-        NewsFeed newsFeed = new NewsFeed();
+        PaginatingNewsFeed newsFeed = new PaginatingNewsFeed(ENTRIES_PER_PAGE);
         newsFeed.setAuthor(feed.getAuthor());
         newsFeed.setLink(feed.getLink());
         newsFeed.setTitle(feed.getTitle());
         newsFeed.setCopyright(feed.getCopyright());
-        
-        List<NewsFeedItem> newEntries = new ArrayList<NewsFeedItem>();
+
+//        List<NewsFeedItem> newEntries = new ArrayList<NewsFeedItem>();
+        List<NewsFeedItem> newEntries = newsFeed.getEntries();
 
         // translate the default entries into our implementation
         @SuppressWarnings("unchecked")
@@ -87,7 +91,7 @@ public class RomeNewsProcessorImpl {
             NewsFeedItem item = getNewsFeedItem(entry, titlePolicy, descriptionPolicy);
             newEntries.add(item);
         }
-        newsFeed.setEntries(newEntries);
+//        newsFeed.setEntries(newEntries);
 
         return newsFeed;
     }
@@ -97,7 +101,7 @@ public class RomeNewsProcessorImpl {
         item.setAuthors(entry.getAuthors());
         item.setLink(entry.getLink());
         item.setUri(entry.getUri());
-        
+
         if (entry.getContents() != null) {
             for (SyndContent content : (List<SyndContent>) entry.getContents()) {
                 if ("html".equals(content.getType()) || "text".equals(content.getType())) {

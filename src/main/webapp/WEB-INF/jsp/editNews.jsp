@@ -36,9 +36,6 @@
     
         var savePrefUrl = '<portlet:resourceURL/>';
     
-        $('#${n}maxStories').change(function(){
-            $.post(savePrefUrl, { prefName: 'maxStories', prefValue: $('#${n}maxStories').val() }, null, 'json');
-        });
         $('#${n}feedView').change(function(){
             $.post(savePrefUrl, { prefName: 'feedView', prefValue: $('#${n}feedView').val() }, null, 'json');
         });
@@ -176,15 +173,6 @@
 <h3 style="margin-left: 7px;"><spring:message code="edit.news.pref"/></h3>
 
 <div style="margin-left: 25px">
-    <p>
-        <label for="${n}maxStories"><spring:message code="edit.news.maxstories"/></label>
-        <c:set var="maxStories" value="${renderRequest.preferences.map['maxStories'][0]}"/>
-        <select id="${n}maxStories">
-            <c:forTokens items="5,10,15,20" delims="," var="item">
-                <option ${ maxStories == item ? 'selected="selected"' : '' }>${item}</option>
-            </c:forTokens>
-        </select>
-    </p>
 
     <p>
         <label for="${n}feedView"><spring:message code="edit.news.feedView"/></label>

@@ -25,18 +25,16 @@
     <c:choose>
         <c:when test="${!usePortalJsLibs}">
             ${n}.jQuery = jQuery.noConflict(true);
-            ${n}._ = _.noConflict();
-            ${n}.Backbone = Backbone.noConflict();
+            ${n}.Handlebars = Handlebars;
             fluid = null;
             fluid_1_5 = null;
         </c:when>
         <c:otherwise>
             <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>
             ${n}.jQuery = ${ ns }jQuery;
-            ${n}._ = ${ ns }_;
-            ${n}.Backbone = ${ ns }Backbone;
+            ${n}.Handlebars = Handlebars;
         </c:otherwise>
     </c:choose>
-    if (!upnews.initialized) upnews.init(${n}.jQuery, ${n}._, ${n}.Backbone);
+    if (!upnews.initialized) upnews.init(${n}.jQuery, ${n}.Handlebars);
     ${n}.upnews = upnews;
 </rs:compressJs></script>

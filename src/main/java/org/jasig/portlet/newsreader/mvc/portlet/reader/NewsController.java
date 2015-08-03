@@ -26,13 +26,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -40,6 +41,7 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.adapter.INewsAdapter;
 import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.model.FullStory;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
@@ -151,8 +153,15 @@ public class NewsController extends AbstractNewsController {
     }
 
     @RenderMapping(params="action=fullStory")
-    public ModelAndView fullStory(@RequestParam Long activeFeed, @RequestParam int itemIndex, RenderRequest request, RenderResponse response, Model model) throws Exception {
-    	log.debug("fullStory (NewsController)");
+    public ModelAndView fullStory(
+            @RequestParam Long activeFeed, 
+            @RequestParam int itemIndex, 
+            @RequestParam int page,
+            RenderRequest request, 
+            RenderResponse response, 
+            Model model
+    ) throws Exception {
+    	log.warn("fullStory (NewsController)");
 			
     	//Security check that the feed belongs to the user
         String setName = request.getPreferences().getValue("newsSetName", "default");
@@ -160,16 +169,25 @@ public class NewsController extends AbstractNewsController {
     	List<NewsConfiguration> feeds = new ArrayList<NewsConfiguration>();
         feeds.addAll(set.getNewsConfigurations());
         Collections.sort(feeds);
+        JSONArray jsonFeeds = new JSONArray();
         List<String> knownFeeds = new ArrayList<String>();
         for(NewsConfiguration feed : feeds) {
-           	knownFeeds.add(String.valueOf(feed.getId()));
+            if (feed.isDisplayed()) {
+                JSONObject jsonFeed = new JSONObject();
+                jsonFeed.put("id", feed.getId());
+                jsonFeed.put("name", feed.getNewsDefinition().getName());
+                jsonFeeds.add(jsonFeed);
+                knownFeeds.add(String.valueOf(feed.getId()));
+            }
         }
         log.debug("Known feeds: "+knownFeeds.toString());
+        model.addAttribute("feeds", jsonFeeds);
         if (!knownFeeds.contains(activeFeed.toString())) {
             activeFeed = null;
         	model.addAttribute("message", "Not allowed.");
     		log.debug("Not allowd.");
         }
+        model.addAttribute("activeFeed", activeFeed);
     	
         NewsConfiguration feedConfig = newsStore.getNewsConfiguration(activeFeed); 
         log.debug("On render Active feed is " + feedConfig.getId());
@@ -178,16 +196,21 @@ public class NewsController extends AbstractNewsController {
             // get an instance of the adapter for this feed
             INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
             // retrieve the feed from this adaptor
-            NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, request);
+            NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, page);
             if (sharedFeed != null) {
                	NewsFeedItem item = sharedFeed.getEntries().get(itemIndex);
                	model.addAttribute("storyTitle", item.getTitle());
-               	model.addAttribute("fullStory", item.getFullStory());
+               	
+               	FullStory fullStory = item.getFullStory();              	
+               	model.addAttribute("fullStory", fullStory.getFullStoryText());
             } else {
                 log.warn("Failed to get feed from adapter.");
                 model.addAttribute("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");
             }
-            
+
+            PortletPreferences prefs = request.getPreferences();
+            model.addAttribute("feedView", prefs.getValue("feedView", "select"));
+
         } catch (NoSuchBeanDefinitionException ex) {
             log.error("News class instance could not be found: " + ex.getMessage());
             model.addAttribute("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");

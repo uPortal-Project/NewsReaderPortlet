@@ -71,12 +71,17 @@
     </util:map>
     
     <!-- NEWS ADAPTER REGISTRATIONS -->
-    
-    <bean id="romeProcessor" 
+
+    <bean id="romeProcessor"
         class="org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl"
-        p:imageTypes-ref="imageTypes" p:videoTypes-ref="videoTypes" 
-        p:policies-ref="antisamyPolicies"/>
-    
+        p:imageTypes-ref="imageTypes" p:videoTypes-ref="videoTypes"
+        p:policies-ref="antisamyPolicies" p:entriesPerPage="10"/>
+
+    <bean id="romeProcessorFullStory"
+          class="org.jasig.portlet.newsreader.processor.RomeNewsFullStoryProcessorImpl"
+          p:imageTypes-ref="imageTypes" p:videoTypes-ref="videoTypes"
+          p:policies-ref="antisamyPolicies" p:entriesPerPage="10"/>
+
     <!-- RSS feed adapter -->
     <bean id="httpClientConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"
           p:maxTotal="200" p:defaultMaxPerRoute="20"/>
@@ -87,10 +92,16 @@
     <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapter"
         class="org.jasig.portlet.newsreader.adapter.RomeAdapter" init-method="init"
         p:httpClient-ref="httpClient"
-        p:processor-ref="romeProcessor" p:cache-ref="newsCache"/>
+        p:processor-ref="romeProcessor" p:cache-ref="newsCache" p:cacheKeyPrefix="RomeFeed." />
+
+    <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapterFullStory"
+          class="org.jasig.portlet.newsreader.adapter.RomeAdapterFullStory" init-method="init"
+          p:httpClient-ref="httpClient"
+          p:processor-ref="romeProcessorFullStory" p:cache-ref="newsCache" p:cacheKeyPrefix="RomeFeed_FS." />
 
     <util:list id="availableAdapters">
         <ref bean="org.jasig.portlet.newsreader.adapter.RomeAdapter"/>
+        <ref bean="org.jasig.portlet.newsreader.adapter.RomeAdapterFullStory"/>
     </util:list>
 
 
