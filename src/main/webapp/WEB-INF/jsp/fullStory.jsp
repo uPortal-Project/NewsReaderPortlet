@@ -114,6 +114,8 @@
 </script>
 
 <script type="text/javascript">
+(function() {
+
     var $ = ${n}.jQuery;
 
     /* Apply feed template to dropdown/tabs */
@@ -147,4 +149,6 @@
             active: index
         });
     }
+
+}());
 </script>
