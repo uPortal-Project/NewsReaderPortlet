@@ -20,6 +20,7 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+    <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 <c:set var="n"><portlet:namespace/></c:set>
 <%--
   -- Attache jQuery and Handlebars to ${n}.

@@ -56,10 +56,25 @@
 </style>
 <portlet:resourceURL var="feedUrl"/>
 
-<div class="org-jasig-portlet-newsreader">
+<div id="newsreader-container" class="container-fluid">
+    <div class="row newsreader-portlet-toolbar">
+        <div class="col-md-12 no-col-padding">
+            <div class="nav-links">
+                <c:if test="${supportsHelp}">
+                    <a href="<portlet:renderURL portletMode='help'/>"><i class="fa fa-info-circle"></i> <spring:message code="help" /></a>
+                </c:if>
+                <c:if test="${supportsEdit && !isGuest}">
+                    &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><i class="fa fa-edit"></i> <spring:message code="edit.news.feed" /></a>
+                </c:if>
+                <c:if test="${isAdmin}">
+                    &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><i class="fa fa-cog"></i> <spring:message code="administration" /></a>
+                </c:if>
+            </div>
+        </div>
+    </div>
 
-    <div id="${n}">
-        <div class="news-reader-feed-list portlet ptl-newsreader view-news">
+    <div class="row" id="${n}">
+        <div class="news-reader-feed-list newsreader-content view-news col-md-12">
             <c:choose>
                 <c:when test="${ feedView == 'select' }">
                     <select class="news-feeds-container"></select>
@@ -70,19 +85,6 @@
             </c:choose>
         </div>
     </div>
-
-    <br/>
-    <p>
-        <c:if test="${supportsHelp}">
-            <a href="<portlet:renderURL portletMode='help'/>"><spring:message code="help" /></a>
-        </c:if>
-        <c:if test="${supportsEdit && !isGuest}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><spring:message code="edit.news.feed" /></a>
-        </c:if>
-        <c:if test="${isAdmin}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><spring:message code="administration" /></a>
-        </c:if>
-    </p>
 </div>
 
 <script type="text/template" id="${n}feed-list-template">
