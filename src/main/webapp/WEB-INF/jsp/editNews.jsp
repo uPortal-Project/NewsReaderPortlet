@@ -20,9 +20,11 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <c:set var="n"><portlet:namespace/></c:set>
 
 <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
+
 
 <script type="text/javascript"><rs:compressJs>
     ${n}.jQuery(function(){
