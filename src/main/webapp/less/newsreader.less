@@ -1,0 +1,29 @@
+// ==========================================================================
+// Elements LESS Mixins v0.9 | http://lesselements.com
+// ==========================================================================
+@import "includes/mixins.less";
+
+// ==========================================================================
+// Theme Variables
+// ==========================================================================
+// Using this as the driver for theme variation, this file contains all the
+// colors needed for the application skin. This file cannot be placed after
+// subsequent files that relies on the values to execute
+@import "includes/variables.less";
+
+
+// ==========================================================================
+// Namespace: #newsreader-container
+// ==========================================================================
+// Everything in this stylesheet is scoped (nested) within
+// "#newsreader-container". As a best practice, anything added to this
+// stylesheet (that is not avariable or mixin) should also be scoped within
+// the namespace.
+
+#newsreader-container {
+
+    // Skin Overrides
+    // ----------------------------------------------------------------------
+    @import "includes/theme.less";
+
+} // end #newsreader
