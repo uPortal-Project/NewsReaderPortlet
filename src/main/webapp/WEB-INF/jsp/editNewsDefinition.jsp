@@ -22,6 +22,10 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
+<portlet:actionURL var="postUrl">
+    <portlet:param name="action" value="editNewsDefinition"/>
+</portlet:actionURL>
+
 <script type="text/javascript"><rs:compressJs>
 	function addRole(id) {
 		var div = document.getElementById(id);
@@ -80,8 +84,6 @@
 		div.parentNode.removeChild(div);
 	}
 </rs:compressJs></script>
-
-<portlet:actionURL var="postUrl"><portlet:param name="action" value="editNewsDefinition"/></portlet:actionURL>
 
 <div id="newsreader-container" class="container-fluid">
 	<div class="row newsreader-portlet-toolbar">

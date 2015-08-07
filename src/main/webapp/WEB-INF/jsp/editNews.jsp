@@ -24,13 +24,14 @@
 
 <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
+<jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
 <script type="text/javascript"><rs:compressJs>
-    ${n}.jQuery(function(){
+    ${n}.jQuery(function() {
 
         var $ = ${n}.jQuery;
-    
+
         var savePrefUrl = '<portlet:resourceURL/>';
-    
+
         $('#${n}feedView').change(function(){
             $.post(savePrefUrl, { prefName: 'feedView', prefValue: $('#${n}feedView').val() }, null, 'json');
         });
@@ -38,13 +39,11 @@
             $.post(savePrefUrl, { prefName: 'summaryView', prefValue: $('#${n}storyView').val() }, null, 'json');
         });
         $("#${n}newWindow").change(function(e){
-        	$.post(savePrefUrl, { prefName: 'newWindow', prefValue: ($(e.target).attr("checked") == 'checked') }, null, 'json');
+            $.post(savePrefUrl, { prefName: 'newWindow', prefValue: ($(e.target).attr("checked") == 'checked') }, null, 'json');
         });
 
     });
 </rs:compressJs></script>
-    
-<portlet:actionURL var="postUrl"></portlet:actionURL>
 
 <div id="newsreader-container" class="container-fluid">
 	<div class="row newsreader-portlet-toolbar">

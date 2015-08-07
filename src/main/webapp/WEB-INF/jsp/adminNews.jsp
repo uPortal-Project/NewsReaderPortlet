@@ -22,7 +22,6 @@
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
 <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
-<portlet:actionURL var="postUrl"/>
 <div id="newsreader-container" class="container-fluid">
 	<div class="row newsreader-portlet-toolbar">
 		<div class="col-md-12 no-col-padding">
