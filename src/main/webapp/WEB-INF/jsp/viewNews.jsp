@@ -56,7 +56,7 @@
 </style>
 <portlet:resourceURL var="feedUrl"/>
 
-<div id="newsreader-container" class="container-fluid">
+<div id="${n}" class="container-fluid newsreader-container">
     <div class="row newsreader-portlet-toolbar">
         <div class="col-md-12 no-col-padding">
             <div class="nav-links">
@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <div class="row" id="${n}">
+    <div class="row">
         <div class="news-reader-feed-list newsreader-content view-news col-md-12">
             <c:choose>
                 <c:when test="${ feedView == 'select' }">
@@ -198,7 +198,7 @@
             newsService: new upnews.newsService("${feedUrl}"),
             onSuccessfulSetup: function () {
                  $('#${n} .news-stories').scroll();
-                if (${ feedView  == 'select' }) {
+                if (${feedView  eq 'select'}) {
                     // set the current news feed to selected in the select menu
                     $("#${n} option").removeAttr("selected");
                     $("#${n} option[value=" + newsView.newsService.getActiveFeed() + "]").attr("selected", "selected");
@@ -238,7 +238,7 @@
                     newsView.newsService.getFeed(id, view.page).done(function(feed) {
                         loadingDiv.remove();
                         if (feed.entries.length > 0) {
-                            $('.news-stories',view.$el).append(newsStoryTemplate(feed.entries));
+                            $('.news-stories', view.$el).append(newsStoryTemplate(feed.entries));
                             deferred.resolve({page: view.page, success: true});
                         } else {
                             deferred.resolve({page: view.page, success: false});

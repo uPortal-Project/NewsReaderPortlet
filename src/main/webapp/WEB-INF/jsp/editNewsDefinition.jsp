@@ -85,7 +85,7 @@
 	}
 </rs:compressJs></script>
 
-<div id="newsreader-container" class="container-fluid">
+<div class="container-fluid newsreader-container">
 	<div class="row newsreader-portlet-toolbar">
 		<div class="col-md-6 no-col-padding">
 			<h3><spring:message code="edit.news.feed.edit"/></h3>
