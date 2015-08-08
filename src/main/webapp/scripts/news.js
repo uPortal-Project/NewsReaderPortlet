@@ -29,17 +29,14 @@ if (!upnews.init) {
                 autoLoad: false,
                 contentLoad: function() {
                     var deferred =  $.Deferred();
-                    
-                    deferred.resolve("<h1>LOADED</h1>");
-                    
+                    deferred.resolve('<h1>LOADED</h1>');
                     return deferred.promise();
-                    
                 }
-            }, options );
+            }, options);
 
             if (settings.autoLoad) $(this).scroll();
 
-            $(this).css({"position":"relative"});
+            $(this).css({'position':'relative'});
             return this.each(function() {
 
                 var height = $(this).outerHeight();
@@ -47,17 +44,17 @@ if (!upnews.init) {
                 var that = this;
                 $(this).scroll(function() {
                     if (this.on) {
-                        console.log(height + " :: " + $(":last", this).position().top);
-                        if ($(":last", this).position().top < height) {
+                        var topOfLastItemRoundedDown = Math.floor($(':last', this).position().top);
+                        console.log(height + ' :: ' + topOfLastItemRoundedDown + ' (content will be appended if the 2nd number <= the 1st)');
+                        if (topOfLastItemRoundedDown <= height) {
                             this.on = false;
                             settings.contentLoad().done(function() {
                                 that.on = true;
                             });
-                            console.log("Appended");
+                            console.log('Appended');
                         }
                     }
-                    console.log("scrolled");
-
+                    console.log('scrolled');
                 });
 
             });
@@ -74,9 +71,9 @@ if (!upnews.init) {
                     data.page = page ? page : 0;
                     promise = $.ajax({
                         url: url,
-                        dataType: "json",
+                        dataType: 'json',
                         data: data,
-                        type: "POST"
+                        type: 'POST'
                     }).done(function(data) {
                         activeFeedCache = data.activeFeed;
                         currentPage = data.page;
@@ -104,6 +101,7 @@ if (!upnews.init) {
             this.getPage = function() {
                 return currentPage;
             };
+
             this.getActiveFeed = function() {
                 return activeFeedCache;
             };
@@ -121,29 +119,29 @@ if (!upnews.init) {
                             // add empty detail view for each feed
                             view.storyContainers = {};
                             $(feeds).each(function(idx, feed) {
-                                var detail = $.extend({}, view.feedDetailView, {$el: $("<div/>")});
-                                detail.$el.attr("id", view.namespace + "feed" + feed.id)
-                                        .addClass("news-stories-container");
-                                $(".view-news").append(detail.$el);
-                                view.storyContainers["feed" + feed.id] = detail;
+                                var detail = $.extend({}, view.feedDetailView, {$el: $('<div/>')});
+                                detail.$el.attr('id', view.namespace + 'feed' + feed.id)
+                                        .addClass('news-stories-container');
+                                $('.view-news').append(detail.$el);
+                                view.storyContainers['feed' + feed.id] = detail;
                             });
                             // render the feed list view
                             view.feedListView.render(feeds);
 
                         })
                         .done(function() {
-                            view.getFeed(view.newsService.getActiveFeed(),0).done(function() {
+                            view.getFeed(view.newsService.getActiveFeed(), 0).done(function() {
                                 if (view.onSuccessfulSetup) view.onSuccessfulSetup();
                             });
                         });
             },
-            getFeed: function(id,page) {
+            getFeed: function(id, page) {
                 var view = this;
-                if (!view.storyContainers["feed" + id].populated) {
+                if (!view.storyContainers['feed' + id].populated) {
                     return view.newsService.getFeed(id, page).done(function(feed) {
                         feed.id = view.newsService.getActiveFeed();
                         // render the story list view
-                        var activeStory = view.storyContainers["feed" + feed.id];
+                        var activeStory = view.storyContainers['feed' + feed.id];
                         activeStory.populated = true;
                         activeStory.render(feed);
                     })
@@ -158,7 +156,7 @@ if (!upnews.init) {
         };
 
         upnews.NewsFeedDetailView = {
-            $el: $("<div/>"),
+            $el: $('<div/>'),
             postRender: function() {
             },
             page: 1,
@@ -166,14 +164,14 @@ if (!upnews.init) {
                 // render the main feed detail template
                 this.$el.html(this.template(feed));
                 var view = this;
-                $(".titlebar a", this.$el).click(function() {
-                    $(view).trigger("showList");
+                $('.titlebar a', this.$el).click(function() {
+                    $(view).trigger('showList');
                 });
                 $('.news-stories', this.$el).infiniteScroll({
                     autoLoad: true,
                     contentLoad: function() {
                             return view.loader(feed.id).done(function(result) {
-                                if (result.success ) 
+                                if (result.success)
                                     view.page = result.page+1;
                             });
                     }

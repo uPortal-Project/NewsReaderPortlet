@@ -179,7 +179,7 @@
         newsView = $.extend(upnews.NewsView, {
             newsService: new upnews.newsService("${feedUrl}"),
             onSuccessfulSetup: function () {
-                 $('#${n} .news-stories').scroll();
+                $('#${n} .news-stories').scroll();
                 if (${feedView  eq 'select'}) {
                     // set the current news feed to selected in the select menu
                     $("#${n} option").removeAttr("selected");
@@ -213,10 +213,10 @@
                 loader: function(id) {
                     var view = this;
                     var deferred = $.Deferred();
-                    
+
                     var loadingDiv = $("<div class='loading'></div>");
                     view.$el.append(loadingDiv);
-                    
+
                     newsView.newsService.getFeed(id, view.page).done(function(feed) {
                         loadingDiv.remove();
                         if (feed.entries.length > 0) {
@@ -237,9 +237,9 @@
             namespace: "${n}"
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $(newsView.feedListView).bind("feedSelected", function (event, id) {
+            $(newsView.feedListView).bind("feedSelected", function(event, id) {
                 if (newsView.newsService.getActiveFeed() !== id) {
                     newsView.getFeed(id);
                 }
