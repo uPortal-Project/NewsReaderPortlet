@@ -20,29 +20,11 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
+
 <c:set var="n"><portlet:namespace/></c:set>
 
 <style>
-    .org-jasig-portlet-newsreader .news-stories {
-        max-height: 20em;
-        overflow: auto;
-    }
-    .org-jasig-portlet-newsreader ul.news-stories li {
-        padding-bottom:0.5em;
-        list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');
-    }
-    .org-jasig-portlet-newsreader .ui-tooltip {
-        padding:8px;
-        position:absolute;
-        z-index:9999;
-        -o-box-shadow: 0 0 5px #aaa;
-        -moz-box-shadow: 0 0 5px #aaa;
-        -webkit-box-shadow: 0 0 5px #aaa;
-        box-shadow: 0 0 5px #aaa;
-        max-width: 400px;
-        border-width:2px;
-        background-image: none;
-    }
     #${n} .loading {
         width:100%;
         min-height: 20px;
