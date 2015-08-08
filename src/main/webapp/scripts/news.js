@@ -39,10 +39,10 @@ if (!upnews.init) {
             $(this).css({'position':'relative'});
             return this.each(function() {
 
-                var height = $(this).outerHeight();
                 this.on = true;
                 var that = this;
                 $(this).scroll(function() {
+                    var height = $(this).outerHeight();
                     if (this.on) {
                         var topOfLastItemRoundedDown = Math.floor($(':last', this).position().top);
                         console.log(height + ' :: ' + topOfLastItemRoundedDown + ' (content will be appended if the 2nd number <= the 1st)');
