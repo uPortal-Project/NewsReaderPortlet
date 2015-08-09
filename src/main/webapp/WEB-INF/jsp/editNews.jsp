@@ -184,17 +184,6 @@
 		<div class="col-md-12">
 			<form class="form-horizontal">
 				<div class="form-group">
-					<label for="${n}maxStories" class="col-md-7"><spring:message code="edit.news.maxstories"/></label>
-					<c:set var="maxStories" value="${renderRequest.preferences.map['maxStories'][0]}"/>
-					<div class="col-md-5">
-						<select id="${n}maxStories" class="form-control">
-							<c:forTokens items="5,10,15,20" delims="," var="item">
-								<option ${ maxStories == item ? 'selected="selected"' : '' }>${item}</option>
-							</c:forTokens>
-						</select>
-					</div>
-				</div>
-				<div class="form-group">
 					<label for="${n}feedView" class="col-md-7"><spring:message code="edit.news.feedView"/></label>
 					<c:set var="feedView" value="${renderRequest.preferences.map['feedView'][0]}"/>
 					<div class="col-md-5">
@@ -210,7 +199,7 @@
 					<div class="col-md-5">
 						<select id="${n}storyView" class="form-control">
 							<option value="flyout" ${ storyView == 'flyout' ? 'selected="selected"' : '' }><spring:message code="edit.news.storyview.flyout"/></option>
-							<option value="summaries" ${ storyView == 'summaries' ? 'selected="selected"' : '' }><spring:message code="edit.news.storyview.scrolldiv"/></option>
+							<option value="summaries" ${ storyView == 'summaries' ? 'selected="selected"' : '' }><spring:message code="edit.news.storyview.summaries"/></option>
 						</select>
 					</div>
 				</div>

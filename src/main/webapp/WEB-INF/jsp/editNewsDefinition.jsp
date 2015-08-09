@@ -109,7 +109,7 @@
           </div>
 				</div>
 				<div class="form-group">
-				  <label class="col-md-4"><spring:message code="edit.news.feed.url"/></label>
+				  <label class="col-md-4"><spring:message code="edit.news.feed.class"/></label>
           <div class="col-md-8">
             <form:select path="className" class="form-control">
               <c:forEach items="${availableAdapters}" var="adapter">

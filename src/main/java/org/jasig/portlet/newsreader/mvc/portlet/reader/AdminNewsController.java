@@ -51,25 +51,19 @@ public class AdminNewsController {
 
     protected final Log log = LogFactory.getLog(getClass());
 
+    @Autowired(required = true)
     private NewsStore newsStore;
 
-    @Autowired(required = true)
-    public void setNewsStore(NewsStore newsStore) {
-        this.newsStore = newsStore;
-    }
-
     @RenderMapping(params="action=administration")
-
     public ModelAndView getAdminView(RenderRequest request,RenderResponse response) {
-    	
-    	log.debug("Entering news admin");
 
+        log.debug("Entering news admin");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
         // get a list of all predefined newss
         model.put("feeds", newsStore.getPredefinedNewsConfigurations());
-        return new ModelAndView("/adminNews", "model", model);
+        return new ModelAndView("adminNews", "model", model);
 
     }
 

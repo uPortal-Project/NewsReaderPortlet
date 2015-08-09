@@ -21,10 +21,8 @@ package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Resource;
 import javax.portlet.PortletPreferences;
@@ -46,7 +44,6 @@ import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
 import org.jasig.portlet.newsreader.service.IInitializationService;
-import org.jasig.portlet.newsreader.service.IViewResolver;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -71,36 +68,29 @@ public class NewsController extends AbstractNewsController {
     protected final Log log = LogFactory.getLog(getClass());
 
     private NewsStore newsStore;
-    
+
     @Autowired
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }
-    
+
     private int defaultItems = 2;
     public void setDefaultItems(int defaultItems) {
         this.defaultItems = defaultItems;
     }
 
     private List<IInitializationService> initializationServices;
-    
+
     @Resource(name = "initializationServices")
     public void setInitializationServices(List<IInitializationService> services) {
         this.initializationServices = services;
-    }
-    
-    private IViewResolver viewResolver;
-    
-    @Autowired
-    public void setViewResolver(IViewResolver viewResolver) {
-        this.viewResolver = viewResolver;
     }
 
     @ActionMapping
     public void defaultAction() {
         // do nothing
     }
-    
+
     @ModelAttribute
     public void getPreferences(RenderRequest request, Model model) {
          PortletPreferences prefs = request.getPreferences();
@@ -108,11 +98,10 @@ public class NewsController extends AbstractNewsController {
          model.addAttribute("feedView", prefs.getValue("feedView", "select"));
          model.addAttribute("newWindow", Boolean.valueOf(prefs.getValue("newWindow", "true")));
     }
-    
+
     @RenderMapping
     public String showMainView(RenderRequest request) throws Exception {
 
-        Map<String, Object> model = new HashMap<String, Object>();
         PortletSession session = request.getPortletSession(true);
 
         /**
@@ -147,9 +136,19 @@ public class NewsController extends AbstractNewsController {
             session.setAttribute(INITIALIZED, true);
             session.setMaxInactiveInterval(60 * 60 * 2);
 
-        } 
-        
-        return viewResolver.getReaderView(request);
+        }
+
+        /*
+         * NOTE:  It's theoretically possible to override the main jsp page for
+         * viewing news.  The 'videos.jsp' file, in fact, is intended to be used
+         * with this feature.  In practice, there is a lot of complex JavaScript
+         * in play in news.js, and it continues to evolve.  Alternate JSP views
+         * atrophy and become unusable quickly.
+         */
+        PortletPreferences prefs = request.getPreferences();
+        final String viewName = prefs.getValue("viewName", "viewNews");
+
+        return viewName;
     }
 
     @RenderMapping(params="action=fullStory")
@@ -234,15 +233,14 @@ public class NewsController extends AbstractNewsController {
             // before returning to the portal, so just use an empty view
             return new ModelAndView("empty", Collections.<String,String>emptyMap());
         }
-        
+
         // create new content with new validation tag
         response.getCacheControl().setETag(etag);
         response.getCacheControl().setExpirationTime(1);
 
-        String viewName = viewResolver.getFullStoryView(request);
-        return new ModelAndView(viewName, model.asMap());
+        return new ModelAndView("fullStory", model.asMap());
     }
-    
+
     private ApplicationContext applicationContext;
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext)
