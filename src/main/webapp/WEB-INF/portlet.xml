@@ -56,6 +56,12 @@
                 <name>feedView</name>
                 <value>summaries</value>
             </preference>
+            <!-- Single-value preference that governs whether this
+                 portlet-definition allows users to access EDIT mode. -->
+            <preference>
+                <name>allowEdit</name>
+                <value>true</value>
+            </preference>
             <preference>
                 <name>usePortalJsLibs</name>
                 <value>false</value>
@@ -63,6 +69,12 @@
             <preference>
                 <name>portalJsNamespace</name>
                 <value>up</value>
+            </preference>
+            <!-- If specified, this multi-valued portlet preference allows
+                 administrators to restrict which PredefinedNewsDefinitions
+                 appear in a particular portlet definition -->
+            <preference>
+                <name>Whitelist.regexValues</name>
             </preference>
         </portlet-preferences>
         <security-role-ref>

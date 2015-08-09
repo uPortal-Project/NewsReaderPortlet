@@ -162,10 +162,10 @@ public class NewsController extends AbstractNewsController {
     ) throws Exception {
         log.trace("fullStory (NewsController)");
 
-        //Security check that the feed belongs to the user
+        //Security check that the feed belongs to the user and this portlet
         String setName = request.getPreferences().getValue("newsSetName", "default");
         NewsSet set = setCreationService.getNewsSet(setName, request);
-        List<NewsConfiguration> feeds = new ArrayList<NewsConfiguration>();
+        final List<NewsConfiguration> feeds = AbstractNewsController.filterNonWhitelistedPredefinedConfigurations(request, set.getNewsConfigurations());
         feeds.addAll(set.getNewsConfigurations());
         Collections.sort(feeds);
         JSONArray jsonFeeds = new JSONArray();

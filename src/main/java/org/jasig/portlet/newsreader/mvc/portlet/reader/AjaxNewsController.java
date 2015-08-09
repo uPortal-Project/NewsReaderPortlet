@@ -21,12 +21,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletURL;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -36,6 +39,7 @@ import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
+import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -82,8 +86,7 @@ public class AjaxNewsController {
 
         String setName = request.getPreferences().getValue("newsSetName", "default");
         NewsSet set = setCreationService.getNewsSet(setName, request);
-        List<NewsConfiguration> feeds = new ArrayList<NewsConfiguration>();
-        feeds.addAll(set.getNewsConfigurations());
+        final List<NewsConfiguration> feeds = AbstractNewsController.filterNonWhitelistedPredefinedConfigurations(request, set.getNewsConfigurations());
         Collections.sort(feeds);
 
         JSONArray jsonFeeds = new JSONArray();

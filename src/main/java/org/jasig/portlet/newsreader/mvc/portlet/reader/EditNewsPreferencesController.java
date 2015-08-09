@@ -45,6 +45,7 @@ import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -99,7 +100,7 @@ public class EditNewsPreferencesController {
         PortletSession session = request.getPortletSession();
         String setName = request.getPreferences().getValue("newsSetName", "default");
         NewsSet set = setCreationService.getNewsSet(setName, request);
-        Set<NewsConfiguration> configurations = set.getNewsConfigurations();
+        final List<NewsConfiguration> configurations = AbstractNewsController.filterNonWhitelistedPredefinedConfigurations(request, set.getNewsConfigurations());
 
         // divide the configurations into user-defined and pre-defined
         // configurations for display
