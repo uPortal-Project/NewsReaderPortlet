@@ -18,13 +18,14 @@
  */
 package org.jasig.portlet.newsreader.processor;
 
-import com.sun.syndication.feed.synd.SyndEntry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
 import org.jasig.portlet.newsreader.model.RemoteHttpFullStory;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
+
+import com.rometools.rome.feed.synd.SyndEntry;
 
 /**
  * Strategy implementation derived from {@link RomeNewsProcessorImpl} with support for full story.
