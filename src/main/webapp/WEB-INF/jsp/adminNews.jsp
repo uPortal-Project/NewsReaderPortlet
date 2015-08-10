@@ -20,49 +20,58 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
-<style type="text/css">
-	table.edit-news { width: 100%; }
-	table.edit-news td { font-size: 1.1em; }
-	table.edit-news td.instruction { color: #666; font-size: 1em; text-align: center; vertical-align: bottom; }
-</style>
-
-<portlet:actionURL var="postUrl"/>
-<table class="edit-news">
-	<tr>
-		<td><h3><spring:message code="administration.preconf"/></h3></td>
-		<td class="instruction"><spring:message code="edit.news.edit"/></td>
-		<td class="instruction"><spring:message code="edit.news.delete"/></td>
-	</tr>
+<div class="container-fluid newsreader-container">
+	<div class="row newsreader-portlet-toolbar">
+		<div class="col-md-12 no-col-padding">
+			<div class="nav-links">
+				<a href="<portlet:renderURL portletMode="view"/>"><i class="fa fa-arrow-left"></i> <spring:message code="back.list"/>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th><spring:message code="administration.preconf"/></th>
+						<th class="text-center"><spring:message code="edit.news.edit"/></th>
+						<th class="text-center"><spring:message code="edit.news.delete"/></th>
+					</tr>
+				</thead>
+				<tbody>
 	<c:forEach items="${ model.feeds }" var="feed">
     	<tr>
-    		<td>${ feed.name }</td>
-    		<td class="instruction">
-    			<a href="<portlet:renderURL><portlet:param name="action" value="editNewsDefinition"/>
-    					<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
-    					title="<spring:message code="edit.news.edit.title"/>">
-					<img alt="<spring:message code="edit.news.edit.alt"/>" src="<c:url value="/images/pencil.png"/>"/>
-				</a>
-    		</td>
-    		<td class="instruction">
+							<td class="col-md-10">${ feed.name }</td>
+							<td class="col-md-1 text-center">
+								<a href="<portlet:renderURL>
+									<portlet:param name="action" value="editNewsDefinition"/>
+									<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
+										title="<spring:message code="edit.news.edit.title"/>" class="text-center">
+									<i class="fa fa-lg fa-edit"></i>
+							</a>
+							</td>
+							<td class="col-md-1 text-center">
     			<a href="<portlet:actionURL><portlet:param name="action" value="deletePredefinedFeed"/>
     					<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
     					title="<spring:message code="edit.news.delete.title"/>">
-    				<img alt="<spring:message code="edit.news.delete.alt"/>" src="<c:url value="/images/rss_delete.png"/>"/>
+										<i class="fa fa-lg fa-trash-o"></i>
     			</a>
     		</td>
     	</tr>
 	</c:forEach>
-</table>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<hr />
+	<div class="row">
+		<div class="col-md-12">
+			<a href="<portlet:renderURL><portlet:param name="action" value="editNewsDefinition"/></portlet:renderURL>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <spring:message code="edit.news.add"/>
+			</a>
+		</div>
+	</div>
+</div>
 
-<p>
-	<a href="<portlet:renderURL><portlet:param name="action" value="editNewsDefinition"/></portlet:renderURL>">
-		<img src="<c:url value="/images/rss_add.png"/>" style="vertical-align: middle"/> <spring:message code="edit.news.add"/>
-	</a>
-</p>
-
-<br />
-<hr />
-<p>
-	<a style="text-decoration:none;" href="<portlet:renderURL portletMode="view"/>"><img src="<c:url value="/images/arrow_left.png"/>" style="vertical-align:middle;"> <spring:message code="back.list"/></a>
-</p>

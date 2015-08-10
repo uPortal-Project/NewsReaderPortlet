@@ -20,29 +20,11 @@
 --%>
 
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
+
 <c:set var="n"><portlet:namespace/></c:set>
 
 <style>
-    .org-jasig-portlet-newsreader .news-stories {
-        max-height: 20em;
-        overflow: auto;
-    }
-    .org-jasig-portlet-newsreader ul.news-stories li {
-        padding-bottom:0.5em;
-        list-style-image:url('<rs:resourceURL value="/rs/famfamfam/silk/1.3/bullet_feed.png"/>');
-    }
-    .org-jasig-portlet-newsreader .ui-tooltip {
-        padding:8px;
-        position:absolute;
-        z-index:9999;
-        -o-box-shadow: 0 0 5px #aaa;
-        -moz-box-shadow: 0 0 5px #aaa;
-        -webkit-box-shadow: 0 0 5px #aaa;
-        box-shadow: 0 0 5px #aaa;
-        max-width: 400px;
-        border-width:2px;
-        background-image: none;
-    }
     #${n} .loading {
         width:100%;
         min-height: 20px;
@@ -56,10 +38,25 @@
 </style>
 <portlet:resourceURL var="feedUrl"/>
 
-<div class="org-jasig-portlet-newsreader">
+<div id="${n}" class="container-fluid newsreader-container">
+    <div class="row newsreader-portlet-toolbar">
+        <div class="col-md-12 no-col-padding">
+            <div class="nav-links">
+                <c:if test="${supportsHelp}">
+                    <a href="<portlet:renderURL portletMode='help'/>"><i class="fa fa-info-circle"></i> <spring:message code="help" /></a>
+                </c:if>
+                <c:if test="${supportsEdit && !isGuest}">
+                    &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><i class="fa fa-edit"></i> <spring:message code="edit.news.feed" /></a>
+                </c:if>
+                <c:if test="${isAdmin}">
+                    &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><i class="fa fa-cog"></i> <spring:message code="administration" /></a>
+                </c:if>
+            </div>
+        </div>
+    </div>
 
-    <div id="${n}">
-        <div class="news-reader-feed-list portlet ptl-newsreader view-news">
+    <div class="row">
+        <div class="news-reader-feed-list newsreader-content view-news col-md-12">
             <c:choose>
                 <c:when test="${ feedView == 'select' }">
                     <select class="news-feeds-container"></select>
@@ -70,19 +67,6 @@
             </c:choose>
         </div>
     </div>
-
-    <br/>
-    <p>
-        <c:if test="${supportsHelp}">
-            <a href="<portlet:renderURL portletMode='help'/>"><spring:message code="help" /></a>
-        </c:if>
-        <c:if test="${supportsEdit && !isGuest}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode='edit'/>"><spring:message code="edit.news.feed" /></a>
-        </c:if>
-        <c:if test="${isAdmin}">
-            &nbsp;|&nbsp;<a href="<portlet:renderURL portletMode="edit"><portlet:param name="action" value="administration"/></portlet:renderURL>"><spring:message code="administration" /></a>
-        </c:if>
-    </p>
 </div>
 
 <script type="text/template" id="${n}feed-list-template">
@@ -195,8 +179,8 @@
         newsView = $.extend(upnews.NewsView, {
             newsService: new upnews.newsService("${feedUrl}"),
             onSuccessfulSetup: function () {
-                 $('#${n} .news-stories').scroll();
-                if (${ feedView  == 'select' }) {
+                $('#${n} .news-stories').scroll();
+                if (${feedView  eq 'select'}) {
                     // set the current news feed to selected in the select menu
                     $("#${n} option").removeAttr("selected");
                     $("#${n} option[value=" + newsView.newsService.getActiveFeed() + "]").attr("selected", "selected");
@@ -229,14 +213,14 @@
                 loader: function(id) {
                     var view = this;
                     var deferred = $.Deferred();
-                    
+
                     var loadingDiv = $("<div class='loading'></div>");
                     view.$el.append(loadingDiv);
-                    
+
                     newsView.newsService.getFeed(id, view.page).done(function(feed) {
                         loadingDiv.remove();
                         if (feed.entries.length > 0) {
-                            $('.news-stories',view.$el).append(newsStoryTemplate(feed.entries));
+                            $('.news-stories', view.$el).append(newsStoryTemplate(feed.entries));
                             deferred.resolve({page: view.page, success: true});
                         } else {
                             deferred.resolve({page: view.page, success: false});
@@ -253,9 +237,9 @@
             namespace: "${n}"
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $(newsView.feedListView).bind("feedSelected", function (event, id) {
+            $(newsView.feedListView).bind("feedSelected", function(event, id) {
                 if (newsView.newsService.getActiveFeed() !== id) {
                     newsView.getFeed(id);
                 }

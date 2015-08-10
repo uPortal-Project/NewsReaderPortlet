@@ -46,9 +46,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
     /**
      * Default constructor.
      */
-    public NewsDefinition() {
-        super();
-    }
+    public NewsDefinition() {}
 
     public NewsDefinition(Long id, String className, String name) {
         this.id = id;
@@ -112,6 +110,10 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isPredefined() {
+        return this instanceof PredefinedNewsDefinition;
     }
 
     /**

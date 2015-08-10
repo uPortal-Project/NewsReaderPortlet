@@ -45,7 +45,7 @@ import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.dao.NewsStore;
-import org.jasig.portlet.newsreader.service.IViewResolver;
+import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -85,17 +85,10 @@ public class EditNewsPreferencesController {
     }
 
     private NewsSetResolvingService setCreationService;
-    
+
     @Autowired(required = true)
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
         this.setCreationService = setCreationService;
-    }
-    
-    private IViewResolver viewResolver;
-    
-    @Autowired(required = true)
-    public void setViewResolver(IViewResolver viewResolver) {
-        this.viewResolver = viewResolver;
     }
 
     @RenderMapping
@@ -107,22 +100,22 @@ public class EditNewsPreferencesController {
         PortletSession session = request.getPortletSession();
         String setName = request.getPreferences().getValue("newsSetName", "default");
         NewsSet set = setCreationService.getNewsSet(setName, request);
-        Set<NewsConfiguration> configurations = set.getNewsConfigurations();
-        
+        final List<NewsConfiguration> configurations = AbstractNewsController.filterNonWhitelistedPredefinedConfigurations(request, set.getNewsConfigurations());
+
         // divide the configurations into user-defined and pre-defined
         // configurations for display
         List<UserDefinedNewsConfiguration> myNewsConfigurations = new ArrayList<UserDefinedNewsConfiguration>();
         List<PredefinedNewsConfiguration> predefinedNewsConfigurations = new ArrayList<PredefinedNewsConfiguration>();
         for (NewsConfiguration configuration : configurations) {
-        	if (configuration instanceof UserDefinedNewsConfiguration) {
-        		myNewsConfigurations.add((UserDefinedNewsConfiguration) configuration);
-        	} else if (configuration instanceof PredefinedNewsConfiguration) {
-        		predefinedNewsConfigurations.add((PredefinedNewsConfiguration) configuration);
-        	}
+            if (configuration instanceof UserDefinedNewsConfiguration) {
+                myNewsConfigurations.add((UserDefinedNewsConfiguration) configuration);
+            } else if (configuration instanceof PredefinedNewsConfiguration) {
+                predefinedNewsConfigurations.add((PredefinedNewsConfiguration) configuration);
+            }
         }
         Collections.sort(myNewsConfigurations);
         Collections.sort(predefinedNewsConfigurations);
-        
+
         model.put("myNewsConfigurations", myNewsConfigurations);
         model.put("predefinedNewsConfigurations", predefinedNewsConfigurations);
 
@@ -138,8 +131,7 @@ public class EditNewsPreferencesController {
         model.put("predefinedEditActions", predefinedEditActions);
 
         // return the edit view
-        String viewName = viewResolver.getPreferencesView(request);
-        return new ModelAndView(viewName, "model", model);
+        return new ModelAndView("editNews", "model", model);
     }
 
     @ActionMapping
@@ -184,11 +176,11 @@ public class EditNewsPreferencesController {
             ResourceResponse response) throws IOException {
 
         Map<String, ?> model;
-        
+
         try {
             String prefName = request.getParameter("prefName");
             String prefValue = request.getParameter("prefValue");
-            
+
             PortletPreferences prefs = request.getPreferences();
             prefs.setValue(prefName, prefValue);
             prefs.store();

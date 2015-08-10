@@ -31,7 +31,7 @@
     <!-- EHCache Configuration -->
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
             p:configLocation="classpath:ehcache.xml"/>
-    
+
     <bean id="newsCache" 
             class="org.springframework.cache.ehcache.EhCacheFactoryBean"
             p:cacheManager-ref="cacheManager" p:cacheName="newsCache"/>
@@ -47,10 +47,10 @@
             </list>
         </property>
     </bean>
-    
+
     <util:list id="initializationServices">
     </util:list>
-    
+
     <util:list id="imageTypes">
         <value>image/jpeg</value>
         <value>image/gif</value>
@@ -69,7 +69,7 @@
         <entry key="antisamy-manchester" value="classpath:/antisamy/antisamy-manchester.xml"/>
         <entry key="antisamy-anythinggoes" value="classpath:/antisamy/antisamy-anythinggoes-1.1.1.xml"/>
     </util:map>
-    
+
     <!-- NEWS ADAPTER REGISTRATIONS -->
 
     <bean id="romeProcessor"
@@ -108,16 +108,14 @@
     <bean id="setCreationService" class="org.jasig.portlet.newsreader.service.SharedNewsSetServiceImpl">
         <property name="newsStore" ref="newsStore"/>
     </bean>
-    
+
     <!-- Message source for this context, loaded from localized "messages_xx" files -->
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
         p:basenames="messages" p:useCodeAsDefaultMessage="true"/>
-    
-    <bean class="org.jasig.portlet.newsreader.service.ThemeNameViewResolverImpl"/>
-    
+
     <bean class="org.springframework.web.servlet.view.XmlViewResolver"
             p:order="0" p:location="/WEB-INF/context/views.xml"/>
-            
+
     <!-- Default View Resolver -->
     <bean id="viewResolver"
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -127,7 +125,6 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    
     <!-- Abstract Default Exception Handler Bean -->
     <bean id="defaultExceptionHandlerTemplate"
         class="org.springframework.web.portlet.handler.SimpleMappingExceptionResolver"

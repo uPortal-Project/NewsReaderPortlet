@@ -22,7 +22,6 @@
 <resources xmlns="http://www.jasig.org/uportal/web/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.jasig.org/uportal/web/skin https://source.jasig.org/schemas/resource-server/skin-configuration/skin-configuration-v1.2.xsd">
 
-
     <js included="aggregated" resource="true">/rs/jquery/1.10.2/jquery-1.10.2.min.js</js>
     <js included="plain" resource="true">/rs/jquery/1.10.2/jquery-1.10.2.js</js>
 

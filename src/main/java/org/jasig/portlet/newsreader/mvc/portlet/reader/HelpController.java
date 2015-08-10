@@ -27,9 +27,9 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 @RequestMapping("HELP")
 public class HelpController {
 
-	@RenderMapping
+    @RenderMapping
     public String getHelpView() {
         return "help";
     }
-    
+
 }

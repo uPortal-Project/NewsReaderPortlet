@@ -1,0 +1,60 @@
+/* Theme overrides */
+
+.no-col-padding {
+    padding: 0;
+}
+
+.newsreader-portlet-toolbar {
+    border-bottom: 1px solid @color1-light;
+    margin: 0 0 10px 0;
+    height: 100%;
+    .nav-links {
+        height: 100%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        text-align: right;
+    }
+}
+
+.newsreader-content {
+    border: none;
+    background: @white;
+
+    .news-feeds-container {
+        border: none;
+        background: @white;
+    }
+
+    .news-stories-container {
+        border: 1px solid @grayE;
+
+        ul.news-stories {
+            max-height: 20em;
+            overflow: auto;
+
+            li {
+                padding-bottom:0.5em;
+                list-style-image:url('/NewsReaderPortlet/rs/famfamfam/silk/1.3/bullet_feed.png');
+            }
+        }
+    }
+}
+
+.ui-tooltip {
+    padding:8px;
+    position:absolute;
+    z-index:9999;
+    -o-box-shadow: 0 0 5px #aaa;
+    -moz-box-shadow: 0 0 5px #aaa;
+    -webkit-box-shadow: 0 0 5px #aaa;
+    box-shadow: 0 0 5px #aaa;
+    max-width: 400px;
+    border-width:2px;
+    background-image: none;
+}
+
+// Removing jQueryUI Styles
+.ui-corner-all {
+    .rounded(0);
+}
+

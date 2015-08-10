@@ -22,10 +22,10 @@
 
 
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd
-	                    http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
-	version="2.0">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd
+                        http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+    version="2.0">
 
     <portlet>
         <portlet-name>news</portlet-name>
@@ -56,6 +56,12 @@
                 <name>feedView</name>
                 <value>summaries</value>
             </preference>
+            <!-- Single-value preference that governs whether this
+                 portlet-definition allows users to access EDIT mode. -->
+            <preference>
+                <name>allowEdit</name>
+                <value>true</value>
+            </preference>
             <preference>
                 <name>usePortalJsLibs</name>
                 <value>false</value>
@@ -63,6 +69,12 @@
             <preference>
                 <name>portalJsNamespace</name>
                 <value>up</value>
+            </preference>
+            <!-- If specified, this multi-valued portlet preference allows
+                 administrators to restrict which PredefinedNewsDefinitions
+                 appear in a particular portlet definition -->
+            <preference>
+                <name>Whitelist.regexValues</name>
             </preference>
         </portlet-preferences>
         <security-role-ref>
@@ -83,53 +95,6 @@
         </security-role-ref>
     </portlet>
 
-    <portlet>
-        <portlet-name>single-feed-news</portlet-name>
-        <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
-        <init-param>
-            <name>contextConfigLocation</name>
-            <value>/WEB-INF/context/portlet/single-feed.xml</value>
-        </init-param>
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>view</portlet-mode>
-           <portlet-mode>edit</portlet-mode>
-         </supports>
-        <portlet-info>
-            <title>RSS Feed</title>
-        </portlet-info>
-        <portlet-preferences>
-            <preference>
-                <name>summaryView</name>
-                <value>titleAndAbstract</value>
-            </preference>
-            <preference>
-                <name>maxStories</name>
-                <value>10</value>
-            </preference>
-            <preference>
-                <name>newWindow</name>
-                <value>false</value>
-            </preference>
-            <preference>
-                <name>showTitle</name>
-                <value>true</value>
-            </preference>
-            <preference>
-                <name>className</name>
-                <value>org.jasig.portlet.newsreader.adapter.RomeAdapter</value>
-            </preference>
-            <preference>
-                <name>usePortalJsLibs</name>
-                <value>false</value>
-            </preference>
-            <preference>
-                <name>portalJsNamespace</name>
-                <value>up</value>
-            </preference>
-        </portlet-preferences>
-    </portlet>
-    
     <user-attribute>
         <name>username</name>
     </user-attribute>

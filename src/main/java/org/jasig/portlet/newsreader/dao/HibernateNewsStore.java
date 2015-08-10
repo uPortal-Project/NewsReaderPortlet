@@ -32,7 +32,6 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
-import org.jasig.portlet.newsreader.UserDefinedNewsDefinition;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 
