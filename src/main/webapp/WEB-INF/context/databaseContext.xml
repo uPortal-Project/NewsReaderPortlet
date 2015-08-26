@@ -64,7 +64,7 @@
           p:configLocation="classpath:hibernate.cfg.xml"/>
 
     <bean id="dataSource"
-          class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+          class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
           p:driverClassName="${hibernate.connection.driver_class}"
           p:url="${hibernate.connection.url}"
           p:username="${hibernate.connection.username}"
