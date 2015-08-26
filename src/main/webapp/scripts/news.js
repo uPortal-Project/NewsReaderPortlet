@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var upnews = upnews || {};
+var upnews = {};
 
-if (!upnews.init) {
+(function() {
 
     upnews.init = function($, Handlebars) {
 
@@ -122,7 +122,7 @@ if (!upnews.init) {
                                 var detail = $.extend({}, view.feedDetailView, {$el: $('<div/>')});
                                 detail.$el.attr('id', view.namespace + 'feed' + feed.id)
                                         .addClass('news-stories-container');
-                                $('.view-news').append(detail.$el);
+                                $('#' + view.namespace + ' .view-news').append(detail.$el);
                                 view.storyContainers['feed' + feed.id] = detail;
                             });
                             // render the feed list view
@@ -170,10 +170,10 @@ if (!upnews.init) {
                 $('.news-stories', this.$el).infiniteScroll({
                     autoLoad: true,
                     contentLoad: function() {
-                            return view.loader(feed.id).done(function(result) {
-                                if (result.success)
-                                    view.page = result.page+1;
-                            });
+                        return view.loader(feed.id).done(function(result) {
+                            if (result.success)
+                                view.page = result.page+1;
+                        });
                     }
                 });
 
@@ -195,4 +195,4 @@ if (!upnews.init) {
 
     };
 
-}
+}());
