@@ -31,6 +31,7 @@ import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
+import org.jasig.portlet.newsreader.service.NewsConfigurationWhitelist;
 import org.jasig.portlet.newsreader.service.Whitelist;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -54,42 +55,15 @@ public class AbstractNewsController {
 
     public static final String ALLOW_EDIT_PREFERENCE = "allowEdit";
 
-    private static final Whitelist<PredefinedNewsConfiguration> WHITELIST = new Whitelist<PredefinedNewsConfiguration>();
-    public static final Whitelist.Callback<PredefinedNewsConfiguration> WHITELIST_CALLBACK =
-            new Whitelist.Callback<PredefinedNewsConfiguration>() {
-                @Override
-                public String getFname(PredefinedNewsConfiguration item) {
-                    final NewsDefinition def = item.getNewsDefinition();
-                    if (def instanceof PredefinedNewsDefinition) {
-                        PredefinedNewsDefinition predef = (PredefinedNewsDefinition) def;
-                        return predef.getFname();
-                    } else {
-                        String msg = "PredefinedNewsConfiguration based on "
-                                + "non-predefined NewsDefinition:  " + item;
-                        throw new RuntimeException(msg);
-                    }
-                }
-    };
+    private static final NewsConfigurationWhitelist WHITELIST = new NewsConfigurationWhitelist();
 
     /**
      * Utility function for filtering a collection of NewsConfiguration objects
      * based on the Whitelist for this portlet-definition.
      */
-    public static List<NewsConfiguration> filterNonWhitelistedPredefinedConfigurations(PortletRequest req, Collection<NewsConfiguration> items) {
-        List<NewsConfiguration> rslt = new ArrayList<NewsConfiguration>();
-        for (NewsConfiguration config : items) {
-            if (config.getNewsDefinition().isPredefined()) {
-                // Apply whitelist filtering on the pre-defined variety
-                PredefinedNewsConfiguration predef = (PredefinedNewsConfiguration) config;
-                List<PredefinedNewsConfiguration> filtered = WHITELIST.filter(req, Collections.singleton(predef), AbstractNewsController.WHITELIST_CALLBACK);
-                if (filtered.size() == 0) {
-                    // Item was excluded...
-                    continue;
-                }
-            }
-            rslt.add(config);
-        }
-        return rslt;
+    public static List<NewsConfiguration> filterNonWhitelistedConfigurations(PortletRequest req, Collection<NewsConfiguration> items) {
+    	List<NewsConfiguration> filtered = WHITELIST.filter(req, items);
+    	return filtered;
     }
 
     @ModelAttribute("isAdmin")

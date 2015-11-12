@@ -74,6 +74,9 @@
             <preference>
                 <name>Whitelist.regexValues</name>
             </preference>
+            <preference>
+                <name>Whitelist.userFeeds</name>
+            </preference>
         </portlet-preferences>
         <security-role-ref>
             <role-name>everyone</role-name>
