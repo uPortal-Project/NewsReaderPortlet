@@ -54,6 +54,7 @@ public class AbstractNewsController {
     public static final String NEWS_ADMIN_ROLE = "newsAdmin";
 
     public static final String ALLOW_EDIT_PREFERENCE = "allowEdit";
+    public static final String ALLOW_HELP_PREFERENCE = "allowHelp";
 
     private static final NewsConfigurationWhitelist WHITELIST = new NewsConfigurationWhitelist();
 
@@ -85,7 +86,12 @@ public class AbstractNewsController {
 
     @ModelAttribute("supportsHelp")
     public boolean supportsHelp(PortletRequest req) {
-        return req.isPortletModeAllowed(PortletMode.HELP);
+        // workaround for UP-3267
+        //return req.isPortletModeAllowed(PortletMode.HELP);
+    	
+    	final PortletPreferences prefs = req.getPreferences();
+        final String allowHelp = prefs.getValue(ALLOW_HELP_PREFERENCE, "true");
+        return Boolean.parseBoolean(allowHelp);
     }
 
 }

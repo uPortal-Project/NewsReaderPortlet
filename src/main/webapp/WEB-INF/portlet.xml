@@ -61,6 +61,10 @@
                 <value>true</value>
             </preference>
             <preference>
+                <name>allowHelp</name>
+                <value>true</value>
+            </preference>
+            <preference>
                 <name>usePortalJsLibs</name>
                 <value>false</value>
             </preference>
