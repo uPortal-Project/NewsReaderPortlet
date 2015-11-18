@@ -96,13 +96,13 @@
 										<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="hide"/>
 											<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
 										<a href="${ displayURL }" title="<spring:message code="edit.news.hide.title"/>">
-										<i class="fa fa-lg fa-eye-slash"></i>
+										<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</c:when>
 									<c:otherwise>
 										<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="show"/><portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-										<a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
-										<i class="fa fa-lg fa-eye"></i>
+										<a class="not-active" href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
+										<i class="fa fa-lg fa-eye-slash"></i>
 										</a>
 									</c:otherwise>
 								</c:choose>
@@ -143,14 +143,14 @@
 										<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="hide"/>
 											<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
 										<a href="${ displayURL }" title="<spring:message code="edit.news.hide.title"/>">
-										<i class="fa fa-lg fa-eye-slash"></i>
+										<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</c:when>
 									<c:otherwise>
 										<portlet:actionURL var="displayURL"><portlet:param name="actionCode" value="show"/>
 											<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>
-										<a href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
-										<i class="fa fa-lg fa-eye"></i>
+										<a class="not-active" href="${ displayURL }" title="<spring:message code="edit.news.show.title"/>">
+										<i class="fa fa-lg fa-eye-slash"></i>
 										</a>
 									</c:otherwise>
 								</c:choose>
