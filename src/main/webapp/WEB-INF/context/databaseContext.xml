@@ -63,11 +63,24 @@
           p:dataSource-ref="dataSource"
           p:configLocation="classpath:hibernate.cfg.xml"/>
 
+    <!-- MaxWait probably not needed since uPortal will interrupt thread if it runs too long, but IMHO always good to
+         specify a max to avoid losing resources.  -->
     <bean id="dataSource"
           class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
           p:driverClassName="${hibernate.connection.driver_class}"
           p:url="${hibernate.connection.url}"
           p:username="${hibernate.connection.username}"
-          p:password="${hibernate.connection.password}"/>
+          p:password="${hibernate.connection.password}"
+          p:validationQuery="${hibernate.connection.validationQuery}"
+          p:testOnBorrow="true"
+          p:testWhileIdle="true"
+          p:minEvictableIdleTimeMillis="60000"
+          p:timeBetweenEvictionRunsMillis="10000"
+          p:maxWait="60000"
+          p:removeAbandoned="true"
+          p:removeAbandonedTimeout="120"
+          p:logAbandoned="true"
+          p:numTestsPerEvictionRun="5"
+    />
 
 </beans>
