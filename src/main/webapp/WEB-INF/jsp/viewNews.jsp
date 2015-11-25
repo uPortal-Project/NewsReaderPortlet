@@ -217,10 +217,14 @@
 
                     newsView.newsService.getFeed(id, view.page).done(function(feed) {
                         loadingDiv.remove();
-                        if (feed.entries.length > 0) {
+                        if (!feed) {
+                            $('.news-stories', view.$el).append("Error loading feed!");
+                            deferred.resolve({page: view.page, success: false});
+                        } else if (feed.entries.length > 0) {
                             $('.news-stories', view.$el).append(newsStoryTemplate(feed.entries));
                             deferred.resolve({page: view.page, success: true});
                         } else {
+                            $('.news-stories', view.$el).append("No stories for this feed");
                             deferred.resolve({page: view.page, success: false});
                         }
                     });

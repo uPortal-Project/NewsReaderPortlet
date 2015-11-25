@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+// 'upnews' is only used in viewNews.jsp
 var upnews = {};
 
 (function() {
@@ -60,9 +62,20 @@ var upnews = {};
             });
         };
 
+        /*
+         * News Service 'class' that takes a URL
+         * and maintains currentPage and activeFeed(Cached).
+         */
         upnews.newsService = function(url) {
 
             var promise = null, activeFeedCache = null, currentPage = 0;
+
+            /*
+             * Checks if the parameters match the current values.
+             * If not, then it refreshes them with an AJAX call.
+             *
+             * Intended to be called only by getFeeds() and getFeed().
+             */
             var getNewsData = function(activeFeed, page) {
                 if (promise == null || activeFeed != activeFeedCache || page != currentPage) {
                     var data = {};
@@ -82,6 +95,12 @@ var upnews = {};
                 return promise;
             };
 
+            /*
+             * Calls getNewsData() and returns 'feeds' from the JSON
+             * returned from the AJAX call.
+             *
+             * Active feed is set to parameter and page is set to default of 0.
+             */
             this.getFeeds = function(activeFeed) {
                 var deferred = $.Deferred();
                 getNewsData(activeFeed).done(function(data) {
@@ -90,6 +109,12 @@ var upnews = {};
                 return deferred.promise();
             };
 
+            /*
+             * Calls getNewsData() and returns 'feed' from the JSON
+             * returned from the AJAX call.
+             *
+             * Active feed and page are set to parameters.
+             */
             this.getFeed = function(feed, page) {
                 var deferred = $.Deferred();
                 getNewsData(feed, page).done(function(data) {
@@ -108,12 +133,25 @@ var upnews = {};
 
         };
 
+        /*
+         * "controller" for the view.
+         *
+         * Extended in viewNews.jsp.
+         */
         upnews.NewsView = {
             onload: function() {
             },
+
+            /*
+             * Called in document.ready() with initial feed
+             */
             setup: function(activeFeed) {
                 var view = this;
 
+                /*
+                 * Gets all feed IDs, creates divs for each,
+                 * sets up initial feed and calls render().
+                 */
                 return this.newsService.getFeeds(activeFeed)
                         .done(function(feeds) {
                             // add empty detail view for each feed
@@ -131,14 +169,30 @@ var upnews = {};
                         })
                         .done(function() {
                             view.getFeed(view.newsService.getActiveFeed(), 0).done(function() {
+                                // if function defined in JSP, call post setup function
+                                // Note: this check is not necessary since function is defined in viewNews.jsp
                                 if (view.onSuccessfulSetup) view.onSuccessfulSetup();
                             });
                         });
             },
+
+            /*
+             * Checks if div has been populated. If not, it calls NewsService.getFeed().
+             * Sets up the new feed in the view.
+             */
             getFeed: function(id, page) {
                 var view = this;
                 if (!view.storyContainers['feed' + id].populated) {
                     return view.newsService.getFeed(id, page).done(function(feed) {
+                        if (!feed) {
+                            console.log("No feed object: " + id);
+                            feed = {};
+                            feed.title = "Error";
+                            feed.id = view.newsService.getActiveFeed();
+                            var activeStory = view.storyContainers['feed' + feed.id];
+                            activeStory.$el.html("<div>Error loading feed</div>");
+                            return;
+                        }
                         feed.id = view.newsService.getActiveFeed();
                         // render the story list view
                         var activeStory = view.storyContainers['feed' + feed.id];
@@ -146,6 +200,7 @@ var upnews = {};
                         activeStory.render(feed);
                     })
                     .done(function() {
+                        // if function defined in JSP, call it (it is not defined in viewNews.jsp)
                         if (view.onSuccessfulRetrieval) {
                             view.onSuccessfulRetrieval();
                         }
@@ -155,6 +210,11 @@ var upnews = {};
             }
         };
 
+        /*
+         * Detail view of feed -- list of stories.
+         *
+         * Extended in viewNews.jsp.
+         */
         upnews.NewsFeedDetailView = {
             $el: $('<div/>'),
             postRender: function() {
@@ -183,6 +243,9 @@ var upnews = {};
             }
         };
 
+        /*
+         * News feeds list view (tabs or dropdown) that is extended in viewNews.jsp.
+         */
         upnews.NewsFeedListView = {
             postRender: function() {
             },
