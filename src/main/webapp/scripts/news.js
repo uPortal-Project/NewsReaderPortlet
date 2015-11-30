@@ -68,7 +68,7 @@ var upnews = {};
          */
         upnews.newsService = function(url) {
 
-            var promise = null, activeFeedCache = null, currentPage = 0;
+            var promise = null, activeFeedCache = null, currentPage = 0, message = "";
 
             /*
              * Checks if the parameters match the current values.
@@ -90,6 +90,7 @@ var upnews = {};
                     }).done(function(data) {
                         activeFeedCache = data.activeFeed;
                         currentPage = data.page;
+                        message = data.message ? data.message : "";
                     });
                 }
                 return promise;
@@ -129,6 +130,10 @@ var upnews = {};
 
             this.getActiveFeed = function() {
                 return activeFeedCache;
+            };
+
+            this.getErrorMessage = function() {
+                return message;
             };
 
         };
@@ -190,7 +195,7 @@ var upnews = {};
                             feed.title = "Error";
                             feed.id = view.newsService.getActiveFeed();
                             var activeStory = view.storyContainers['feed' + feed.id];
-                            activeStory.$el.html("<div>Error loading feed</div>");
+                            activeStory.$el.html("<div>" + view.newsService.getErrorMessage() + "</div>");
                             return;
                         }
                         feed.id = view.newsService.getActiveFeed();
