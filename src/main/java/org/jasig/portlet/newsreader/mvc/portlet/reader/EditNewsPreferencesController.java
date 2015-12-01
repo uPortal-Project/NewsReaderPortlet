@@ -99,7 +99,7 @@ public class EditNewsPreferencesController {
         PortletSession session = request.getPortletSession();
         String setName = request.getPreferences().getValue("newsSetName", "default");
         NewsSet set = setCreationService.getNewsSet(setName, request);
-        final List<NewsConfiguration> configurations = AbstractNewsController.filterNonWhitelistedPredefinedConfigurations(request, set.getNewsConfigurations());
+        final List<NewsConfiguration> configurations = AbstractNewsController.filterNonWhitelistedConfigurations(request, set.getNewsConfigurations());
 
         // divide the configurations into user-defined and pre-defined
         // configurations for display
