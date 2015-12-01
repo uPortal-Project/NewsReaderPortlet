@@ -218,7 +218,7 @@
                     newsView.newsService.getFeed(id, view.page).done(function(feed) {
                         loadingDiv.remove();
                         if (!feed) {
-                            $('.news-stories', view.$el).append("Error loading feed!");
+                            $('.news-stories', view.$el).append(newsView.newsService.getErrorMessage());
                             deferred.resolve({page: view.page, success: false});
                         } else if (feed.entries.length > 0) {
                             $('.news-stories', view.$el).append(newsStoryTemplate(feed.entries));
