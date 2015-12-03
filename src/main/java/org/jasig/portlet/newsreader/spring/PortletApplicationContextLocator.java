@@ -37,23 +37,23 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 /**
  * Provides standard access to the portal's {@link ApplicationContext}. If running in a web application a
  * {@link WebApplicationContext} is available.
- * 
- * {@link #getApplicationContext()} should be used by most uPortal code that needs access to the portal's
+ *
+ * {@link #getApplicationContext(String)} should be used by most uPortal code that needs access to the portal's
  * {@link ApplicationContext}. It ensures that a single {@link ApplicationContext} is used portal-wide both
  * when the portal is running as a web-application and when tools are run from the command line.
- * 
+ *
  * For legacy portal code that is not yet Spring managed and does not have access to the {@link ServletContext} this
  * class provides similar functionality to  {@link WebApplicationContextUtils} via the
  * {@link #getWebApplicationContext()} and {@link #getRequiredWebApplicationContext()}. These methods are deprecated as
  * any code that requires a {@link WebApplicationContext} should either be refactored as a Spring managed bean or have
  * access to the {@link ServletContext}
- *  
+ *
  * @author Eric Dalquist
  * @version $Revision$
  */
 public class PortletApplicationContextLocator implements ServletContextListener {
     private static Log LOGGER = LogFactory.getLog(PortletApplicationContextLocator.class);
-    
+
     private static final SingletonDoubleCheckedCreator<ConfigurableApplicationContext> applicationContextCreator = new PortletApplicationContextCreator();
     private static Throwable directCreatorThrowable;
     private static ServletContext servletContext;
@@ -71,7 +71,7 @@ public class PortletApplicationContextLocator implements ServletContextListener 
     public void contextDestroyed(ServletContextEvent sce) {
         servletContext = null;
     }
-    
+
     /**
      * @return <code>true</code> if a WebApplicationContext is available, <code>false</code> if only an ApplicationContext is available
      * @deprecated Only needed for using {@link #getRequiredWebApplicationContext()} or {@link #getWebApplicationContext()}.
@@ -80,7 +80,7 @@ public class PortletApplicationContextLocator implements ServletContextListener 
     public static boolean isRunningInWebApplication() {
         return servletContext != null;
     }
-    
+
     /**
      * @return The WebApplicationContext for the portal
      * @throws IllegalStateException if no ServletContext is available to retrieve a WebApplicationContext for or if the root WebApplicationContext could not be found
@@ -92,7 +92,7 @@ public class PortletApplicationContextLocator implements ServletContextListener 
         if (context == null) {
             throw new IllegalStateException("No ServletContext is available to load a WebApplicationContext for. Is this ServletContextListener not configured or has the ServletContext been destroyed?");
         }
-        
+
         return WebApplicationContextUtils.getRequiredWebApplicationContext(context);
     }
 
@@ -106,7 +106,7 @@ public class PortletApplicationContextLocator implements ServletContextListener 
         if (context == null) {
             return null;
         }
-        
+
         return WebApplicationContextUtils.getWebApplicationContext(context);
     }
 
@@ -115,15 +115,15 @@ public class PortletApplicationContextLocator implements ServletContextListener 
      * not a singleton {@link ApplicationContext} is created if needed and returned. Unless a {@link WebApplicationContext}
      * is specifically needed this method should be used as it will work both when running in and out
      * of a web application
-     * 
-     * @return The {@link ApplicationContext} for the portal. 
+     *
+     * @return The {@link ApplicationContext} for the portal.
      */
     public static ApplicationContext getApplicationContext(String importExportContextFile) {
         final ServletContext context = servletContext;
 
         if (context != null) {
             LOGGER.debug("Using WebApplicationContext");
-            
+
             if (applicationContextCreator.isCreated()) {
                 final IllegalStateException createException = new IllegalStateException("A portal managed ApplicationContext has already been created but now a ServletContext is available and a WebApplicationContext will be returned. " +
                         "This situation should be resolved by delaying calls to this class until after the web-application has completely initialized.");
@@ -138,15 +138,15 @@ public class PortletApplicationContextLocator implements ServletContextListener 
             }
             return webApplicationContext;
         }
-        
+
         return applicationContextCreator.get(importExportContextFile);
     }
-    
+
     /**
-     * If the ApplicationContext returned by {@link #getApplicationContext()} is 'portal managed' the shutdown hook
+     * If the ApplicationContext returned by {@link #getApplicationContext(String)} is 'portal managed' the shutdown hook
      * for the context is called, closing and cleaning up all spring managed resources.
      *
-     * If the ApplicationContext returned by {@link #getApplicationContext()} is actually a WebApplicationContext
+     * If the ApplicationContext returned by {@link #getApplicationContext(String)} is actually a WebApplicationContext
      * this method does nothing but log an error message.
      */
     public static void shutdown() {
@@ -159,22 +159,22 @@ public class PortletApplicationContextLocator implements ServletContextListener 
             LOGGER.error(createException, createException);
         }
     }
-    
+
     /**
      * Creator class that knows how to instantiate the lazily initialized portal application context if needed
      */
     private static class PortletApplicationContextCreator extends SingletonDoubleCheckedCreator<ConfigurableApplicationContext> {
-        
+
         @Override
         protected ConfigurableApplicationContext createSingleton(Object... args) {
             LOGGER.info("Creating new lazily initialized GenericApplicationContext for the portal");
 
             final long startTime = System.currentTimeMillis();
-            
+
             final GenericApplicationContext genericApplicationContext = new GenericApplicationContext();
             final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(genericApplicationContext);
             reader.setDocumentReaderClass(LazyInitByDefaultBeanDefinitionDocumentReader.class);
-            
+
             File file = new File(".");
             try {
                 URL context = file.toURI().toURL();

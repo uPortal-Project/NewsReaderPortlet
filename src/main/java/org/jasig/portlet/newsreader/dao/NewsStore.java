@@ -38,13 +38,13 @@ import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 public interface NewsStore {
 
 	public NewsSet getNewsSet(Long id);
-	
+
 	public NewsSet getNewsSet(String userId, String setName);
-	
+
 	public List<NewsSet> getNewsSetsForUser(String userId);
-	
+
 	public void storeNewsSet(NewsSet set);
-	
+
     /**
      * Save or update a news definition.
      *
@@ -98,7 +98,7 @@ public interface NewsStore {
      * Retrieve a list of user-defined news configurations for
      * the specified portlet.
      *
-     * @param subscribeId unique ID for this portlet subscription
+     * @param setId       unique ID for this portlet subscription
      * @param visibleOnly <code>true</code> to retrieve only non-hidden news
      *                    configurations, <code>false</code> otherwise
      * @return
@@ -110,7 +110,7 @@ public interface NewsStore {
      * Retrieve a list of pre-defined news configurations for
      * the specified portlet.
      *
-     * @param subscribeId unique ID for this portlet subscription
+     * @param setId       unique ID for this portlet subscription
      * @param visibleOnly <code>true</code> to retrieve only non-hidden news
      *                    configurations, <code>false</code> otherwise
      * @return
@@ -142,7 +142,7 @@ public interface NewsStore {
     /**
      * Initialize news subscriptions for a given portlet subscription and role.
      *
-     * @param subscribeId unique ID for this portlet subscription
+     * @param set         news collection to initialize
      * @param roles       user roles to use to find default newss
      */
     public void initNews(NewsSet set, Set<String> roles);
@@ -151,13 +151,13 @@ public interface NewsStore {
      * Retrieve a list of hidden predefined newss for this portlet subscription
      * and role.
      *
-     * @param subscribeId unique ID for this portlet subscription
+     * @param setId       unique ID for this portlet subscription
      * @param role        user role to use to find default newss
      * @return
      */
     public List<PredefinedNewsDefinition> getHiddenPredefinedNewsDefinitions(
 			Long setId, Set<String> role);
-	
+
 	/**
      * Get a list of all user roles currently in use.
      *

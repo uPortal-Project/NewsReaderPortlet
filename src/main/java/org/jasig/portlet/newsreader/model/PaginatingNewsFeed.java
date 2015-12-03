@@ -24,7 +24,7 @@ import org.springframework.beans.support.PagedListHolder;
 
 /**
  *
- * @author Chris White <christopher.white@manchester.ac.uk>
+ * @author Chris White (christopher.white@manchester.ac.uk)
  */
 public class PaginatingNewsFeed extends NewsFeed {
 
@@ -58,9 +58,9 @@ public class PaginatingNewsFeed extends NewsFeed {
 
     @Override
     public List<NewsFeedItem> getEntries() {
-        if (holder.getPage() < holder.getPageCount()) {  
+        if (holder.getPage() < holder.getPageCount()) {
             return holder.getPageList();
-        } 
+        }
         return Collections.emptyList();
     }
 }

@@ -33,7 +33,7 @@ import com.rometools.rome.feed.synd.SyndEntry;
  * Rather than set the {@code link} in the {@link NewsFeedItem}, a {@link RemoteHttpFullStory} is created
  * using the link as the URL.
  *
- * @author Benito J. Gonzalez <bgonzalez@unicon.net>
+ * @author Benito J. Gonzalez (bgonzalez@unicon.net)
  * @since 3.1.2
  */
 public class RomeNewsFullStoryProcessorImpl extends RomeNewsProcessorImpl {

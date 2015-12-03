@@ -26,24 +26,29 @@ import org.jasig.portlet.newsreader.model.NewsFeed;
  * @author Anthony Colebourne
  */
 public interface INewsAdapter {
-    
+
     /**
-     * Provides the fully-qualified name of the concrete INewsAdapter class, 
+     * Provides the fully-qualified name of the concrete INewsAdapter class,
      * which is used in creating a {@link NewsDefinition}.
      *
+     * @return concrete class name
      * @see org.jasig.portlet.newsreader.NewsDefinition
      */
     String getClassName();
-    
+
     /**
-     * Provides the key string for accessing the name of this adapter from the 
+     * Provides the key string for accessing the name of this adapter from the
      * messageBundle bean.
+     *
+     * @return key string for this adaptor
      */
     String getNameKey();
-    
+
     /**
-     * Provides the key string for accessing the description of this adapter 
+     * Provides the key string for accessing the description of this adapter
      * from the messageBundle bean.
+     *
+     * @return description for this adaptor
      */
     String getDescriptionKey();
 

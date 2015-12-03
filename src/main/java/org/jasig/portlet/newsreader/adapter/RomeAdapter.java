@@ -61,7 +61,7 @@ import com.rometools.rome.io.FeedException;;
 /**
  * RomeAdapter is a NewsAdapter for standard RSS and ATOM feeds available
  * online via http or https.
- * <p/>
+ * <p>
  * Note: This class can process and feed supported by ROME https://rome.dev.java.net/.
  *
  * @author Anthony Colebourne
@@ -89,7 +89,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
     public AbstractHttpClient getHttpClient() {
         return httpClient;
     }
-    
+
     public void setHttpClient(AbstractHttpClient httpClient) {
         this.httpClient = httpClient;
     }
@@ -226,7 +226,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
                     valueList.add(prefs.getValue(key, DEFAULT_ANTISAMY_POLICY));
                 }
                 return valueList.toArray(values);
-            } 
+            }
         } catch (IllegalStateException ex) {
             log.warn("Call to RomeAdapter.getPolicyPref that was not within a request", ex);
         }
@@ -325,11 +325,11 @@ public class RomeAdapter extends AbstractNewsAdapter {
         HttpGet get = null;
         PaginatingNewsFeed feed = null;
         InputStream in = null;
-        
+
         try {
 
             log.debug("Retrieving feed " + url);
-            
+
             get = new HttpGet(url);
             HttpResponse httpResponse = compressingClient.execute(get);
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -368,14 +368,14 @@ public class RomeAdapter extends AbstractNewsAdapter {
             if (in != null) {
                 IOUtils.closeQuietly(in);
             }
-            
+
             if (get != null) {
                 get.releaseConnection();
             }
         }
 
     }
-    
+
     /**
      * Get a cache key for this feed.
      *
