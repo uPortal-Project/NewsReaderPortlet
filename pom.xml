@@ -24,15 +24,14 @@
     <parent>
         <groupId>org.jasig.parent</groupId>
         <artifactId>jasig-parent</artifactId>
-        <version>39</version>
-        <relativePath />
+        <version>41</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>4.0.1-M2-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -530,8 +529,8 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <aggregate>true</aggregate>
                     <excludes>
@@ -556,7 +555,6 @@
                         <crn>XML_STYLE</crn>
                         <less>SLASHSTAR_STYLE</less>
                         <tag>DYNASCRIPT_STYLE</tag>
-                        <less>SLASHSTAR_STYLE</less>
                     </mapping>
                 </configuration>
             </plugin>
