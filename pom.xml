@@ -598,6 +598,56 @@
                 <!-- extensions must be set to true to pick up the custom phases -->
                 <extensions>true</extensions>
             </plugin>
+            <!-- NEWSPLT-105 Must run this before db-init hibernate3-maven-plugin to combine optional property files.
+                 I couldn't see how to pass multiple property files to the hibernate3-maven-plugin -->
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <id>combine-optional-properties-files</id>
+                        <phase>db-init</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                def env = System.getenv()
+                                def props = new Properties()
+                                new File("${project.basedir}/target/${project.build.finalName}/WEB-INF/classes/datasource.properties").withInputStream {
+                                    stream -> props.load(stream)
+                                }
+
+                                def readIfExists = {filename ->
+                                    def file = new File(filename)
+                                    if (file.exists()) {
+                                        file.withInputStream {
+                                            stream -> props.load(stream)
+                                        }
+                                    }
+                                }
+
+                                readIfExists("${env['CATALINA_HOME']}/portal/overrides.properties")
+                                readIfExists("${env['PORTAL_HOME']}/overrides.properties")
+                                readIfExists("${env['CATALINA_HOME']}/portal/NewsReaderPortlet_overrides.properties")
+                                readIfExists("${env['PORTAL_HOME']}/NewsReaderPortlet_overrides.properties")
+
+                                // store will backslash escape #, !, =, and :. Will that be a problem?
+                                props.store(new PrintStream("${project.basedir}/target/combined.properties"), "")
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>2.4.5</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
             <plugin>
                 <!--
                  | Invoke this plugin as follows to drop and recreate the Calendar database tables...
@@ -617,7 +667,7 @@
                 </executions>
                 <configuration>
                     <componentProperties>
-                        <propertyfile>target/${project.artifactId}-${project.version}/WEB-INF/classes/datasource.properties</propertyfile>
+                        <propertyfile>${project.basedir}/target/combined.properties</propertyfile>
                         <drop>true</drop>
                     </componentProperties>
                 </configuration>
