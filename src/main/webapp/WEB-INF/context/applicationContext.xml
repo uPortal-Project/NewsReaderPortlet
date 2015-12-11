@@ -35,45 +35,6 @@
             class="org.springframework.cache.ehcache.EhCacheFactoryBean"
             p:cacheManager-ref="cacheManager" p:cacheName="newsCache"/>
 
-    <!-- Properties configuration -->
-    <bean id="propertyConfigurer"
-        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-        lazy-init="false">
-        <property name="locations">
-            <list>
-                <value>classpath:datasource.properties</value>
-                <value>classpath:configuration.properties</value>
-                <!--
-                 |  The following files optionally allow deployers to set or override many uPortal
-                 |  configuration settings in a outside the control of the build/deploy cycle, SCM,
-                 |  and Tomcat.
-                 |
-                 |  Reasons for choosing that may include:
-                 |    - Desire to keep sensitive information out of your Git repository
-                 |    - Ability to change some common settings without a full build and deploy cycle
-                 |    - Building a WAR/EAR that is environment-independent.
-                 |
-                 |  Any property defined in the above files that is referenced in the Spring context
-                 |  may be overridden in one (or both) of these files.
-                 |
-                 |  The default location for overrides is ${CATALINA_HOME}/portal/overrides.properties;
-                 |  you can use a custom location by specifying PORTAL_HOME as a JVM startup argument
-                 |  or as an environment variable.
-                 |
-                 |  The first two files (overrides.properties) are intended to contain properties,
-                 |  such as database secrets, that are shared between uPortal and portlets.
-                 |  The latter two files (NotificationPortlet_overrides.properties) are for properties
-                 |  that are specific to this portlet.
-                 +-->
-                <value>file:${CATALINA_HOME}/portal/overrides.properties</value>
-                <value>file:${PORTAL_HOME}/overrides.properties</value>
-                <value>file:${CATALINA_HOME}/portal/NewsReaderPortlet_overrides.properties</value>
-                <value>file:${PORTAL_HOME}/NewsReaderPortlet_overrides.properties</value>
-            </list>
-        </property>
-        <property name="ignoreResourceNotFound" value="true" />
-    </bean>
-
     <util:list id="initializationServices">
     </util:list>
 
