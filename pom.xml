@@ -31,7 +31,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>4.0.1-SNAPSHOT</version>
+    <version>4.0.1-M3</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -64,7 +64,7 @@
         <connection>scm:git:git://github.com/Jasig/NewsReaderPortlet.git</connection>
         <developerConnection>scm:git:git@github.com:Jasig/NewsReaderPortlet.git</developerConnection>
         <url>https://github.com/Jasig/NewsReaderPortlet</url>
-      <tag>HEAD</tag>
+      <tag>NewsReaderPortlet-4.0.1-M3</tag>
     </scm>
 
     <repositories>
@@ -616,14 +616,14 @@
                                 def env = System.getenv()
                                 def props = new Properties()
                                 new File("${project.basedir}/target/${project.build.finalName}/WEB-INF/classes/datasource.properties").withInputStream {
-                                    stream -> props.load(stream)
+                                    stream -&gt; props.load(stream)
                                 }
 
-                                def readIfExists = {filename ->
+                                def readIfExists = {filename -&gt;
                                     def file = new File(filename)
                                     if (file.exists()) {
                                         file.withInputStream {
-                                            stream -> props.load(stream)
+                                            stream -&gt; props.load(stream)
                                         }
                                     }
                                 }
