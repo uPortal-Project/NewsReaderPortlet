@@ -90,7 +90,7 @@
                         <h3 class="title">{{title}}</h3>
                     </div>
                 </div>
-                <ul class="news-stories feed">
+                <ul class="news-stories feed list-unstyled">
                 {{{news_stories entries}}}
                 </ul>
         </script>
@@ -110,16 +110,18 @@
                         <h3 class="title">{{title}}</h3>
                     </div>
                 </div>
-                <div class="news-stories feed">
+                <ul class="news-stories feed">
                     {{{news_stories entries}}}
-                </div>
+                </ul>
         </script>
         <script type="text/template" id="${n}news-story-template">
             {{#each this}}
-                <h3>
-                    <a href="{{link}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
-                </h3>
-                <p>{{description}}</p>
+                <li>
+					<h3>
+						<a href="{{link}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
+					</h3>
+					<p>{{description}}</p>
+				</li>
             {{/each}}
         </script>
 

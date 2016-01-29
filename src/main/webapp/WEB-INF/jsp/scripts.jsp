@@ -18,10 +18,19 @@
     under the License.
 
 --%>
+
+<%--<script type="text/javascript">
+<rs:compressJs>
+    $.widget.bridge('uibutton', $.ui.button);
+    $.widget.bridge('uitooltip', $.ui.uitooltip);
+</rs:compressJs>
+</script>--%>
+    
 <rs:aggregatedResources path="skin${ usePortalJsLibs ? '-shared' : '' }.xml"/>
 
 <script type="text/javascript"><rs:compressJs>
     var ${n} = ${n} || {};
+    
     <c:choose>
         <c:when test="${!usePortalJsLibs}">
             ${n}.jQuery = jQuery.noConflict(true);
