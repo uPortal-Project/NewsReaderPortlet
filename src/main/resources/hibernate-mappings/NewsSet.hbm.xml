@@ -39,7 +39,7 @@
 	
 	        <!-- user id --> 
 	        <property name="userId" type="string" not-null="true">
-	            <column name="USER_ID" length="50"/>
+	            <column name="USER_ID" length="50" index="user_idx"/>
 	        </property>
 	    </properties>
 
