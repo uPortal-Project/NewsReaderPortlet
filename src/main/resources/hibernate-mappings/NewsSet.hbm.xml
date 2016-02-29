@@ -31,22 +31,24 @@
             <generator class="native"/>
         </id>
         
-        <!-- display name -->
-        <property name="name" type="string">
-            <column name="NEWS_NAME" length="100"/>
-        </property>
-
-        <!-- user id --> 
-        <property name="userId" type="string">
-            <column name="USER_ID" length="50"/>
-        </property>
+        <properties name="user_setname_unique_index" unique="true">
+	        <!-- new set name -->
+	        <property name="name" type="string" not-null="true">
+	            <column name="NEWS_NAME" length="100"/>
+	        </property>
+	
+	        <!-- user id --> 
+	        <property name="userId" type="string" not-null="true">
+	            <column name="USER_ID" length="50"/>
+	        </property>
+	    </properties>
 
         <set name="newsConfigurations" inverse="true" cascade="all, delete-orphan">
             <key column="SET_ID"/>
             <one-to-many
                 class="org.jasig.portlet.newsreader.NewsConfiguration"/>
         </set>
-        
+		
     </class>
     
 </hibernate-mapping>

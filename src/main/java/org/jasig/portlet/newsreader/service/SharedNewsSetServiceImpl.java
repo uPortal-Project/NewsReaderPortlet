@@ -49,13 +49,16 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 		    userId = "guest";
 		}
 		
-		NewsSet set = newsStore.getNewsSet(userId, fname);
-		if (set == null) {
-			log.debug("No existing set found, creating and saving new set.");
-	        set = new NewsSet();
-	        set.setUserId(userId);
-	        set.setName(fname);
-	        newsStore.storeNewsSet(set);
+		NewsSet set;
+		synchronized (newsStore) {
+			set = newsStore.getNewsSet(userId, fname);
+			if (set == null) {
+				log.debug("No existing set found for "+userId+", creating and saving new set.");
+		        set = new NewsSet();
+		        set.setUserId(userId);
+		        set.setName(fname);
+		        newsStore.storeNewsSet(set);
+			}	
 		}
 		
 		// Persistent set is now loaded but may still need re-initalising since last use.
