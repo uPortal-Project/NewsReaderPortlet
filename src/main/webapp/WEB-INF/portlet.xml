@@ -42,6 +42,8 @@
             <title>My news</title>
         </portlet-info>
         <portlet-preferences>
+            <!-- Single-value preference that determins how descriptions of news items
+                 will be displayed;  choose between 'flyout' and 'summaries' -->
             <preference>
                 <name>storyView</name>
                 <value>select</value>
