@@ -18,15 +18,17 @@
  */
 package org.jasig.portlet.newsreader.model;
 
+import java.util.Date;
 import java.util.List;
 
-import com.rometools.rome.feed.synd.SyndPerson;;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.rometools.rome.feed.synd.SyndPerson;
 
 /**
  * 
  * @author Jen Bourey, jennifer.bourey@gmail.com
  */
-public class NewsFeedItem {
+public class NewsFeedItem  implements Comparable<NewsFeedItem> {
 
     private String imageUrl;
     private List<SyndPerson> authors;
@@ -37,6 +39,7 @@ public class NewsFeedItem {
     private String title;
     private String uri;
     private FullStory fullStory;
+    private Date pubDate;
 
     public String getImageUrl() {
         return imageUrl;
@@ -106,7 +109,25 @@ public class NewsFeedItem {
 		return fullStory;
 	}
 
-	public void setFullStory(FullStory fullStory) {
-		this.fullStory = fullStory;
-	}  
+    public void setFullStory(FullStory fullStory) {
+        this.fullStory = fullStory;
+    }
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="EEE, d MMM yyyy HH:mm:ss Z", timezone=JsonFormat.DEFAULT_TIMEZONE)
+    public Date getPubDate() {
+        return pubDate;
+    }
+
+    public void setPubDate(Date pubDate) {
+        this.pubDate = pubDate;
+    }
+
+    @Override
+    public int compareTo(NewsFeedItem that) {
+        if (this.pubDate == null) {
+            return that.pubDate == null ? 0 : -1;
+        } else {
+            return that.pubDate == null ? 1 : this.pubDate.compareTo(that.pubDate);
+        }
+    }
 }

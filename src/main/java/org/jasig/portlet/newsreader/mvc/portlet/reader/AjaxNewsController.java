@@ -18,11 +18,7 @@
  */
 package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletURL;
@@ -84,22 +80,43 @@ public class AjaxNewsController {
     public ModelAndView getJSONFeeds(ResourceRequest request, ResourceResponse response) throws Exception {
         log.debug("handleAjaxRequestInternal (AjaxNewsController)");
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
+
+        String feedView = request.getPreferences().getValue("feedView", null);
+        log.debug("Feed view type is " + feedView);
+        boolean getAllFeedItems = "all".equals(feedView);
+        log.debug("Get all feed items is " + getAllFeedItems);
 
         String setName = request.getPreferences().getValue("newsSetName", "default");
         NewsSet set = setCreationService.getNewsSet(setName, request);
         final List<NewsConfiguration> feeds = AbstractNewsController.filterNonWhitelistedConfigurations(request, set.getNewsConfigurations());
         Collections.sort(feeds);
 
+        log.debug("Number of feeds found: " + feeds.size());
+
         JSONArray jsonFeeds = new JSONArray();
         List<String> knownFeeds = new ArrayList<String>();
         for (NewsConfiguration feed : feeds) {
-            if (feed.isDisplayed()) {
+
+           log.debug("Processing feed: " + feed.getNewsDefinition().getName()) ;
+
+           /*
+            * Don't display the "All" feed - that feed is just present
+            * in news administration so we can give the user the option
+            * to show all news enteries from all feeds in the view
+            * This was a KU added feature to the news reader portlet
+            */
+           if (!getAllFeedItems && feed.getNewsDefinition().getName().equals("All")) {
+               feed.setDisplayed(false);
+           }
+
+           if (feed.isDisplayed()) {
                 JSONObject jsonFeed = new JSONObject();
                 jsonFeed.put("id", feed.getId());
                 jsonFeed.put("name", feed.getNewsDefinition().getName());
                 jsonFeeds.add(jsonFeed);
                 knownFeeds.add(String.valueOf(feed.getId()));
+               log.debug("Value of jsonFeed: " + jsonFeed);
             }
         }
         model.put("feeds", jsonFeeds);
@@ -112,7 +129,24 @@ public class AjaxNewsController {
         }
 
         int page = Integer.parseInt(request.getParameter("page"));
-        
+
+        /*
+         * If the user selected to view all feeds combined
+         * then set the active feed to be the fake all feed
+         * This is so we can give the user the option
+         * to show all news entries from all feeds in the view
+         * This was a KU added feature to the news reader portlet
+         */
+        if (getAllFeedItems) {
+            for (NewsConfiguration newsConfig : feeds) {
+                if (newsConfig.getNewsDefinition().getName().equals("All")) {
+                    prefs.setValue("activeFeed", newsConfig.getId().toString());
+                    prefs.store();
+                    break;
+                }
+            }
+        }
+
         // only bother to fetch the active feed
         String activeFeed = request.getPreferences().getValue("activeFeed", null);
 
@@ -136,10 +170,61 @@ public class AjaxNewsController {
             model.put("page", page);
             
             try {
-                // get an instance of the adapter for this feed
-                INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
-                // retrieve the feed from this adaptor
-                NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, page);
+                NewsFeed sharedFeed;
+
+                /*
+                 * If user selected all feeds combined in edit news
+                 * then we need to process each news feed and put all
+                 * the news feed entries into the model object
+                 * that will be rendered in the view.  This is a KU
+                 * added feature to the community version.
+                 */
+                if (getAllFeedItems) {
+
+                    log.debug("Getting all feed items");
+
+                    List<NewsFeedItem> allFeedItems = new ArrayList<>();
+
+                    for (NewsConfiguration newsConfig : feeds) {
+
+                        log.debug("Getting feed items for " + newsConfig.getNewsDefinition().getName());
+
+                        if (newsConfig.getNewsDefinition().getName().equals("All") || !newsConfig.isDisplayed()) {
+                            log.debug("Breaking out of for loop and not getting feed entries");
+                            continue;
+                        }
+                        INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(newsConfig.getNewsDefinition().getClassName());
+
+                        feedConfig = newsStore.getNewsConfiguration( newsConfig.getId());
+
+                        NewsFeed feed = adapter.getSyndFeed(feedConfig, page);
+                        List<NewsFeedItem> feedItems = feed.getEntries();
+
+                        log.debug("Number of feed entries for " + newsConfig.getNewsDefinition().getName() + " is " + feedItems.size() );
+
+                        for (int i = 0; i < feedItems.size(); i++) {
+                            allFeedItems.add(feedItems.get(i));
+                        }
+                    }
+
+                    sharedFeed = new NewsFeed();
+
+                    Collections.sort(allFeedItems);
+                    sharedFeed.setTitle("News Feed");
+                    sharedFeed.setAuthor("Various");
+                    Date year = new Date();
+                    sharedFeed.setCopyright(Integer.toString(year.getYear()));
+                    sharedFeed.setEntries(allFeedItems);
+
+                    log.debug("TOTAL Number of feed items: " + sharedFeed.getEntries().size() );
+
+                } else {
+
+                    // get an instance of the adapter for this feed
+                    INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
+                    // retrieve the feed from this adaptor
+                    sharedFeed = adapter.getSyndFeed(feedConfig, page);
+                }
                 if (sharedFeed != null) {
                     List<NewsFeedItem> items = sharedFeed.getEntries();
                     for (int i = 0; i < items.size(); i++) {

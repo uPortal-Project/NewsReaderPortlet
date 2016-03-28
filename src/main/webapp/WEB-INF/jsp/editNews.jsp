@@ -189,6 +189,7 @@
 						<select id="${n}feedView" class="form-control">
 							<option value="tabs" ${ feedView == 'tabs' ? 'selected="selected"' : '' }><spring:message code="edit.news.feedView.tab"/></option>
 							<option value="select" ${ feedView == 'select' ? 'selected="selected"' : '' }><spring:message code="edit.news.feedView.menu"/></option>
+							<option value="all" ${ feedView == 'all' ? 'selected="selected"' : '' }><spring:message code="edit.news.feedView.combined"/></option>
 						</select>
 					</div>
 				</div>

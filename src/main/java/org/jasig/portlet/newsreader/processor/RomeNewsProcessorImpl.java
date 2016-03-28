@@ -20,6 +20,7 @@ package org.jasig.portlet.newsreader.processor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +82,8 @@ public class RomeNewsProcessorImpl {
         newsFeed.setTitle(feed.getTitle());
         newsFeed.setCopyright(feed.getCopyright());
 
-        List<NewsFeedItem> newEntries = newsFeed.getEntries();
+        List<NewsFeedItem> newEntries = new ArrayList<>();
+        newEntries.addAll(newsFeed.getEntries());
 
         // translate the default entries into our implementation
         List<SyndEntry> entries =  feed.getEntries();
@@ -89,6 +91,7 @@ public class RomeNewsProcessorImpl {
             NewsFeedItem item = getNewsFeedItem(entry, titlePolicy, descriptionPolicy);
             newEntries.add(item);
         }
+        newsFeed.setEntries(newEntries);
 
         return newsFeed;
     }
@@ -201,6 +204,13 @@ public class RomeNewsProcessorImpl {
         }
 
         //add more types as required
+
+        if (entry.getPublishedDate() != null) {
+            log.debug(" Entry "  + entry.getTitle() + " pub date is " + entry.getPublishedDate().toString() );
+            item.setPubDate(entry.getPublishedDate());
+        } else {
+            log.debug("Pub date null for " + entry.getTitle() ) ;
+        }
 
         List<SyndEnclosure> enclosures = entry.getEnclosures();
         for(SyndEnclosure enclosure: enclosures) {
