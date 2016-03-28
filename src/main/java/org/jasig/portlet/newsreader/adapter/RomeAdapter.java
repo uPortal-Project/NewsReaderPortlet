@@ -260,7 +260,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
 
         if ( url == null )
         {
-            throw new IllegalArgumentException( "The url parameter was not found; this is a required portlet preference." );
+            throw new IllegalArgumentException( "The url parameter was not found for " + config.getNewsDefinition().getName() + " this is a required portlet preference." );
         }
 
         String url2 = config.getNewsDefinition().getParameters().get("url2" );
@@ -331,6 +331,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
             log.debug("Retrieving feed " + url);
 
             get = new HttpGet(url);
+            get.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.155 Safari/537.36");
             HttpResponse httpResponse = compressingClient.execute(get);
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.warn("HttpStatus for " + url + ":" + httpResponse);

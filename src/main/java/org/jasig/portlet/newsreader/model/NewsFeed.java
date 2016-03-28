@@ -20,6 +20,7 @@ package org.jasig.portlet.newsreader.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -30,14 +31,19 @@ public class NewsFeed implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<NewsFeedItem> entries = new ArrayList<NewsFeedItem>();
+    private List<NewsFeedItem> entries = new ArrayList<>();
     private String author;
     private String link;
     private String title;
     private String copyright;
 
     public List<NewsFeedItem> getEntries() {
-        return entries;
+        return Collections.unmodifiableList(entries);
+    }
+
+    public void setEntries(List<NewsFeedItem> entries) {
+        this.entries.clear();
+        this.entries.addAll(entries);
     }
 
     public String getAuthor() {
