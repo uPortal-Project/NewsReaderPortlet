@@ -168,7 +168,6 @@
 
         <c:if test="${ storyView == 'flyout' }">
                 $(window).resize(function() {
-                    $(".news-stories li a").tooltip("destroy");
                     adjustToolTipBasedOnSize();
                 });
         </c:if>
