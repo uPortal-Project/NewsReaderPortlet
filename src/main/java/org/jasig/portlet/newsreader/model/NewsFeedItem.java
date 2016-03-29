@@ -113,7 +113,6 @@ public class NewsFeedItem  implements Comparable<NewsFeedItem> {
         this.fullStory = fullStory;
     }
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="EEE, d MMM yyyy HH:mm:ss Z", timezone=JsonFormat.DEFAULT_TIMEZONE)
     public Date getPubDate() {
         return pubDate;
     }
