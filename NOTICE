@@ -20,13 +20,13 @@ This project includes:
   AntLR under BSD License
   AOP alliance under Public Domain
   Apache Commons Codec under The Apache Software License, Version 2.0
+  Apache Commons Collections under Apache License, Version 2.0
   Apache HttpClient under Apache License, Version 2.0
   Apache HttpCore under Apache License, Version 2.0
   Batik CSS engine under The Apache Software License, Version 2.0
   Batik external code under The Apache Software License, Version 2.0
   Batik utility library under The Apache Software License, Version 2.0
   Cernunnos - Core under Apache 2
-  Commons Collections under The Apache Software License, Version 2.0
   Commons DBCP under The Apache Software License, Version 2.0
   Commons FileUpload under The Apache Software License, Version 2.0
   Commons IO under The Apache Software License, Version 2.0
