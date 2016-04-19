@@ -37,6 +37,7 @@ import org.jasig.portlet.newsreader.adapter.NewsException;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
+import org.jasig.portlet.newsreader.model.PaginatingNewsFeed;
 import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.springframework.beans.BeansException;
@@ -128,7 +129,8 @@ public class AjaxNewsController {
             prefs.store();
         }
 
-        int page = Integer.parseInt(request.getParameter("page"));
+        final int page = Integer.parseInt(request.getParameter("page"));
+        final int maxStories = AbstractNewsController.getMaxStories(prefs);
 
         /*
          * If the user selected to view all feeds combined
@@ -166,11 +168,11 @@ public class AjaxNewsController {
             NewsConfiguration feedConfig = newsStore.getNewsConfiguration(Long.valueOf(activeFeed));
             model.put("activeFeed", feedConfig.getId());
             log.debug("On render Active feed is " + feedConfig.getId());
-            
+
             model.put("page", page);
-            
+
             try {
-                NewsFeed sharedFeed;
+                PaginatingNewsFeed sharedFeed;
 
                 /*
                  * If user selected all feeds combined in edit news
@@ -197,7 +199,7 @@ public class AjaxNewsController {
 
                         feedConfig = newsStore.getNewsConfiguration( newsConfig.getId());
 
-                        NewsFeed feed = adapter.getSyndFeed(feedConfig, page);
+                        NewsFeed feed = adapter.getSyndFeed(feedConfig, page, maxStories);
                         List<NewsFeedItem> feedItems = feed.getEntries();
 
                         log.debug("Number of feed entries for " + newsConfig.getNewsDefinition().getName() + " is " + feedItems.size() );
@@ -207,7 +209,7 @@ public class AjaxNewsController {
                         }
                     }
 
-                    sharedFeed = new NewsFeed();
+                    sharedFeed = new PaginatingNewsFeed(10); // value from RomeNewsProcessorImpl
 
                     Collections.sort(allFeedItems);
                     sharedFeed.setTitle("News Feed");
@@ -223,7 +225,7 @@ public class AjaxNewsController {
                     // get an instance of the adapter for this feed
                     INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
                     // retrieve the feed from this adaptor
-                    sharedFeed = adapter.getSyndFeed(feedConfig, page);
+                    sharedFeed = adapter.getSyndFeed(feedConfig, page, maxStories);
                 }
                 if (sharedFeed != null) {
                     List<NewsFeedItem> items = sharedFeed.getEntries();
@@ -240,6 +242,7 @@ public class AjaxNewsController {
                     }
 
                     model.put("feed", sharedFeed);
+                    model.put("maxPage", sharedFeed.getPageCount());
                 } else {
                     log.warn("Failed to get feed from adapter.");
                     model.put("message", "The news \"" + feedConfig.getNewsDefinition().getName() + "\" is currently unavailable.");

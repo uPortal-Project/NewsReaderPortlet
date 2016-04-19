@@ -40,6 +40,9 @@
         $("#${n}newWindow").change(function(e){
             $.post(savePrefUrl, { prefName: 'newWindow', prefValue: ($(e.target).attr("checked") == 'checked') }, null, 'json');
         });
+        $('#${n}maxStories').change(function(){
+            $.post(savePrefUrl, { prefName: 'maxStories', prefValue: $('#${n}maxStories').val() }, null, 'json');
+        });
 
     });
 </rs:compressJs></script>
@@ -208,6 +211,13 @@
 					<div class="col-md-5">
 						<c:set var="newWindow" value="${renderRequest.preferences.map['newWindow'][0]}"/>
 						<input type="checkbox" id="${n}newWindow" ${ newWindow == "true" ? "checked='checked'" : ""} />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="${n}maxStories" class="col-md-7"><spring:message code="edit.news.feed.maxstories"/></label>
+					<div class="col-md-5">
+						<c:set var="maxStories" value="${renderRequest.preferences.map['maxStories'][0]}"/>
+						<input type="number" id="${n}maxStories" value="${maxStories}" step=1 min=-1 maxlength=4 />
 					</div>
 				</div>
 				<div class="form-group">

@@ -56,7 +56,7 @@ public class RomeNewsProcessorImplTest {
     @Test
     public void testParsing() throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
         InputStream in = testFeed.getInputStream();
-        NewsFeed feed = processor.getFeed(in, "antisamy-textonly", "antisamy-textonly");
+        NewsFeed feed = processor.getFeed(in, "antisamy-textonly", "antisamy-textonly", -1);
         
         assertEquals(10, feed.getEntries().size());
         NewsFeedItem item = (NewsFeedItem) feed.getEntries().get(0);

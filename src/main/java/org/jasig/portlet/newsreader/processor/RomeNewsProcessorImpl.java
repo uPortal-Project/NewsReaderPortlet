@@ -70,7 +70,7 @@ public class RomeNewsProcessorImpl {
         this.videoTypes = videoTypes;
     }
 
-    public PaginatingNewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
+    public PaginatingNewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy, int maxStories) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
         SyndFeedInput input = new SyndFeedInput();
@@ -81,12 +81,15 @@ public class RomeNewsProcessorImpl {
         newsFeed.setLink(feed.getLink());
         newsFeed.setTitle(feed.getTitle());
         newsFeed.setCopyright(feed.getCopyright());
+        newsFeed.setMaxStories(maxStories);
 
         List<NewsFeedItem> newEntries = new ArrayList<>();
-        newEntries.addAll(newsFeed.getEntries());
 
         // translate the default entries into our implementation
         List<SyndEntry> entries =  feed.getEntries();
+        if (maxStories > 0 && maxStories < entries.size()) {
+            entries = entries.subList(0, maxStories);
+        }
         for (SyndEntry entry : entries) {
             NewsFeedItem item = getNewsFeedItem(entry, titlePolicy, descriptionPolicy);
             newEntries.add(item);

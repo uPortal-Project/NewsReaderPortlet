@@ -196,7 +196,6 @@
         newsView = $.extend(upnews.NewsView, {
             newsService: new upnews.newsService("${feedUrl}"),
             onSuccessfulSetup: function () {
-                $('#${n} .news-stories').scroll();
                 if (${feedView  eq 'select'}) {
                     // set the current news feed to selected in the select menu
                     $("#${n} option").removeAttr("selected");
@@ -209,8 +208,6 @@
                         $("#${n} .news-stories-container").hide();
                         $("#${n}feed" + id).show();
                     });
-                } else if (${feedView eq 'all'}) {
-                    loadingDiv.remove();
                 } else {
                     // compute the index of the currently selected feed
                     var index = $("#${n} .news-stories-container").index($("#${n}feed" + newsView.newsService.getActiveFeed()));
@@ -244,7 +241,7 @@
                         } else if (feed.entries.length > 0) {
                             $('.news-stories', view.$el).append(newsStoryTemplate(feed.entries));
                             deferred.resolve({page: view.page, success: true});
-                        } else {
+                        } else if (view.page === 0) {
                             $('.news-stories', view.$el).append("No stories for this feed");
                             deferred.resolve({page: view.page, success: false});
                         }
