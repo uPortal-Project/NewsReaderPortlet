@@ -31,15 +31,17 @@ public class PaginatingNewsFeed extends NewsFeed {
     private static final long serialVersionUID = 1L;
 
     private final PagedListHolder<NewsFeedItem> holder = new PagedListHolder<NewsFeedItem>();
+    private int maxStories = -1;
+    // need to track page separate from holder due to holder.setPage(int)/.getPage() staying within last page
+    private int page = 0;
 
     public PaginatingNewsFeed(int entriesPerPage) {
-        holder.setPage(0);
-        holder.setPageSize(entriesPerPage);
-        holder.setSource(super.getEntries());
+        this(entriesPerPage, 0);
     }
 
     public PaginatingNewsFeed(int entriesPerPage, int initialPage) {
-        holder.setPage(initialPage);
+        this.page = initialPage;
+        holder.setPage(page);
         holder.setPageSize(entriesPerPage);
         holder.setSource(super.getEntries());
     }
@@ -49,6 +51,7 @@ public class PaginatingNewsFeed extends NewsFeed {
     }
 
     public void setPage(int p) {
+        this.page = p;
         holder.setPage(p);
     }
 
@@ -56,9 +59,17 @@ public class PaginatingNewsFeed extends NewsFeed {
         return holder.getPageCount();
     }
 
+    public void setMaxStories(int maxStories) {
+        this.maxStories = maxStories;
+    }
+
+    public int getMaxStories() {
+        return this.maxStories;
+    }
+
     @Override
     public List<NewsFeedItem> getEntries() {
-        if (holder.getPage() < holder.getPageCount()) {
+        if (page < holder.getPageCount()) {  // using .getPage() was always returning a valid value, so never reaching empty set
             return holder.getPageList();
         }
         return Collections.emptyList();

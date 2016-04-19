@@ -91,7 +91,7 @@
 
     <properties>
         <icu4j.version>51.1</icu4j.version>
-        <spring.version>4.1.4.RELEASE</spring.version>
+        <spring.version>4.1.5.RELEASE</spring.version>
         <resource-server.version>1.0.42</resource-server.version>
         <httpclient.version>4.4</httpclient.version>
         <antisamy.version>1.5.2</antisamy.version>
