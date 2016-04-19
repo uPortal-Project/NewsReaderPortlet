@@ -47,16 +47,14 @@ var upnews = {};
                     var height = $(this).outerHeight();
                     if (this.on) {
                         var topOfLastItemRoundedDown = Math.floor($(':last', this).position().top);
-                        console.log(height + ' :: ' + topOfLastItemRoundedDown + ' (content will be appended if the 2nd number <= the 1st)');
+                        //console.log(height + ' :: ' + topOfLastItemRoundedDown + ' (content will be appended if the 2nd number <= the 1st)');
                         if (topOfLastItemRoundedDown <= height) {
                             this.on = false;
                             settings.contentLoad().done(function() {
                                 that.on = true;
                             });
-                            console.log('Appended');
                         }
                     }
-                    console.log('scrolled');
                 });
 
             });
@@ -88,6 +86,7 @@ var upnews = {};
                         data: data,
                         type: 'POST'
                     }).done(function(data) {
+                        //console.log(data);
                         activeFeedCache = data.activeFeed;
                         currentPage = data.page;
                         message = data.message ? data.message : "";

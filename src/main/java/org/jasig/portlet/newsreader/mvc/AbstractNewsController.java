@@ -94,4 +94,15 @@ public class AbstractNewsController {
         return Boolean.parseBoolean(allowHelp);
     }
 
+    public static int getMaxStories(final PortletPreferences prefs) {
+        int maxStories = -1;
+        final String maxPref = prefs.getValue("maxStories", "-1");
+        try {
+            maxStories = Integer.parseInt(maxPref);
+        } catch (NumberFormatException nfe) {
+            // fall back to -1
+        }
+        return maxStories;
+    }
+
 }

@@ -21,6 +21,7 @@ package org.jasig.portlet.newsreader.adapter;
 import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.model.NewsFeed;
+import org.jasig.portlet.newsreader.model.PaginatingNewsFeed;
 
 /**
  * @author Anthony Colebourne
@@ -52,6 +53,6 @@ public interface INewsAdapter {
      */
     String getDescriptionKey();
 
-    NewsFeed getSyndFeed(NewsConfiguration config, int page) throws NewsException;
+    PaginatingNewsFeed getSyndFeed(NewsConfiguration config, int page, int maxStories) throws NewsException;
 
 }

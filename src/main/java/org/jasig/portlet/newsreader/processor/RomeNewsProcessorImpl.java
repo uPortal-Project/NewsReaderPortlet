@@ -20,6 +20,7 @@ package org.jasig.portlet.newsreader.processor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class RomeNewsProcessorImpl {
         this.videoTypes = videoTypes;
     }
 
-    public PaginatingNewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
+    public PaginatingNewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy, int maxStories) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
         SyndFeedInput input = new SyndFeedInput();
@@ -80,15 +81,20 @@ public class RomeNewsProcessorImpl {
         newsFeed.setLink(feed.getLink());
         newsFeed.setTitle(feed.getTitle());
         newsFeed.setCopyright(feed.getCopyright());
+        newsFeed.setMaxStories(maxStories);
 
-        List<NewsFeedItem> newEntries = newsFeed.getEntries();
+        List<NewsFeedItem> newEntries = new ArrayList<>();
 
         // translate the default entries into our implementation
         List<SyndEntry> entries =  feed.getEntries();
+        if (maxStories > 0 && maxStories < entries.size()) {
+            entries = entries.subList(0, maxStories);
+        }
         for (SyndEntry entry : entries) {
             NewsFeedItem item = getNewsFeedItem(entry, titlePolicy, descriptionPolicy);
             newEntries.add(item);
         }
+        newsFeed.setEntries(newEntries);
 
         return newsFeed;
     }
@@ -201,6 +207,13 @@ public class RomeNewsProcessorImpl {
         }
 
         //add more types as required
+
+        if (entry.getPublishedDate() != null) {
+            log.debug(" Entry "  + entry.getTitle() + " pub date is " + entry.getPublishedDate().toString() );
+            item.setPubDate(entry.getPublishedDate());
+        } else {
+            log.debug("Pub date null for " + entry.getTitle() ) ;
+        }
 
         List<SyndEnclosure> enclosures = entry.getEnclosures();
         for(SyndEnclosure enclosure: enclosures) {

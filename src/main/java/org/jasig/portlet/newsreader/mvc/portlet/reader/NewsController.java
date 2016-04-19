@@ -96,6 +96,7 @@ public class NewsController extends AbstractNewsController {
          model.addAttribute("storyView", prefs.getValue("summaryView", "flyout"));
          model.addAttribute("feedView", prefs.getValue("feedView", "select"));
          model.addAttribute("newWindow", Boolean.valueOf(prefs.getValue("newWindow", "true")));
+         model.addAttribute("maxStories", Integer.valueOf(prefs.getValue("maxStories", "-1")));
     }
 
     @RenderMapping
@@ -193,8 +194,10 @@ public class NewsController extends AbstractNewsController {
         try {
             // get an instance of the adapter for this feed
             INewsAdapter adapter = (INewsAdapter) applicationContext.getBean(feedConfig.getNewsDefinition().getClassName());
+            // Get max stories (needed to match cache check)
+            int maxStories = getMaxStories(request.getPreferences());
             // retrieve the feed from this adaptor
-            NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, page);
+            NewsFeed sharedFeed = adapter.getSyndFeed(feedConfig, page, maxStories);
             if (sharedFeed != null) {
                NewsFeedItem item = sharedFeed.getEntries().get(itemIndex);
                model.addAttribute("storyTitle", item.getTitle());

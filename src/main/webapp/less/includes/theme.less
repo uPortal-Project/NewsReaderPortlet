@@ -22,8 +22,13 @@
     padding: 0;
 }
 
+.newsreader-container {
+    max-height: 577px;
+    overflow-y: scroll;
+}
+
 .newsreader-portlet-toolbar {
-    border-bottom: 1px solid @color1-light;
+    border-top: 1px solid @color1-light;
     margin: 0 0 10px 0;
     height: 100%;
     .nav-links {
@@ -34,9 +39,25 @@
     }
 }
 
+ h3.feed-title {
+    font-size: 125%;
+    font-weight: normal;
+    margin-bottom: 2px;
+    padding-bottom: 2px;
+}
+
+p.newsreader-pubdate {
+    color: #666;
+    font-size: 0.9em;
+    padding: 0 0 7px 7px;
+}
+
 .newsreader-content {
     border: none;
     background: @white;
+    max-height: 577px;
+    overflow-y: scroll;
+    font-size: 0.9em;
 
     .news-feeds-container {
         border: none;
