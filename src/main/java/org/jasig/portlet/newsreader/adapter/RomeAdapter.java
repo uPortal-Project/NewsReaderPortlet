@@ -31,8 +31,8 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -67,7 +67,7 @@ import com.rometools.rome.io.FeedException;;
  */
 public class RomeAdapter extends AbstractNewsAdapter {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     public static final String PREFERENCE_TITLE_POLICY = "titlePolicy";
     public static final String PREFERENCE_DESCRIPTION_POLICY = "descriptionPolicy";

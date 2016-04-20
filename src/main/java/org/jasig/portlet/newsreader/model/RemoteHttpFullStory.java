@@ -20,8 +20,8 @@ package org.jasig.portlet.newsreader.model;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RemoteHttpFullStory implements FullStory {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
     private final String remoteHttpUrl;
 
     @JsonCreator

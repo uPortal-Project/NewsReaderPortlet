@@ -25,8 +25,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -52,7 +52,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @version $Revision$
  */
 public class PortletApplicationContextLocator implements ServletContextListener {
-    private static Log LOGGER = LogFactory.getLog(PortletApplicationContextLocator.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(PortletApplicationContextLocator.class);
 
     private static final SingletonDoubleCheckedCreator<ConfigurableApplicationContext> applicationContextCreator = new PortletApplicationContextCreator();
     private static Throwable directCreatorThrowable;
@@ -127,7 +127,7 @@ public class PortletApplicationContextLocator implements ServletContextListener 
             if (applicationContextCreator.isCreated()) {
                 final IllegalStateException createException = new IllegalStateException("A portal managed ApplicationContext has already been created but now a ServletContext is available and a WebApplicationContext will be returned. " +
                         "This situation should be resolved by delaying calls to this class until after the web-application has completely initialized.");
-                LOGGER.error(createException, createException);
+                LOGGER.error("Application context found", createException);
                 LOGGER.error("Stack trace of original ApplicationContext creator", directCreatorThrowable);
                 throw createException;
             }
@@ -156,7 +156,7 @@ public class PortletApplicationContextLocator implements ServletContextListener 
         }
         else {
             final IllegalStateException createException = new IllegalStateException("No portal managed ApplicationContext has been created, there is nothing to shutdown.");
-            LOGGER.error(createException, createException);
+            LOGGER.error("Application context should exist", createException);
         }
     }
 

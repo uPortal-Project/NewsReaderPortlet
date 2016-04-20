@@ -18,12 +18,12 @@
  */
 package org.jasig.portlet.newsreader.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultFullStory implements FullStory {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
     private final String content;
 
     public DefaultFullStory(String content) {
