@@ -21,8 +21,8 @@ package org.jasig.portlet.newsreader.dao;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -43,7 +43,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 public class HibernateNewsStore extends HibernateDaoSupport implements
         NewsStore {
 
-    private static Log log = LogFactory.getLog(HibernateNewsStore.class);
+    private static Logger log = LoggerFactory.getLogger(HibernateNewsStore.class);
 
     public void storeNewsDefinition(NewsDefinition listing) {
         try {

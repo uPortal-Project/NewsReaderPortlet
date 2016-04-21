@@ -23,15 +23,15 @@ import java.util.Set;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.springframework.web.portlet.util.PortletUtils;
 
 public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 
-	private static Log log = LogFactory.getLog(SharedNewsSetServiceImpl.class);
+	private static Logger log = LoggerFactory.getLogger(SharedNewsSetServiceImpl.class);
 
 	/*
 	 * Get the news set from the ID or search the dataabse for a suitable set or create a new
