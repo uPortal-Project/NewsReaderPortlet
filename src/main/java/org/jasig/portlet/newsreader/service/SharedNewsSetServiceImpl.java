@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.springframework.web.portlet.util.PortletUtils;
 
 public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 
@@ -49,27 +50,35 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 		    userId = "guest";
 		}
 		
-		NewsSet set = newsStore.getNewsSet(userId, fname);
-		if (set == null) {
-			log.debug("No existing set found, creating and saving new set.");
-	        set = new NewsSet();
-	        set.setUserId(userId);
-	        set.setName(fname);
-	        newsStore.storeNewsSet(set);
-		}
+		NewsSet set;
 		
-		// Persistent set is now loaded but may still need re-initalising since last use.
-		// by adding setId to session, we signal that initialisation has taken place.
-        if (session.getAttribute("setId") == null) {
-        	log.debug("re-initalising loaded newsSet "+set.getName());
-            @SuppressWarnings("unchecked")
-            Set<String> roles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
+		Object mutex = PortletUtils.getSessionMutex(session);
+		synchronized (mutex) {
+			log.debug("Got Mutex: "+mutex);
 			
-			newsStore.initNews(set, roles);
-			newsStore.storeNewsSet(set);
-			session.setAttribute("setId", set.getId(), PortletSession.PORTLET_SCOPE);
-		}
+			set = newsStore.getNewsSet(userId, fname);
+			if (set == null) {
+				log.debug("No existing set found for "+userId+", creating and saving new set.");
+		        set = new NewsSet();
+		        set.setUserId(userId);
+		        set.setName(fname);
+		        newsStore.storeNewsSet(set);
+			}	
 		
+			// Persistent set is now loaded but may still need re-initalising since last use.
+			// by adding setId to session, we signal that initialisation has taken place.
+			if (session.getAttribute("setId", PortletSession.PORTLET_SCOPE) == null) {
+				log.debug("re-initalising loaded newsSet "+set.getName());
+				@SuppressWarnings("unchecked")
+				Set<String> roles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
+
+				if(roles != null) { //if roles are not in session for any reason then skip initNews until later
+					newsStore.initNews(set, roles);
+					newsStore.storeNewsSet(set);
+					session.setAttribute("setId", set.getId(), PortletSession.PORTLET_SCOPE);
+				}
+			}
+		}
 		return set;
 	}
 
