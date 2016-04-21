@@ -41,7 +41,7 @@
 	        <property name="userId" type="string" not-null="true">
 	            <column name="USER_ID" length="50" index="user_idx"/>
 	        </property>
-	    </properties>
+        </properties>
 
         <set name="newsConfigurations" inverse="true" cascade="all, delete-orphan">
             <key column="SET_ID"/>
