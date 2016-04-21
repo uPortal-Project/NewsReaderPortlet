@@ -34,10 +34,38 @@
         padding-top: 2px;
         padding-bottom: 2px;
     }
+    .ui-tooltip {
+        padding:8px;
+        position:absolute;
+        z-index:9999;
+        -o-box-shadow: 0 0 5px #aaa;
+        -moz-box-shadow: 0 0 5px #aaa;
+        -webkit-box-shadow: 0 0 5px #aaa;
+        box-shadow: 0 0 5px #aaa;
+        max-width: 400px;
+    }
+
+    * html .ui-tooltip { background-image: none; }
+    body .ui-tooltip { border-width:2px; }
+
 </style>
 <portlet:resourceURL var="feedUrl"/>
 
 <div id="${n}" class="container-fluid newsreader-container">
+
+    <div class="row">
+        <div class="news-reader-feed-list newsreader-content view-news col-md-12">
+            <c:choose>
+                <c:when test="${ feedView == 'select' }">
+                    <select class="news-feeds-container"></select>
+                </c:when>
+                <c:otherwise>
+                    <ul class="news-feeds-container"></ul>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+
     <div class="row newsreader-portlet-toolbar">
         <div class="col-md-12 no-col-padding">
             <div class="nav-links">
@@ -54,18 +82,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="news-reader-feed-list newsreader-content view-news col-md-12">
-            <c:choose>
-                <c:when test="${ feedView == 'select' }">
-                    <select class="news-feeds-container"></select>
-                </c:when>
-                <c:otherwise>
-                    <ul class="news-feeds-container"></ul>
-                </c:otherwise>
-            </c:choose>
-        </div>
-    </div>
 </div>
 
 <script type="text/template" id="${n}feed-list-template">
@@ -73,6 +89,9 @@
     {{#each this}}
     <c:choose>
         <c:when test="${ feedView == 'select' }">
+            <option value="{{id}}">{{name}}</option>
+        </c:when>
+        <c:when test="${ feedView == 'all' }">
             <option value="{{id}}">{{name}}</option>
         </c:when>
         <c:otherwise>
@@ -87,7 +106,7 @@
         <script type="text/template" id="${n}feed-detail-template">
                 <div>
                     <div class="titlebar portlet-titlebar">
-                        <h3 class="title">{{title}}</h3>
+                        <h3 class="feed-title">{{title}}</h3>
                     </div>
                 </div>
                 <ul class="news-stories feed">
@@ -107,7 +126,7 @@
         <script type="text/template" id="${n}feed-detail-template">
                 <div>
                     <div class="titlebar portlet-titlebar">
-                        <h3 class="title">{{title}}</h3>
+                        <h3 class="feed-title">{{title}}</h3>
                     </div>
                 </div>
                 <div class="news-stories feed">
@@ -116,10 +135,15 @@
         </script>
         <script type="text/template" id="${n}news-story-template">
             {{#each this}}
-                <h3>
+              <div>
+                <h3 class="feed-title">
                     <a href="{{link}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
                 </h3>
+                {{#if pubDate}}
+                <p class="newsreader-pubdate">{{pubDate}}</p>
+                {{/if}}
                 <p>{{description}}</p>
+              </div>
             {{/each}}
         </script>
 
@@ -144,11 +168,7 @@
 
         var adjustToolTipBasedOnSize = function () {
             <c:if test="${ storyView == 'flyout' }">
-                var tooltipPosition = {
-                    my: 'left center',
-                    at: 'right+10 center',
-                    collision: 'flipfit'
-                };
+                var tooltipPosition = { offset: "15 15" , collision: "fit" };
 
                 // If there is not enough width in the window to display as a flyout, switch to display the
                 // tooltip under the news item.  Set collision to none instead of 'fit' because fit has a flickering
@@ -176,7 +196,6 @@
         newsView = $.extend(upnews.NewsView, {
             newsService: new upnews.newsService("${feedUrl}"),
             onSuccessfulSetup: function () {
-                $('#${n} .news-stories').scroll();
                 if (${feedView  eq 'select'}) {
                     // set the current news feed to selected in the select menu
                     $("#${n} option").removeAttr("selected");
@@ -222,7 +241,7 @@
                         } else if (feed.entries.length > 0) {
                             $('.news-stories', view.$el).append(newsStoryTemplate(feed.entries));
                             deferred.resolve({page: view.page, success: true});
-                        } else {
+                        } else if (view.page === 0) {
                             $('.news-stories', view.$el).append("No stories for this feed");
                             deferred.resolve({page: view.page, success: false});
                         }

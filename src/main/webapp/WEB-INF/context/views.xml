@@ -24,10 +24,22 @@
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+
+    <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
+        <constructor-arg value="America/Chicago" />
+    </bean>
+
     <!-- JSON data view -->
     <bean name="json" 
         class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"
-        p:disableCaching="false"/>
+        p:disableCaching="false">
+      <property name="objectMapper">
+        <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean"
+              p:simpleDateFormat="EEE, MMM d yyyy HH:mm zzz"
+              p:timeZone-ref="timeZone"
+        />
+      </property>
+    </bean>
 
     <!-- Empty view -->
     <bean name="empty" 

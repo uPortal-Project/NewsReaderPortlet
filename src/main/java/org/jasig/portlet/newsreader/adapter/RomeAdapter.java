@@ -48,7 +48,6 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 import org.jasig.portlet.newsreader.NewsConfiguration;
-import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.PaginatingNewsFeed;
 import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
 import org.owasp.validator.html.PolicyException;
@@ -241,7 +240,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
       * @see org.jasig.portlet.newsreader.adapter.INewsAdapter#getSyndFeed(org.jasig.portlet.newsreader.NewsConfiguration, javax.portlet.PortletRequest)
       */
     @Override
-    public NewsFeed getSyndFeed(NewsConfiguration config, int page) throws NewsException {
+    public PaginatingNewsFeed getSyndFeed(NewsConfiguration config, int page, int maxStories) throws NewsException {
 
         PaginatingNewsFeed feed = null;
 
@@ -260,7 +259,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
 
         if ( url == null )
         {
-            throw new IllegalArgumentException( "The url parameter was not found; this is a required portlet preference." );
+            throw new IllegalArgumentException( "The url parameter was not found for " + config.getNewsDefinition().getName() + " this is a required portlet preference." );
         }
 
         String url2 = config.getNewsDefinition().getParameters().get("url2" );
@@ -276,14 +275,14 @@ public class RomeAdapter extends AbstractNewsAdapter {
             if ( url2 == null )
             {
                 // One URL; a normal setup. Process the URL...
-                feed = getSyndFeed(url, titlePolicy, descriptionPolicy);
+                feed = getSyndFeed(url, titlePolicy, descriptionPolicy, maxStories);
             }
             else
             {
                 // Two URLs, so if the first fails, try the backup...
                 try
                 {
-                    feed = getSyndFeed(url, titlePolicy, descriptionPolicy);
+                    feed = getSyndFeed(url, titlePolicy, descriptionPolicy, maxStories);
                 }
                 catch ( NewsException ex )
                 {
@@ -293,7 +292,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
                 if ( feed == null )
                 {
                     // there must not be a local file cache, or it failed, so try the real url...
-                    feed = getSyndFeed(url2, titlePolicy, descriptionPolicy);
+                    feed = getSyndFeed(url2, titlePolicy, descriptionPolicy, maxStories);
                 }
             }
 
@@ -303,6 +302,11 @@ public class RomeAdapter extends AbstractNewsAdapter {
         } else {
             log.debug("Cache hit");
             feed = (PaginatingNewsFeed) cachedElement.getObjectValue();
+            if (maxStories != feed.getMaxStories()) {
+                // Clear cache and recreate by recursive call
+                cache.remove(key);
+                return getSyndFeed(config, page, maxStories);
+            }
         }
 
         if (feed != null) feed.setPage(page);
@@ -318,9 +322,10 @@ public class RomeAdapter extends AbstractNewsAdapter {
      * @param url        String of the feed to be retrieved
      * @param titlePolicy String the cleaning policy for the title
      * @param descriptionPolicy String the cleaning policy for the description
+     * @param maxStories        limit number of news items
      * @return SyndFeed Feed object
      */
-    protected PaginatingNewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy) throws NewsException {
+    protected PaginatingNewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy, int maxStories) throws NewsException {
 
         HttpGet get = null;
         PaginatingNewsFeed feed = null;
@@ -331,6 +336,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
             log.debug("Retrieving feed " + url);
 
             get = new HttpGet(url);
+            get.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.155 Safari/537.36");
             HttpResponse httpResponse = compressingClient.execute(get);
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.warn("HttpStatus for " + url + ":" + httpResponse);
@@ -343,7 +349,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
             // Otherwise we'd eat a parse error for trying to parse a null stream.
             if ( in != null )
             {
-                feed = processor.getFeed(in, titlePolicy, descriptionPolicy);
+                feed = processor.getFeed(in, titlePolicy, descriptionPolicy, maxStories);
             }
             else
             {

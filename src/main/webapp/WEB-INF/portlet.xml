@@ -53,6 +53,10 @@
                 <value>false</value>
             </preference>
             <preference>
+                <name>maxStories</name>
+                <value>-1</value>
+            </preference>
+            <preference>
                 <name>feedView</name>
                 <value>summaries</value>
             </preference>
