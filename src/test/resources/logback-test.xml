@@ -19,7 +19,6 @@
     under the License.
 
 -->
-
 <!-- For assistance related to logback-translator or configuration  -->
 <!-- files in general, please contact the logback user mailing list -->
 <!-- at http://www.qos.ch/mailman/listinfo/logback-user             -->
@@ -28,21 +27,43 @@
 <!--    http://www.qos.ch/shop/products/professionalSupport         -->
 <!--                                                                -->
 <configuration>
-  <appender name="news" class="ch.qos.logback.core.ConsoleAppender">
+  <!-- 
+   | Propagate log levels to java.util.logging 
+   +-->
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <resetJUL>true</resetJUL>
+  </contextListener>
+  
+  <!-- 
+   | Console (System.out) logger, useful to see what is going on in tests
+   +-->
+  <appender name="C" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d{ABSOLUTE} [%t] %-5p %-30.30c{2} %x - %m %n</pattern>
+      <pattern>%-5level [%thread] %logger{36} %d{ISO8601} - %msg%n</pattern>
     </encoder>
   </appender>
-  <logger name="org.jasig.portlet.newsreader" additivity="false" level="WARN">
-    <appender-ref ref="news"/>
-  </logger>
-  <logger name="org.springframework" additivity="false" level="WARN">
-    <appender-ref ref="news"/>
-  </logger>
-  <logger name="net.sf.ehcache" additivity="false" level="WARN">
-    <appender-ref ref="news"/>
-  </logger>
-  <root level="WARN">
-    <appender-ref ref="news"/>
+  
+  <!-- 
+   | NOP logger that swallows all messages, useful for general test runs
+   | to allow logging to run at a high level without performance issues.
+   +-->
+  <appender name="N" class="ch.qos.logback.core.helpers.NOPAppender" />
+  
+  <!-- 
+   | Set root logging to TRACE, this is important so that all log messages are
+   | actually exercised by the unit tests.
+   +-->
+  <root level="TRACE">
+    <appender-ref ref="N"/>
   </root>
+  
+  <!--
+   | Uncomment and change package to inspect log mesasges for specific
+   | code 
+   +-->
+  <!--  
+  <logger name="org.hibernate.type" additivity="false" level="TRACE">
+    <appender-ref ref="C"/>
+  </logger>
+   -->
 </configuration>
