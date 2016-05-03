@@ -42,7 +42,7 @@
             <title>My news</title>
         </portlet-info>
         <portlet-preferences>
-            <!-- Single-value preference that determins how descriptions of news items
+            <!-- Single-value preference that determines how descriptions of news items
                  will be displayed;  choose between 'flyout' and 'summaries' -->
             <preference>
                 <name>storyView</name>
@@ -77,6 +77,16 @@
             <preference>
                 <name>portalJsNamespace</name>
                 <value>up</value>
+            </preference>
+            <!-- see applicationContext.xml for valid keys
+                 and src/main/resources/antisamy for policies -->
+            <preference>
+                <name>titlePolicy</name>
+                <value>antisamy-textonly</value>
+            </preference>
+            <preference>
+                <name>descriptionPolicy</name>
+                <value>antisamy-slashdot</value>
             </preference>
             <!-- If specified, this multi-valued portlet preference allows
                  administrators to restrict which PredefinedNewsDefinitions

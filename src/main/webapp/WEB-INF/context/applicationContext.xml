@@ -51,7 +51,9 @@
 
     <util:map id="antisamyPolicies">
         <entry key="antisamy-textonly" value="classpath:/antisamy/antisamy-textonly.xml"/>
+        <entry key="antisamy-xkcd" value="classpath:/antisamy/antisamy-xkcd.xml"/>
         <entry key="antisamy-ebay" value="classpath:/antisamy/antisamy-ebay-1.1.1.xml"/>
+        <entry key="antisamy-slashdot" value="classpath:/antisamy/antisamy-slashdot-1.1.1.xml"/>
         <entry key="antisamy-img" value="classpath:/antisamy/antisamy-img.xml"/>
         <entry key="antisamy-manchester" value="classpath:/antisamy/antisamy-manchester.xml"/>
         <entry key="antisamy-anythinggoes" value="classpath:/antisamy/antisamy-anythinggoes-1.1.1.xml"/>
