@@ -81,6 +81,10 @@
             <!-- see applicationContext.xml for valid keys
                  and src/main/resources/antisamy for policies -->
             <preference>
+                <name>titlePolicy</name>
+                <value>antisamy-textonly</value>
+            </preference>
+            <preference>
                 <name>descriptionPolicy</name>
                 <value>antisamy-slashdot</value>
             </preference>
