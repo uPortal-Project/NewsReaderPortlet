@@ -78,9 +78,11 @@
                 <name>portalJsNamespace</name>
                 <value>up</value>
             </preference>
+            <!-- see applicationContext.xml for valid keys
+                 and src/main/resources/antisamy for policies -->
             <preference>
                 <name>descriptionPolicy</name>
-                <value>antisamy-tinymce.xml</value>
+                <value>antisamy-slashdot</value>
             </preference>
             <!-- If specified, this multi-valued portlet preference allows
                  administrators to restrict which PredefinedNewsDefinitions

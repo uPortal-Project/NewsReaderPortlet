@@ -106,7 +106,7 @@
         <script type="text/template" id="${n}feed-detail-template">
                 <div>
                     <div class="titlebar portlet-titlebar">
-                        <h3 class="feed-title">{{title}}</h3>
+                        <h3 class="feed-title">{{{title}}}</h3>
                     </div>
                 </div>
                 <ul class="news-stories feed">
@@ -117,7 +117,7 @@
         <script type="text/template" id="${n}news-story-template">
             {{#each this}}
                 <li>
-                    <a href="{{link}}" title="{{description}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
+                    <a href="{{link}}" title="{{{description}}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{{title}}}</a>
                 </li>
             {{/each}}
         </script>
@@ -126,7 +126,7 @@
         <script type="text/template" id="${n}feed-detail-template">
                 <div>
                     <div class="titlebar portlet-titlebar">
-                        <h3 class="feed-title">{{title}}</h3>
+                        <h3 class="feed-title">{{{title}}}</h3>
                     </div>
                 </div>
                 <div class="news-stories feed">
@@ -137,12 +137,12 @@
             {{#each this}}
               <div>
                 <h3 class="feed-title">
-                    <a href="{{link}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{title}}</a>
+                    <a href="{{link}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{{title}}}</a>
                 </h3>
                 {{#if pubDate}}
                 <p class="newsreader-pubdate">{{pubDate}}</p>
                 {{/if}}
-                <p>{{description}}</p>
+                <p>{{{description}}}</p>
               </div>
             {{/each}}
         </script>
