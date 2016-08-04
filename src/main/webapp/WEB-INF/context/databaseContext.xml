@@ -71,7 +71,8 @@
 
     <bean id="newsStoreTarget"
           class="org.jasig.portlet.newsreader.dao.HibernateNewsStore"
-          parent="abstractHibernateTemplate" autowire-candidate="false"/>
+          p:sessionFactory-ref="sessionFactory"
+          autowire-candidate="false"/>
 
     <bean id="abstractStoreTransactionProxy"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
@@ -84,12 +85,6 @@
                 <prop key="remove*">PROPAGATION_REQUIRED</prop>
                 <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
             </props>
-        </property>
-    </bean>
-
-    <bean id="abstractHibernateTemplate" abstract="true">
-        <property name="sessionFactory">
-            <ref local="sessionFactory"/>
         </property>
     </bean>
 

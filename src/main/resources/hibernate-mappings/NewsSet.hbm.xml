@@ -24,7 +24,9 @@
 <hibernate-mapping default-lazy="false" default-cascade="none">
     
     <class name="org.jasig.portlet.newsreader.NewsSet" table="NEWS_SET">
-        
+
+        <cache usage="read-write" />
+
         <!-- unique id -->
         <id name="id" type="long" unsaved-value="-1">
             <column name="SET_ID" not-null="true"/>
@@ -48,7 +50,6 @@
             <one-to-many
                 class="org.jasig.portlet.newsreader.NewsConfiguration"/>
         </set>
-		
     </class>
     
 </hibernate-mapping>

@@ -29,7 +29,8 @@
 
     <!-- EHCache Configuration -->
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
-            p:configLocation="classpath:ehcache.xml"/>
+            p:configLocation="classpath:ehcache.xml"
+            p:shared="true"/>
 
     <bean id="newsCache" 
             class="org.springframework.cache.ehcache.EhCacheFactoryBean"

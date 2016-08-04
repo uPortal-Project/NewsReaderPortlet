@@ -90,6 +90,8 @@
     </pluginRepositories>
 
     <properties>
+        <ehcache.version>2.6.11</ehcache.version>
+        <hibernate.version>3.6.10.Final</hibernate.version>
         <icu4j.version>51.1</icu4j.version>
         <spring.version>4.1.5.RELEASE</spring.version>
         <resource-server.version>1.0.43</resource-server.version>
@@ -222,7 +224,17 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>3.6.10.Final</version>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>${ehcache.version}</version>
             </dependency>
             <!-- For sl4j/logback logging, see https://wiki.jasig.org/display/PLT/Logging+Best+Practices -->
             <dependency>
@@ -438,6 +450,14 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
         </dependency>
         <!-- Logging section -->
         <dependency>

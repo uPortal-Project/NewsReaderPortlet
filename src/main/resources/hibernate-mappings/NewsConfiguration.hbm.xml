@@ -24,6 +24,8 @@
 <hibernate-mapping default-lazy="false" default-cascade="none">
     
     <class name="org.jasig.portlet.newsreader.NewsConfiguration" table="NEWS_CONFIGURATION">
+
+        <cache usage="read-write" />
         
         <!-- BASE CLASS PROPERTIES -->
         <!-- We don't actually intend to use the base class on its own -->

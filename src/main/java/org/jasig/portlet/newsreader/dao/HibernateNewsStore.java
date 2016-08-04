@@ -340,7 +340,14 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
 	        Query q = this.getSession().createQuery(query);
 	        q.setString("userId", userId);
 	        q.setString("setName", setName);
-	        return (NewsSet) q.uniqueResult();
+            if (log.isDebugEnabled()) {
+                log.debug(this.getSessionFactory().getStatistics().toString());
+            }
+	        NewsSet set = (NewsSet) q.uniqueResult();
+            if (log.isDebugEnabled()) {
+                log.debug(this.getSessionFactory().getStatistics().toString());
+            }
+            return set;
 
         } catch (HibernateException ex) {
             throw convertHibernateAccessException(ex);
