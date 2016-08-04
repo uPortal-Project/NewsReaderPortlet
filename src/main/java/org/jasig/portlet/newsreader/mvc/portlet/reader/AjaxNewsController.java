@@ -133,7 +133,14 @@ public class AjaxNewsController {
             prefs.store();
         }
 
-        final int page = Integer.parseInt(request.getParameter("page"));
+        int page = 0;
+        try {
+          final String pageParam = request.getParameter("page");
+          page = pageParam == null ? 0 : Integer.parseInt(pageParam);
+        } catch (Exception e) {
+          log.warn("page parameter could not be parsed to int");
+        }
+
         final int maxStories = AbstractNewsController.getMaxStories(prefs);
 
         /*
