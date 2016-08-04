@@ -100,7 +100,13 @@
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
           p:dataSource-ref="dataSource"
-          p:configLocation="classpath:hibernate.cfg.xml"/>
+          p:configLocation="classpath:hibernate.cfg.xml">
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+             </props>
+      </property>
+    </bean>
 
     <!-- MaxWait probably not needed since uPortal will interrupt thread if it runs too long, but IMHO always good to
          specify a max to avoid losing resources.  -->
