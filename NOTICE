@@ -46,6 +46,7 @@ This project includes:
   Hamcrest Core under New BSD License
   Hibernate Commons Annotations under GNU LESSER GENERAL PUBLIC LICENSE
   Hibernate Core under GNU Lesser General Public License
+  Hibernate Ehcache Integration under GNU Lesser General Public License
   HyperSQL Database under HSQLDB License, a BSD open source license
   ICU4J under ICU License
   Jackson-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
@@ -101,6 +102,8 @@ This project includes:
   Spring Web MVC under The Apache Software License, Version 2.0
   Spring Web Portlet under The Apache Software License, Version 2.0
   standard under Apache License, Version 2.0
+  tomcat-jdbc under Apache License, Version 2.0
+  tomcat-juli under Apache License, Version 2.0
   xalan under Apache License, Version 2.0
   Xerces2-j under The Apache Software License, Version 2.0
   XML Commons External Components XML APIs under The Apache Software License, Version 2.0
