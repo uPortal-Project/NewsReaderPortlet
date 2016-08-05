@@ -71,7 +71,8 @@
 
     <bean id="newsStoreTarget"
           class="org.jasig.portlet.newsreader.dao.HibernateNewsStore"
-          parent="abstractHibernateTemplate" autowire-candidate="false"/>
+          p:sessionFactory-ref="sessionFactory"
+          autowire-candidate="false"/>
 
     <bean id="abstractStoreTransactionProxy"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
@@ -87,12 +88,6 @@
         </property>
     </bean>
 
-    <bean id="abstractHibernateTemplate" abstract="true">
-        <property name="sessionFactory">
-            <ref local="sessionFactory"/>
-        </property>
-    </bean>
-
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate3.HibernateTransactionManager"
           p:sessionFactory-ref="sessionFactory"/>
@@ -100,26 +95,37 @@
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
           p:dataSource-ref="dataSource"
-          p:configLocation="classpath:hibernate.cfg.xml"/>
+          p:configLocation="classpath:hibernate.cfg.xml">
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+             </props>
+      </property>
+    </bean>
 
-    <!-- MaxWait probably not needed since uPortal will interrupt thread if it runs too long, but IMHO always good to
-         specify a max to avoid losing resources.  -->
     <bean id="dataSource"
-          class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
+          class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close"
           p:driverClassName="${hibernate.connection.driver_class}"
           p:url="${hibernate.connection.url}"
           p:username="${hibernate.connection.username}"
           p:password="${hibernate.connection.password}"
           p:validationQuery="${hibernate.connection.validationQuery}"
+          p:validationQueryTimeout="7"
+          p:initialSize="5"
+          p:maxActive="50"
+          p:maxIdle="15"
+          p:minIdle="2"
+
+          p:maxWait="10000"
           p:testOnBorrow="true"
           p:testWhileIdle="true"
           p:minEvictableIdleTimeMillis="60000"
           p:timeBetweenEvictionRunsMillis="10000"
-          p:maxWait="60000"
           p:removeAbandoned="true"
           p:removeAbandonedTimeout="120"
           p:logAbandoned="true"
           p:numTestsPerEvictionRun="5"
+          p:jdbcInterceptors="ConnectionState(useEquals=true);StatementFinalizer(trace=true);ResetAbandonedTimer;SlowQueryReport"
     />
 
 </beans>
