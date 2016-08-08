@@ -62,7 +62,7 @@ public class Whitelist<T> {
             for (T item : items) {
                 final String fname = callback.getFname(item);
                 for (Pattern p : patterns) {
-                    Matcher m = p.matcher(fname);
+                    Matcher m = p.matcher(fname == null ? "" : fname);
                     if (m.matches()) {
                         rslt.add(item);
                         break;
