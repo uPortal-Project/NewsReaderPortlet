@@ -27,7 +27,7 @@
 <!--    http://www.qos.ch/shop/products/professionalSupport         -->
 <!--                                                                -->
 <configuration scan="true" scanPeriod="30 seconds">
-  <contextName>news</contextName>
+  <contextName>NewsReaderPortlet</contextName>
 
   <!-- 
    | Propagate log levels to java.util.logging 
