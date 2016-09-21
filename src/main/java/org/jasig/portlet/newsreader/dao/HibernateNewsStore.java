@@ -170,14 +170,12 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
             String query = "from PredefinedNewsDefinition def "
                     + "left join fetch def.defaultRoles role where "
                     + ":setId not in (select config.newsSet.id "
-                    + "from def.userConfigurations config)";
-            if (roles.size() > 0)
-                query = query.concat("and role in (:roles)");
-            Query q = this.getSession().createQuery(query);
-            q.setLong("setId", set.getId());
-            if (roles.size() > 0)
-                q.setParameterList("roles", roles);
-            List<PredefinedNewsDefinition> defs = q.list();
+                    + "from def.userConfigurations config) "
+                    + "and role in (:roles)";
+            String[] params = {"setId", "roles"};
+            Object[] values = {set.getId(), roles};
+            List<PredefinedNewsDefinition> defs = (List<PredefinedNewsDefinition>)
+                    getHibernateTemplate().findByNamedParam(query, params, values);
 
             for (PredefinedNewsDefinition def : defs) {
                 PredefinedNewsConfiguration config = new PredefinedNewsConfiguration();
@@ -262,7 +260,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
 
     public void deleteNewsDefinition(PredefinedNewsDefinition definition) {
         try {
-            
+
             String query = "from NewsConfiguration config "
                 + "where config.newsDefinition.id = ? and "
                 + "config.class = PredefinedNewsConfiguration";
