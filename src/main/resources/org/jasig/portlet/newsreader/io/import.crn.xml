@@ -26,7 +26,6 @@
 
 <with>
     <attribute key="importDir">${$1}</attribute>
-    <attribute key="importExportContextFile">${$2}</attribute>
     <attribute key="importPattern">.*</attribute>
       <!-- 
        | IMPORT_FILE_EXTENSIONS:  The file types we support, in the order they should be imported.
@@ -35,7 +34,7 @@
     <attribute key="IMPORT_FILE_EXTENSIONS">${groovy(['.pnd.xml'])}</attribute>
     <attribute key="IMPORT_LOG_PREFIX">[NEWS-IMPORT] </attribute>
     <subtasks>
-        <with-attribute key="PORTAL_CONTEXT" value="${groovy(org.jasig.portlet.newsreader.spring.PortletApplicationContextLocator.getApplicationContext(importExportContextFile))}">
+        <with-attribute key="PORTAL_CONTEXT" value="${groovy(org.jasig.portlet.newsreader.spring.PortletApplicationContextLocator.getApplicationContext('classpath:/context/importExportContext.xml'))}">
             <for-each items="${IMPORT_FILE_EXTENSIONS}" attribute-name="extension">
                 <file-iterator dir="${importDir}">
                     <if test="${groovy(Attributes.LOCATION.endsWith(extension))}">

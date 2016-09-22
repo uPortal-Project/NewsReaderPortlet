@@ -104,7 +104,7 @@
         p:basenames="messages" p:useCodeAsDefaultMessage="true"/>
 
     <bean class="org.springframework.web.servlet.view.XmlViewResolver"
-            p:order="0" p:location="/WEB-INF/context/views.xml"/>
+            p:order="0" p:location="classpath:/context/views.xml"/>
 
     <!-- Default View Resolver -->
     <bean id="viewResolver"

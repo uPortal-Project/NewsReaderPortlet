@@ -18,9 +18,6 @@
  */
 package org.jasig.portlet.newsreader.spring;
 
-import java.io.File;
-import java.net.URL;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -31,6 +28,7 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -49,12 +47,17 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * access to the {@link ServletContext}
  *
  * @author Eric Dalquist
- * @version $Revision$
  */
 public class PortletApplicationContextLocator implements ServletContextListener {
     private static Logger LOGGER = LoggerFactory.getLogger(PortletApplicationContextLocator.class);
 
     private static final SingletonDoubleCheckedCreator<ConfigurableApplicationContext> applicationContextCreator = new PortletApplicationContextCreator();
+
+    /**
+     * Subset of the main context;  used in hbm2dll and importing
+     */
+    public static final String DATABASE_CONTEXT_LOCATION = "classpath:/context/importExportContext.xml";
+
     private static Throwable directCreatorThrowable;
     private static ServletContext servletContext;
 
@@ -175,14 +178,8 @@ public class PortletApplicationContextLocator implements ServletContextListener 
             final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(genericApplicationContext);
             reader.setDocumentReaderClass(LazyInitByDefaultBeanDefinitionDocumentReader.class);
 
-            File file = new File(".");
-            try {
-                URL context = file.toURI().toURL();
-                URL location = new URL(context, (String) args[0]);
-                reader.loadBeanDefinitions(location.toExternalForm());
-            } catch (Exception e) {
-                LOGGER.error("Failed to load bean definitions", e);
-            }
+            final Resource resource = genericApplicationContext.getResource((String) args[0]);
+            reader.loadBeanDefinitions(resource);
 
             genericApplicationContext.refresh();
             genericApplicationContext.registerShutdownHook();

@@ -18,7 +18,7 @@
     under the License.
 
 -->
-<spring-beans context="${groovy(new File('.').toURI().toURL().toExternalForm())}" location="src/main/webapp/WEB-INF/context/applicationContext.xml">
+<spring-beans context="${groovy(new File('.').toURI().toURL().toExternalForm())}" location="classpath:/context/applicationContext.xml">
 
 	
 

@@ -32,9 +32,9 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            /WEB-INF/context/applicationContext.xml,
-            /WEB-INF/context/databaseContext.xml,
-            /WEB-INF/context/overlay/*.xml
+            classpath:/context/applicationContext.xml,
+            classpath:/context/databaseContext.xml,
+            classpath:/context/overlay/*.xml
         </param-value>
     </context-param>
     <context-param>
@@ -63,7 +63,7 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
-    
+
     <filter>
         <filter-name>CacheExpiresFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -86,17 +86,17 @@
         <servlet-class>org.springframework.web.servlet.ViewRendererServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    
+
     <servlet-mapping>
         <servlet-name>ViewRendererServlet</servlet-name>
         <url-pattern>/WEB-INF/servlet/view</url-pattern>
     </servlet-mapping>
-    
+
     <jsp-config>
         <jsp-property-group>
             <url-pattern>*.jsp</url-pattern>
             <scripting-invalid>true</scripting-invalid>
         </jsp-property-group>
     </jsp-config>
-    
+
 </web-app>

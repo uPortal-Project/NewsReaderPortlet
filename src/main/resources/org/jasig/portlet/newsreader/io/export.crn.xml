@@ -25,10 +25,9 @@
 
 <with>
     <attribute key="exportDir">${$1}</attribute>
-    <attribute key="importExportContextFile">${$2}</attribute>
     <attribute key="EXPORT_LOG_PREFIX">[NEWS-EXPORT] </attribute>
     <subtasks>
-        <with-attribute key="PORTAL_CONTEXT" value="${groovy(org.jasig.portlet.newsreader.spring.PortletApplicationContextLocator.getApplicationContext(importExportContextFile))}">
+        <with-attribute key="PORTAL_CONTEXT" value="${groovy(org.jasig.portlet.newsreader.spring.PortletApplicationContextLocator.getApplicationContext('classpath:/context/importExportContext.xml'))}">
 
         <with-attribute key="exportTasks" value="${groovy(PORTAL_CONTEXT.getBean('exportTasks'))}">
             <for-each items="${exportTasks}" attribute-name="task">
