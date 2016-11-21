@@ -41,12 +41,14 @@
 		remove.appendChild(document.createTextNode(' '));
 		var img = document.createElement('img');
 		img.src = '<c:url value="/images/delete.png"/>';
+    img.alt = '<spring:message code="edit.news.feed.roles.delete"/>';
 		img.style.verticalAlign = 'middle';
+    img.setAttribute('tabindex', 0);
 		remove.appendChild(img);
 		container.appendChild(remove);
 		div.appendChild(container);
 	}
-	
+
 	function removeRole(link) {
 		var div = link.parentNode;
 		div.parentNode.removeChild(div);
@@ -72,7 +74,9 @@
 		remove.appendChild(document.createTextNode(' '));
 		var img = document.createElement('img');
 		img.src = '<c:url value="/images/delete.png"/>';
+    img.alt = '<spring:message code="edit.news.feed.param.delete"/>';
 		img.style.verticalAlign = 'middle';
+    img.setAttribute('tabindex', 0);
 		remove.appendChild(img);
 		container.appendChild(remove);
 		div.appendChild(container);
@@ -101,14 +105,14 @@
 			<form:form name="news" commandName="newsDefinitionForm" action="${postUrl}" class="form-horizontal">
 				<form:hidden path="id"/>
 				<div class="form-group">
-				  <label class="col-md-4"><spring:message code="edit.news.feed.name"/></label>
+				  <label for="name" class="col-md-4"><spring:message code="edit.news.feed.name"/></label>
           <div class="col-md-8">
             <form:input path="name" class="form-control" />
             <form:errors path="name" cssClass="portlet-msg-error"/>
           </div>
 				</div>
 				<div class="form-group">
-				  <label class="col-md-4"><spring:message code="edit.news.feed.class"/></label>
+				  <label for="className" class="col-md-4"><spring:message code="edit.news.feed.class"/></label>
           <div class="col-md-8">
             <form:select path="className" class="form-control">
               <c:forEach items="${availableAdapters}" var="adapter">
@@ -126,13 +130,13 @@
             <div style="padding-left: 5px;">
               <input name="role" type="text" value="${ role }" size="20"/>
               <a style="text-decoration: none;" href="javascript:;" onclick="removeRole(this)">
-                <img style="vertical-align: middle;" src="<c:url value="/images/delete.png"/>"/>
+                <img style="vertical-align: middle;" alt="<spring:message code="edit.news.feed.roles.delete"/>" src="<c:url value="/images/delete.png"/>"/>
               </a>
             </div>
           </c:forEach>
           <div style="padding: 5px;">
             <a href="javascript:;" onclick="addRole('role-list')">
-              <img style="vertical-align: middle;" src="<c:url value="/images/add.png"/>"/>
+              <img style="vertical-align: middle;" alt="<spring:message code="edit.news.feed.roles.add"/>" src="<c:url value="/images/add.png"/>"/>
               <spring:message code="edit.news.feed.roles.add"/>
             </a>
           </div>
@@ -144,13 +148,13 @@
               <input name="parameterName" type="text" value="${ paramName }" size="20"/>
               <input name="parameterValue" type="text" value="${ newsDefinitionForm.parameterValue[status.index] }" size="20"/>
               <a style="text-decoration=none;" href="javascript:;" onclick="removeParameter(this)">
-                <img style="vertical-align: middle;" src="<c:url value="/images/delete.png"/>"/>
+                <img style="vertical-align: middle;" alt="<spring:message code="edit.news.feed.param.delete"/>" src="<c:url value="/images/delete.png"/>"/>
               </a>
             </div>
           </c:forEach>
           <div style="padding: 5px;">
             <a href="javascript:;" onclick="addParameter('parameter-list')">
-              <img style="vertical-align: middle;" src="<c:url value="/images/add.png"/>"/>
+              <img style="vertical-align: middle;" alt="<spring:message code="edit.news.feed.param.add"/>" src="<c:url value="/images/add.png"/>"/>
               <spring:message code="edit.news.feed.param.add"/></a>
           </div>
 				</div>
