@@ -42,14 +42,14 @@
       <form:form name="news" commandName="newsListingCommand" action="${postUrl}" class="form-horizontal">
 	<form:hidden path="id"/>
         <div class="form-group">
-          <label class="col-md-3 control-label"><spring:message code="edit.news.feed.name"/></label>
+          <label for="name" class="col-md-3 control-label"><spring:message code="edit.news.feed.name"/></label>
           <div class="col-md-9">
             <form:input path="name" class="form-control" />
 		<form:errors path="name" cssClass="portlet-msg-error"/>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-md-3 control-label"><spring:message code="edit.news.feed.url"/></label>
+          <label for="url" class="col-md-3 control-label"><spring:message code="edit.news.feed.url"/></label>
           <div class="col-md-9">
             <form:input path="url" class="form-control" />
 		<form:errors path="url" cssClass="portlet-msg-error"/>
