@@ -27,11 +27,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.portlet.util.PortletUtils;
 
+@Service("setCreationService")
 public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 
-	private static Logger log = LoggerFactory.getLogger(SharedNewsSetServiceImpl.class);
+	private NewsStore newsStore;
+
+	@Autowired
+	private UserIdService userIdService;
+
+	@Autowired
+	private RolesService rolesService;
+
+	private Logger logger = LoggerFactory.getLogger(SharedNewsSetServiceImpl.class);
+
+	@Autowired
+	public void setNewsStore(NewsStore newsStore) {
+		this.newsStore = newsStore;
+	}
 
 	/*
 	 * Get the news set from the ID or search the dataabse for a suitable set or create a new
@@ -41,24 +57,22 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 	 */
 	public NewsSet getNewsSet(String fname, PortletRequest request) {
 
-		PortletSession session = request.getPortletSession();
+		final PortletSession session = request.getPortletSession();
 
 		// get the user id associated with the current user, or use the configured
 		// guest username if no user is authenticated
-		String userId = request.getRemoteUser();
-		if (userId == null) {
-		    userId = "guest";
-		}
-		
+		final String userId = userIdService.getUserId(request);
+
 		NewsSet set;
 		
-		Object mutex = PortletUtils.getSessionMutex(session);
+		final Object mutex = PortletUtils.getSessionMutex(session);
 		synchronized (mutex) {
-			log.debug("Got Mutex: "+mutex);
+			logger.debug("Got Mutex {} for userId={}", mutex, userId);
 			
 			set = newsStore.getNewsSet(userId, fname);
+
 			if (set == null) {
-				log.debug("No existing set found for "+userId+", creating and saving new set.");
+				logger.debug("No existing set found for "+userId+", creating and saving new set.");
 		        set = new NewsSet();
 		        set.setUserId(userId);
 		        set.setName(fname);
@@ -68,9 +82,9 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 			// Persistent set is now loaded but may still need re-initalising since last use.
 			// by adding setId to session, we signal that initialisation has taken place.
 			if (session.getAttribute("setId", PortletSession.PORTLET_SCOPE) == null) {
-				log.debug("re-initalising loaded newsSet "+set.getName());
+				logger.debug("re-initalising loaded newsSet "+set.getName());
 				@SuppressWarnings("unchecked")
-				Set<String> roles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
+				final Set<String> roles = rolesService.getUserRoles(request);
 
 				if(roles != null) { //if roles are not in session for any reason then skip initNews until later
 					newsStore.initNews(set, roles);
@@ -80,11 +94,6 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 			}
 		}
 		return set;
-	}
-
-	private NewsStore newsStore;
-	public void setNewsStore(NewsStore newsStore) {
-		this.newsStore = newsStore;
 	}
 
 }

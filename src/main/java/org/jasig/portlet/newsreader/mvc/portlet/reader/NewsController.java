@@ -31,6 +31,7 @@ import javax.portlet.RenderResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.jasig.portlet.newsreader.service.RolesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -73,6 +74,9 @@ public class NewsController extends AbstractNewsController {
         this.newsStore = newsStore;
     }
 
+    @Autowired
+    private RolesService rolesService;
+
     private int defaultItems = 2;
     public void setDefaultItems(int defaultItems) {
         this.defaultItems = defaultItems;
@@ -110,19 +114,7 @@ public class NewsController extends AbstractNewsController {
          */
         if (session.getAttribute(INITIALIZED) == null) {
 
-            // get a set of all role names currently configured for
-            // default news
-            List<String> allRoles = newsStore.getUserRoles();
-            log.debug("all roles: " + allRoles);
-
-            // determine which of the above roles the user belongs to
-            // and store the resulting list in the session
-            Set<String> userRoles = new HashSet<String>();
-            for (String role : allRoles) {
-                if (request.isUserInRole(role))
-                    userRoles.add(role);
-            }
-            session.setAttribute("userRoles", userRoles, PortletSession.PORTLET_SCOPE);
+            final Set<String> userRoles = rolesService.getUserRoles(request);
 
             // set the default number of days to display
             session.setAttribute("items", defaultItems);

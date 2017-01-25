@@ -36,6 +36,7 @@ import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
+import org.jasig.portlet.newsreader.service.RolesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jasig.portlet.newsreader.NewsConfiguration;
@@ -75,6 +76,9 @@ public class EditNewsPreferencesController {
     public void setPredefinedEditActions(Map<String,String> predefinedEditActions) {
         this.predefinedEditActions = predefinedEditActions;
     }
+
+    @Autowired
+    private RolesService rolesService;
 
     private NewsStore newsStore;
 
@@ -119,8 +123,7 @@ public class EditNewsPreferencesController {
         model.put("predefinedNewsConfigurations", predefinedNewsConfigurations);
 
         // get the user's role listings
-        @SuppressWarnings("unchecked")
-        Set<String> userRoles = (Set<String>) session.getAttribute("userRoles", PortletSession.PORTLET_SCOPE);
+        final Set<String> userRoles = rolesService.getUserRoles(request);
 
         // get a list of predefined feeds the user doesn't
         // currently have configured

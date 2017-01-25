@@ -40,7 +40,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
     private Long id = new Long(-1);
     private String className;
     private String name;
-    private Map<String, String> parameters = new HashMap<String, String>();
+    private Map<String, String> parameters = new HashMap<>();
 
     /**
      * Default constructor.

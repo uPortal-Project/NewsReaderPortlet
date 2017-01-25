@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class PredefinedNewsConfiguration extends NewsConfiguration {
 
-    private Map<String, String> preferences = new HashMap<String, String>();
+    private Map<String, String> preferences = new HashMap<>();
 
     /**
      * Default constructor
