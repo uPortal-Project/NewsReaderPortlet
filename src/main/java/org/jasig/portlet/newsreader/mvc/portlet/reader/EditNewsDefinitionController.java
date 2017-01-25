@@ -54,10 +54,10 @@ public class EditNewsDefinitionController {
 
     private NewsStore newsStore;
 
-    @Resource(name="availableAdapters")
+    @Autowired
     private List<INewsAdapter> availableAdapters;
 
-    @Autowired(required = true)
+    @Autowired
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }

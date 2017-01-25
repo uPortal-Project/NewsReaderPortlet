@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.jasig.portlet.newsreader.dao;
 
 import java.util.List;
@@ -33,17 +34,15 @@ import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-
 /**
  * HibernateNewsStore provides a hibernate implementation of the NewsStore.
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
  */
-public class HibernateNewsStore extends HibernateDaoSupport implements
-        NewsStore {
+public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore {
 
-    private static Logger log = LoggerFactory.getLogger(HibernateNewsStore.class);
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public void storeNewsDefinition(NewsDefinition listing) {
         try {
@@ -71,7 +70,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
             String subscribeId) {
         try {
 
-            log.debug("fetching news configurations for " + subscribeId);
+            logger.debug("fetching news configurations for " + subscribeId);
             return (List<NewsConfiguration>) getHibernateTemplate().find(
                     "from NewsConfiguration config where "
                             + "subscribeId = ? and displayed = true "
@@ -162,7 +161,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
         try {
 
             // if the user doesn't have any roles, we don't have any
-            // chance of getting predefined newss, so just go ahead
+            // chance of getting predefined news, so just go ahead
             // and return
             if (roles.isEmpty())
                 return;
@@ -176,6 +175,8 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
             Object[] values = {set.getId(), roles};
             List<PredefinedNewsDefinition> defs = (List<PredefinedNewsDefinition>)
                     getHibernateTemplate().findByNamedParam(query, params, values);
+
+            logger.debug("Found the following PredefinedNewsDefinition objects for NewsSet={} and roles={}:  {}", set.getName(), roles, defs);
 
             for (PredefinedNewsDefinition def : defs) {
                 PredefinedNewsConfiguration config = new PredefinedNewsConfiguration();
@@ -306,7 +307,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
 	public List<NewsSet> getNewsSetsForUser(String userId) {
         try {
 
-            log.debug("fetching news sets for " + userId);
+            logger.debug("fetching news sets for " + userId);
             return (List<NewsSet>) getHibernateTemplate().find(
                     "from NewsSet newsSet where "
                             + "newsSet.userId = ? "
@@ -331,19 +332,19 @@ public class HibernateNewsStore extends HibernateDaoSupport implements
 	public NewsSet getNewsSet(String userId, String setName) {
         try {
 
-            log.debug("fetching news sets for " + userId);
+            logger.debug("fetching news sets for " + userId);
             String query = "from NewsSet newsSet where :userId = newsSet.userId and " +
             		":setName = newsSet.name order by newsSet.name";
 
 	        Query q = this.getSession().createQuery(query);
 	        q.setString("userId", userId);
 	        q.setString("setName", setName);
-            if (log.isDebugEnabled()) {
-                log.debug(this.getSessionFactory().getStatistics().toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(this.getSessionFactory().getStatistics().toString());
             }
 	        NewsSet set = (NewsSet) q.uniqueResult();
-            if (log.isDebugEnabled()) {
-                log.debug(this.getSessionFactory().getStatistics().toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(this.getSessionFactory().getStatistics().toString());
             }
             return set;
 

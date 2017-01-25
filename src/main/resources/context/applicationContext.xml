@@ -21,11 +21,20 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:util="http://www.springframework.org/schema/util"
     xmlns:c="http://www.springframework.org/schema/c"
     xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:component-scan base-package="org.jasig.portlet.newsreader">
+        <!-- Items in the following package are a part of the portlet (sub-)context,
+             not a part of the parent (main) context. -->
+        <context:exclude-filter type="regex" expression="org\.jasig\.portlet\.newsreader\.mvc\.portlet\..+"/>
+    </context:component-scan>
+    <context:annotation-config/>
 
     <!-- EHCache Configuration -->
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
@@ -89,16 +98,6 @@
           p:httpClient-ref="httpClient"
           p:processor-ref="romeProcessorFullStory" p:cache-ref="newsCache" p:cacheKeyPrefix="RomeFeed_FS." />
 
-    <util:list id="availableAdapters">
-        <ref bean="org.jasig.portlet.newsreader.adapter.RomeAdapter"/>
-        <ref bean="org.jasig.portlet.newsreader.adapter.RomeAdapterFullStory"/>
-    </util:list>
-
-
-    <bean id="setCreationService" class="org.jasig.portlet.newsreader.service.SharedNewsSetServiceImpl">
-        <property name="newsStore" ref="newsStore"/>
-    </bean>
-
     <!-- Message source for this context, loaded from localized "messages_xx" files -->
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
         p:basenames="messages" p:useCodeAsDefaultMessage="true"/>
@@ -153,4 +152,5 @@
             </bean>
         </property>
     </bean>
+
 </beans>
