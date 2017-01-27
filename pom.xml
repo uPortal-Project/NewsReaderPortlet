@@ -91,9 +91,9 @@
 
     <properties>
         <ehcache.version>2.6.11</ehcache.version>
-        <hibernate.version>3.6.10.Final</hibernate.version>
+        <hibernate.version>5.2.6.Final</hibernate.version>
         <icu4j.version>51.1</icu4j.version>
-        <spring.version>4.1.5.RELEASE</spring.version>
+        <spring.version>4.3.6.RELEASE</spring.version>
         <resource-server.version>1.0.43</resource-server.version>
         <httpclient.version>4.4</httpclient.version>
         <antisamy.version>1.5.3</antisamy.version>

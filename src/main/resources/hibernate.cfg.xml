@@ -22,27 +22,27 @@
 <!DOCTYPE hibernate-configuration PUBLIC
         "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
-        
+
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.show_sql">false</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.generate_statistics">true</property>
-        
+
         <property name="hibernate.jdbc.fetch_size">32</property>
         <property name="hibernate.jdbc.batch_size">32</property>
         <property name="hibernate.jdbc.batch_versioned_data">true</property>
-        
+
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <property name="hibernate.cache.use_second_level_cache">true</property>
         <property name="hibernate.cache.use_query_cache">true</property>
-        <property name="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory</property>
+        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</property>
 
         <mapping resource="hibernate-mappings/NewsSet.hbm.xml"/>
         <mapping resource="hibernate-mappings/NewsDefinition.hbm.xml"/>
         <mapping resource="hibernate-mappings/NewsConfiguration.hbm.xml"/>
-        
+
     </session-factory>
 </hibernate-configuration>

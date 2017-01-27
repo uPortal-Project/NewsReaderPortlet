@@ -19,18 +19,12 @@
 
 package org.jasig.portlet.newsreader.hibernate;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
-
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.connection.ConnectionProvider;
+import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
 import org.jasig.portlet.newsreader.spring.PortletApplicationContextLocator;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * When the hibernate3-maven-plugin:hbm2ddl goal is executed, this class
@@ -39,7 +33,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  *
  * @author drewwills
  */
-public class ApplicationContextConnectionProvider implements ConnectionProvider {
+public class ApplicationContextConnectionProvider extends DatasourceConnectionProviderImpl {
 
     private static final String DATA_SOURCE_BEAN_NAME = "dataSource";
 
@@ -47,62 +41,14 @@ public class ApplicationContextConnectionProvider implements ConnectionProvider 
 
     private final Logger logger = Logger.getLogger(getClass());
 
-    @Override
-    public void close() throws HibernateException {
-        if (context != null) {
-            ((ConfigurableApplicationContext) context).close();
-        }
-    }
-
-    @Override
-    public void closeConnection(Connection conn) throws SQLException {
-        conn.close();
-    }
-
-    @Override
-    public void configure(Properties props) throws HibernateException {
-        /*
-         * Configuration is handled by the ApplicationContext itself;  there is
-         * nothing to do here.
-         */
-    }
-
-    @Override
-    public Connection getConnection() throws SQLException {
-
-        if (context == null) {
-            init();
-        }
-
-        final DataSource dataSource = context.getBean(DATA_SOURCE_BEAN_NAME, DataSource.class);
-        final Connection rslt = dataSource.getConnection();
-        logger.info("Providing the following connection to hbm2ddl:  " + rslt);
-        return rslt;
-
-    }
-
-    @Override
-    public boolean supportsAggressiveRelease() {
-        return false;  // WTF?
-    }
-
-    /*
-     * Implementation
-     */
-
-    private synchronized void init() {
-
-        if (context != null) {
-            // Already done...
-            return;
-        }
-
+    public ApplicationContextConnectionProvider() {
         try {
             context = PortletApplicationContextLocator.getApplicationContext(PortletApplicationContextLocator.DATABASE_CONTEXT_LOCATION);
         } catch (Exception e) {
             logger.error("Unable to load the application context from " + PortletApplicationContextLocator.DATABASE_CONTEXT_LOCATION, e);
         }
-
+        final DataSource dataSource = context.getBean(DATA_SOURCE_BEAN_NAME, DataSource.class);
+        setDataSource(dataSource);
     }
 
 }
