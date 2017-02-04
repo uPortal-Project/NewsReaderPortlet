@@ -33,8 +33,7 @@
         <property name="hibernate.jdbc.batch_size">32</property>
         <property name="hibernate.jdbc.batch_versioned_data">true</property>
 
-        <property name="hibernate.current_session_context_class">thread</property>
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto"></property>
 
         <property name="hibernate.cache.use_second_level_cache">true</property>
         <property name="hibernate.cache.use_query_cache">true</property>
