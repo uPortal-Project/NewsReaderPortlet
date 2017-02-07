@@ -73,22 +73,24 @@ public class HibernateNewsStore implements NewsStore {
     }
 
     public List<NewsConfiguration> getNewsConfigurations(String subscribeId) {
-        logger.debug("fetching news configurations for " + subscribeId);
-        Query<NewsConfiguration> query = createQuery(
-                "from NewsConfiguration config where "
-                        + "subscribeId = ? and displayed = true "
-                        + "order by newsDefinition.name");
+        String hql =
+                "    FROM NewsConfiguration AS config " +
+                "   WHERE subscribeId = ? " +
+                "     AND displayed = TRUE " +
+                "ORDER BY newsDefinition.name";
+        Query<NewsConfiguration> query = createQuery(hql);
         query.setParameter(0, subscribeId);
         return query.list();
     }
 
     public List<UserDefinedNewsConfiguration> getUserDefinedNewsConfigurations(Long setId, boolean visibleOnly) {
-        String hql = "from NewsConfiguration config where "
-                + "config.newsSet.id = ? and "
-                + "config.class = UserDefinedNewsConfiguration "
-                + "order by newsDefinition.name";
+        String hql =
+                "    FROM NewsConfiguration AS config " +
+                "   WHERE config.newsSet.id = ? " +
+                "     AND config.class = UserDefinedNewsConfiguration " +
+                "ORDER BY newsDefinition.name";
         if (visibleOnly) {
-            hql = hql.concat(" and visibleOnly = true");
+            hql = hql.concat(" AND visibleOnly = TRUE");
         }
 
         Query<UserDefinedNewsConfiguration> query = createQuery(hql);
@@ -96,32 +98,35 @@ public class HibernateNewsStore implements NewsStore {
     }
 
     public List<PredefinedNewsConfiguration> getPredefinedNewsConfigurations(Long setId, boolean visibleOnly) {
-        String hql = "from NewsConfiguration config "
-                + "where config.newsSet.id = ? and "
-                + "config.class = PredefinedNewsConfiguration "
-                + "order by newsDefinition.name";
+        String hql =
+                "    FROM NewsConfiguration AS config " +
+                "   WHERE config.newsSet.id = ? " +
+                "     AND config.class = PredefinedNewsConfiguration " +
+                "ORDER BY newsDefinition.name";
         if (visibleOnly)
-            hql = hql.concat(" and visibleOnly = true");
+            hql = hql.concat(" AND visibleOnly = TRUE");
 
         Query<PredefinedNewsConfiguration> query = createQuery(hql);
         return query.setParameter(0, setId).list();
     }
 
     public List<PredefinedNewsConfiguration> getPredefinedNewsConfigurations() {
-        String hql = "from NewsDefinition def "
-                + "where def.class = PredefinedNewsDefinition "
-                + "order by def.name";
+        String hql =
+                "    FROM NewsDefinition AS def " +
+                "   WHERE def.class = PredefinedNewsDefinition " +
+                "ORDER BY def.name";
         Query<PredefinedNewsConfiguration> query = createQuery(hql);
         return query.list();
     }
 
     public List<PredefinedNewsDefinition> getHiddenPredefinedNewsDefinitions(Long setId, Set<String> roles) {
-        String hql = "from PredefinedNewsDefinition def "
-                + "where :setId not in (select config.newsSet.id "
-                + "from def.userConfigurations config) ";
+        String hql =
+                " FROM PredefinedNewsDefinition AS def " +
+                "WHERE :setId NOT IN " +
+                "      (SELECT config.newsSet.id " +
+                "         FROM def.userConfigurations AS config) ";
         for (int i = 0; i < roles.size(); i++) {
-            hql = hql.concat(
-                    "and :role" + i + " not in elements(def.defaultRoles) ");
+            hql = hql.concat("AND :role" + i + " NOT IN ELEMENTS(def.defaultRoles) ");
         }
 
         Query<PredefinedNewsDefinition> q = createQuery(hql);
@@ -143,11 +148,13 @@ public class HibernateNewsStore implements NewsStore {
             return;
         }
 
-        String hql = "from PredefinedNewsDefinition def "
-                + "left join fetch def.defaultRoles role where "
-                + ":setId not in (select config.newsSet.id "
-                + "from def.userConfigurations config) "
-                + "and role in (:roles)";
+        String hql =
+                "     FROM PredefinedNewsDefinition AS def " +
+                "LEFT JOIN FETCH def.defaultRoles AS role " +
+                "    WHERE :setId NOT IN " +
+                "          (SELECT config.newsSet.id " +
+                "             FROM def.userConfigurations AS config) " +
+                "              AND role IN (:roles)";
         Query<PredefinedNewsDefinition> query = createQuery(hql);
         query.setParameter("setId", set.getId());
         query.setParameter("roles", roles);
@@ -163,18 +170,20 @@ public class HibernateNewsStore implements NewsStore {
     }
 
     public PredefinedNewsDefinition getPredefinedNewsDefinition(Long id) {
-        String hql = "from PredefinedNewsDefinition def "
-                + "left join fetch def.defaultRoles role where "
-                + "def.id = :id";
+        String hql =
+                "     FROM PredefinedNewsDefinition AS def " +
+                "LEFT JOIN FETCH def.defaultRoles AS role " +
+                "    WHERE def.id = :id";
         Query<PredefinedNewsDefinition> query = createQuery(hql);
         query.setParameter("id", id);
         return query.uniqueResult();
     }
 
     public PredefinedNewsDefinition getPredefinedNewsDefinitionByName(String name) {
-        String hql = "from PredefinedNewsDefinition def "
-                + "left join fetch def.defaultRoles role where "
-                + "def.name = :name";
+        String hql =
+                "     FROM PredefinedNewsDefinition AS def " +
+                "LEFT JOIN FETCH def.defaultRoles AS role " +
+                "    WHERE def.name = :name";
         Query<PredefinedNewsDefinition> query = createQuery(hql);
         query.setParameter("name", name);
         return query.uniqueResult();
@@ -194,9 +203,10 @@ public class HibernateNewsStore implements NewsStore {
     }
 
     public void deleteNewsDefinition(PredefinedNewsDefinition definition) {
-        String hql = "from NewsConfiguration config "
-                + "where config.newsDefinition.id = ? and "
-                + "config.class = PredefinedNewsConfiguration";
+        String hql =
+                " FROM NewsConfiguration AS config " +
+                "WHERE config.newsDefinition.id = ? " +
+                "  AND config.class = PredefinedNewsConfiguration";
 
         Query<PredefinedNewsConfiguration> query = createQuery(hql);
         List<PredefinedNewsConfiguration> configs = query.setParameter(0, definition.getId()).list();
@@ -208,8 +218,9 @@ public class HibernateNewsStore implements NewsStore {
     }
 
     public List<String> getUserRoles() {
-        String sql = "select distinct elements(def.defaultRoles) " +
-                "from PredefinedNewsDefinition def ";
+        String sql =
+                "SELECT DISTINCT ELEMENTS(def.defaultRoles) " +
+                "  FROM PredefinedNewsDefinition AS def ";
         Query<String> query = createQuery(sql);
         return query.list();
     }
@@ -220,10 +231,11 @@ public class HibernateNewsStore implements NewsStore {
 
     public List<NewsSet> getNewsSetsForUser(String userId) {
         logger.debug("fetching news sets for " + userId);
-        Query<NewsSet> query = createQuery(
-                "from NewsSet newsSet where "
-                        + "newsSet.userId = ? "
-                        + "order by newsSet.name");
+        String hql =
+                "    FROM NewsSet AS newsSet " +
+                "   WHERE newsSet.userId = ? " +
+                "ORDER BY newsSet.name";
+        Query<NewsSet> query = createQuery(hql);
         query.setParameter(0, userId);
         return query.list();
     }
@@ -235,8 +247,11 @@ public class HibernateNewsStore implements NewsStore {
 
     public NewsSet getNewsSet(String userId, String setName) {
         logger.debug("fetching news sets for " + userId);
-        String hql = "from NewsSet newsSet where :userId = newsSet.userId and " +
-                ":setName = newsSet.name order by newsSet.name";
+        String hql =
+                "    FROM NewsSet AS newsSet " +
+                "   WHERE :userId = newsSet.userId " +
+                "     AND :setName = newsSet.name " +
+                "ORDER BY newsSet.name";
 
         Query<NewsSet> q = createQuery(hql);
         q.setParameter("userId", userId);
