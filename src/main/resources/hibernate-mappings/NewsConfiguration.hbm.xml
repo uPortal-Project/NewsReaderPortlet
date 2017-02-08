@@ -35,11 +35,7 @@
             <column name="NEWS_CONFIGURATION_ID" not-null="true"/>
             <generator class="native"/>
         </id>
-        
-        <!-- discriminator to determine whether this is an administratively 
-            or user-defined news definition -->
-        <discriminator column="NEWS_CONFIGURATION_TYPE" type="string"/>
-        
+
         <!-- flag to determine whether this news should be displayed by default -->
         <property name="displayed" type="boolean">
             <column name="DISPLAYED"/>
@@ -60,8 +56,10 @@
         <!-- SUBCLASSES -->
         
         <!-- user-defined news and their configurations -->
-        <subclass name="org.jasig.portlet.newsreader.PredefinedNewsConfiguration"
-            discriminator-value="PD">
+        <joined-subclass name="org.jasig.portlet.newsreader.PredefinedNewsConfiguration"
+            table="NEWS_CONFIGURATION_PD">
+
+            <key column="NEWS_CONFIGURATION_ID"/>
             
             <many-to-one 
                 name="newsDefinition" 
@@ -76,20 +74,22 @@
                 <element type="text" column="NEWS_PREFERENCE_VALUE" not-null="true"/> 
             </map> 
                         
-        </subclass>
+        </joined-subclass>
         
         
         <!-- admin-defined, system-wide news -->
-        <subclass name="org.jasig.portlet.newsreader.UserDefinedNewsConfiguration"
-            discriminator-value="UD">
-            
+        <joined-subclass name="org.jasig.portlet.newsreader.UserDefinedNewsConfiguration"
+            table="NEWS_CONFIGURATION_UD">
+
+            <key column="NEWS_CONFIGURATION_ID"/>
+
             <many-to-one 
                 name="newsDefinition" 
                 class="org.jasig.portlet.newsreader.UserDefinedNewsDefinition"
                 column="NEWS_ID"
                 cascade="all" lazy="false"/> 
             
-        </subclass>
+        </joined-subclass>
         
     </class>
     
