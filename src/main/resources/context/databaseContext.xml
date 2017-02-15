@@ -22,17 +22,25 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!-- Properties configuration -->
-    <bean id="propertyConfigurer" class="org.jasypt.spring31.properties.EncryptablePropertySourcesPlaceholderConfigurer" lazy-init="false">
+    <bean id="propertyConfigurer" class="org.jasypt.spring31.properties.EncryptablePropertySourcesPlaceholderConfigurer"
+          lazy-init="false">
         <!--
          | Supports encrypted properties within the location(s) listed in this
          | bean.  The password is the environment variable "UP_JASYPT_KEY"
          | (see http://www.jasypt.org/).
          +-->
         <constructor-arg>
-            <bean class="org.jasig.portlet.newsreader.spring.StringEncryptorFactoryBean" />
+            <bean class="org.jasig.portlet.newsreader.spring.StringEncryptorFactoryBean"/>
         </constructor-arg>
         <property name="locations">
             <list>
@@ -66,7 +74,7 @@
                 <value>file:${PORTAL_HOME}/NewsReaderPortlet_overrides.properties</value>
             </list>
         </property>
-        <property name="ignoreResourceNotFound" value="true" />
+        <property name="ignoreResourceNotFound" value="true"/>
     </bean>
 
     <!-- HIBERNATE CONFIGURATION -->
@@ -105,8 +113,8 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-             </props>
-      </property>
+            </props>
+        </property>
     </bean>
 
     <bean id="dataSource"

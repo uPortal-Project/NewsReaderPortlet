@@ -34,6 +34,7 @@ import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * HibernateNewsStore provides a hibernate implementation of the NewsStore.
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Repository;
  * @author Jen Bourey
  */
 @Repository
+@Transactional
 public class HibernateNewsStore implements NewsStore {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -56,7 +58,7 @@ public class HibernateNewsStore implements NewsStore {
         return sessionFactory.getCurrentSession();
     }
 
-    private <T> Query<T> createQuery(String hql) {
+    private <T> Query<T> generateQuery(String hql) {
         @SuppressWarnings("unchecked")
         Query<T> query = sessionFactory.getCurrentSession().createQuery(hql);
         return query;
@@ -78,7 +80,7 @@ public class HibernateNewsStore implements NewsStore {
                 "   WHERE subscribeId = ? " +
                 "     AND displayed = TRUE " +
                 "ORDER BY newsDefinition.name";
-        Query<NewsConfiguration> query = createQuery(hql);
+        Query<NewsConfiguration> query = generateQuery(hql);
         query.setParameter(0, subscribeId);
         return query.list();
     }
@@ -93,7 +95,7 @@ public class HibernateNewsStore implements NewsStore {
             hql = hql.concat(" AND visibleOnly = TRUE");
         }
 
-        Query<UserDefinedNewsConfiguration> query = createQuery(hql);
+        Query<UserDefinedNewsConfiguration> query = generateQuery(hql);
         return query.setParameter(0, setId).list();
     }
 
@@ -106,7 +108,7 @@ public class HibernateNewsStore implements NewsStore {
         if (visibleOnly)
             hql = hql.concat(" AND visibleOnly = TRUE");
 
-        Query<PredefinedNewsConfiguration> query = createQuery(hql);
+        Query<PredefinedNewsConfiguration> query = generateQuery(hql);
         return query.setParameter(0, setId).list();
     }
 
@@ -115,7 +117,7 @@ public class HibernateNewsStore implements NewsStore {
                 "    FROM NewsDefinition AS def " +
                 "   WHERE def.class = PredefinedNewsDefinition " +
                 "ORDER BY def.name";
-        Query<PredefinedNewsConfiguration> query = createQuery(hql);
+        Query<PredefinedNewsConfiguration> query = generateQuery(hql);
         return query.list();
     }
 
@@ -129,7 +131,7 @@ public class HibernateNewsStore implements NewsStore {
             hql = hql.concat("AND :role" + i + " NOT IN ELEMENTS(def.defaultRoles) ");
         }
 
-        Query<PredefinedNewsDefinition> q = createQuery(hql);
+        Query<PredefinedNewsDefinition> q = generateQuery(hql);
         q.setParameter("setId", setId);
         int count = 0;
         for (String role : roles) {
@@ -155,7 +157,7 @@ public class HibernateNewsStore implements NewsStore {
                 "          (SELECT config.newsSet.id " +
                 "             FROM def.userConfigurations AS config) " +
                 "              AND role IN (:roles)";
-        Query<PredefinedNewsDefinition> query = createQuery(hql);
+        Query<PredefinedNewsDefinition> query = generateQuery(hql);
         query.setParameter("setId", set.getId());
         query.setParameter("roles", roles);
         List<PredefinedNewsDefinition> defs = query.list();
@@ -174,7 +176,7 @@ public class HibernateNewsStore implements NewsStore {
                 "     FROM PredefinedNewsDefinition AS def " +
                 "LEFT JOIN FETCH def.defaultRoles AS role " +
                 "    WHERE def.id = :id";
-        Query<PredefinedNewsDefinition> query = createQuery(hql);
+        Query<PredefinedNewsDefinition> query = generateQuery(hql);
         query.setParameter("id", id);
         return query.uniqueResult();
     }
@@ -184,7 +186,7 @@ public class HibernateNewsStore implements NewsStore {
                 "     FROM PredefinedNewsDefinition AS def " +
                 "LEFT JOIN FETCH def.defaultRoles AS role " +
                 "    WHERE def.name = :name";
-        Query<PredefinedNewsDefinition> query = createQuery(hql);
+        Query<PredefinedNewsDefinition> query = generateQuery(hql);
         query.setParameter("name", name);
         return query.uniqueResult();
     }
@@ -208,7 +210,7 @@ public class HibernateNewsStore implements NewsStore {
                 "WHERE config.newsDefinition.id = ? " +
                 "  AND config.class = PredefinedNewsConfiguration";
 
-        Query<PredefinedNewsConfiguration> query = createQuery(hql);
+        Query<PredefinedNewsConfiguration> query = generateQuery(hql);
         List<PredefinedNewsConfiguration> configs = query.setParameter(0, definition.getId()).list();
         for (PredefinedNewsConfiguration config : configs) {
             currentSession().delete(config);
@@ -221,7 +223,7 @@ public class HibernateNewsStore implements NewsStore {
         String sql =
                 "SELECT DISTINCT ELEMENTS(def.defaultRoles) " +
                 "  FROM PredefinedNewsDefinition AS def ";
-        Query<String> query = createQuery(sql);
+        Query<String> query = generateQuery(sql);
         return query.list();
     }
 
@@ -235,7 +237,7 @@ public class HibernateNewsStore implements NewsStore {
                 "    FROM NewsSet AS newsSet " +
                 "   WHERE newsSet.userId = ? " +
                 "ORDER BY newsSet.name";
-        Query<NewsSet> query = createQuery(hql);
+        Query<NewsSet> query = generateQuery(hql);
         query.setParameter(0, userId);
         return query.list();
     }
@@ -253,7 +255,7 @@ public class HibernateNewsStore implements NewsStore {
                 "     AND :setName = newsSet.name " +
                 "ORDER BY newsSet.name";
 
-        Query<NewsSet> q = createQuery(hql);
+        Query<NewsSet> q = generateQuery(hql);
         q.setParameter("userId", userId);
         q.setParameter("setName", setName);
         q.list();
