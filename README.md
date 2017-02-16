@@ -1,5 +1,7 @@
 # Apereo News Reader Portlet
 
+[![Build Status](https://travis-ci.org/Jasig/NewsReaderPortlet.svg?branch=master)](https://travis-ci.org/Jasig/NewsReaderPortlet)
+
 This Java Portlet is a [Sponsored Portlet][] in the uPortal project.
 
 The original version of NewsReaderPortlet [was written by][NewsReaderPortlet contributors] [Anthony Colebourne][] of University of Manchester and that portlet was heavily based upon the [CalendarPortlet][] written by [Jen Bourey][] of Yale University
