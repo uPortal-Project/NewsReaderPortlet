@@ -1,6 +1,7 @@
 # Apereo News Reader Portlet
 
-[![Build Status](https://travis-ci.org/Jasig/NewsReaderPortlet.svg?branch=master)](https://travis-ci.org/Jasig/NewsReaderPortlet)
+[![Linux Build Status](https://travis-ci.org/Jasig/NewsReaderPortlet.svg?branch=master)](https://travis-ci.org/Jasig/NewsReaderPortlet)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/2ch9x7y3if4sq8eh/branch/master?svg=true)](https://ci.appveyor.com/project/ChristianMurphy/newsreaderportlet/branch/master)
 
 This Java Portlet is a [Sponsored Portlet][] in the uPortal project.
 
