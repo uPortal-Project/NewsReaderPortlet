@@ -20,6 +20,7 @@ package org.jasig.portlet.newsreader.adapter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.StringTokenizer;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -198,6 +199,25 @@ public class RomeAdapter extends AbstractNewsAdapter {
             	proxyHost = this.proxyHost;
             	proxyPort = this.proxyPort;
          }
+
+        //to manage nonProxyHosts JAVA OPT defined :
+        String nonProxyHost = null;
+        Boolean noProxy = false;
+        if (!StringUtils.isBlank(proxyHost)) {
+            nonProxyHost=System.getProperty("http.nonProxyHosts");
+
+            StringTokenizer st = new StringTokenizer(nonProxyHost, "|"); 
+            while (st.hasMoreTokens()) {
+                if (proxyHost.contains(st.nextToken().replace("*",""))) {
+                    noProxy=true;
+                    break;
+                }
+            } 
+        }
+        if (noProxy) {
+            proxyHost = "";
+            proxyPort = "";
+        }
 
         if (!StringUtils.isBlank(proxyHost) && !StringUtils.isBlank(proxyPort)) {
             HttpHost proxy = new HttpHost(proxyHost, Integer.valueOf(proxyPort));
