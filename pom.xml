@@ -232,6 +232,12 @@
                 <artifactId>hibernate-ehcache</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
+            <!-- Needed for schema reset;  version compatible with org.hibernate:hibernate-core:3.6.10.FINAL -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-tools</artifactId>
+                <version>3.6.0.Final</version>
+            </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache-core</artifactId>
@@ -722,36 +728,60 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
+            <!--
+             | Invoke this plugin as follows to drop and recreate the Announcements database tables...
+             |
+             |   >mvn db-init
+             +-->
             <plugin>
-                <!--
-                 | Invoke this plugin as follows to drop and recreate the Calendar database tables...
-                 |
-                 |   >mvn db-init
-                 +-->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>hibernate3-maven-plugin</artifactId>
-                <version>2.2</version>
+                <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>schema-create</id>
                         <phase>db-init</phase>
                         <goals>
-                            <goal>hbm2ddl</goal>
+                            <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <tasks>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath" />
+                                <property name="plugin_classpath" refid="maven.plugin.classpath" />
+
+                                <!--
+                                 | The following specifies failonerror=false because it will produce an exception like...
+                                 |
+                                 | java.sql.SQLSyntaxErrorException: a FOREIGN KEY constraint already exists on the set
+                                 |     of columns: FK6B30F46A9BF7DB25 in statement [alter table NEWS_CONFIGURATION add
+                                 |     constraint FK6B30F46A9BF7DB25 foreign key (NEWS_ID) references NEWS_DEFINITION]
+                                 |
+                                 | Yet the schema will be created (as well as it ever was).
+                                 |
+                                 | The issue appears to stem from the fact that the NEWS_ID column is declared for
+                                 | both subclasses, but differently, in NewsConfiguration.hbm.xml.
+                                 +-->
+
+                                <java failonerror="false" classname="org.jasig.portlet.newsreader.util.SchemaCreator">
+                                    <sysproperty key="logback.configurationFile" value="command-line.logback.xml" />
+                                    <classpath>
+                                        <pathelement location="${project.build.directory}/${project.artifactId}/WEB-INF/context" />
+                                        <pathelement path="${runtime_classpath}" />
+                                        <pathelement path="${plugin_classpath}" />
+                                    </classpath>
+                                </java>
+                            </tasks>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <componentProperties>
-                        <propertyfile>${project.basedir}/target/combined.properties</propertyfile>
-                        <drop>true</drop>
-                    </componentProperties>
-                </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>${jdbc.groupId}</groupId>
-                        <artifactId>${jdbc.artifactId}</artifactId>
-                        <version>${jdbc.version}</version>
-                        <scope>compile</scope>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>javax.servlet-api</artifactId>
+                        <version>${servlet-api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.portlet</groupId>
+                        <artifactId>portlet-api</artifactId>
+                        <version>2.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
