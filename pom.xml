@@ -99,6 +99,7 @@
         <antisamy.version>1.5.3</antisamy.version>
         <junit.version>4.12</junit.version>
         <servlet-api.version>3.0.1</servlet-api.version>
+        <uportal-libs.version>5.0.0-M4</uportal-libs.version>
 
         <!-- The JDBC Driver used by the portlet -->
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
@@ -283,6 +284,40 @@
                 <scope>runtime</scope>
             </dependency>
             <!-- End of logging section -->
+
+            <!-- Provides the PortalPropertySourcesPlaceholderConfigurer
+                 that supports global.properties and Jasypt encryption-->
+            <dependency>
+                <groupId>org.jasig.portal</groupId>
+                <artifactId>uPortal-spring</artifactId>
+                <version>${uportal-libs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jasig.portal</groupId>
+                        <artifactId>uPortal-api-internal</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jasig.portal</groupId>
+                        <artifactId>uPortal-security-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jasig.portal</groupId>
+                        <artifactId>uPortal-security-mvc</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jasig.portal</groupId>
+                        <artifactId>uPortal-tools</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>net.oauth.core</groupId>
+                        <artifactId>oauth</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webmvc</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
             <dependency>
                 <groupId>org.jasig.resourceserver</groupId>
                 <artifactId>resource-server-content</artifactId>
@@ -493,6 +528,10 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
         <!-- End of logging section -->
+        <dependency>
+            <groupId>org.jasig.portal</groupId>
+            <artifactId>uPortal-spring</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.jasig.resourceserver</groupId>
             <artifactId>resource-server-content</artifactId>
