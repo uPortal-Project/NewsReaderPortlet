@@ -31,6 +31,8 @@
     <context:component-scan base-package="org.jasig.portlet.newsreader.mvc.portlet.reader"/>
     <context:annotation-config/>
 
+    <bean parent="propertyConfigurer"/>
+
     <util:map id="predefinedEditActions">
         <!-- Add edit screens for custom news adapters -->
         <!--
@@ -43,5 +45,5 @@
     </bean>
 
 	<bean class="org.springframework.web.portlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
-	
+
 </beans>

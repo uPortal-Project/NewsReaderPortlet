@@ -31,7 +31,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>4.2.3-SNAPSHOT</version>
+    <version>4.2.4-SNAPSHOT</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -101,6 +101,7 @@
         <antisamy.version>1.5.5</antisamy.version>
         <junit.version>4.12</junit.version>
         <servlet-api.version>3.0.1</servlet-api.version>
+        <uportal-libs.version>5.0.0-M4</uportal-libs.version>
 
         <!-- The JDBC Driver used by the portlet -->
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
@@ -234,6 +235,12 @@
                 <artifactId>hibernate-ehcache</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
+            <!-- Needed for schema reset;  version compatible with org.hibernate:hibernate-core:3.6.10.FINAL -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-tools</artifactId>
+                <version>3.6.0.Final</version>
+            </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache-core</artifactId>
@@ -279,6 +286,40 @@
                 <scope>runtime</scope>
             </dependency>
             <!-- End of logging section -->
+
+            <!-- Provides the PortalPropertySourcesPlaceholderConfigurer
+                 that supports global.properties and Jasypt encryption-->
+            <dependency>
+                <groupId>org.jasig.portal</groupId>
+                <artifactId>uPortal-spring</artifactId>
+                <version>${uportal-libs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jasig.portal</groupId>
+                        <artifactId>uPortal-api-internal</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jasig.portal</groupId>
+                        <artifactId>uPortal-security-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jasig.portal</groupId>
+                        <artifactId>uPortal-security-mvc</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jasig.portal</groupId>
+                        <artifactId>uPortal-tools</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>net.oauth.core</groupId>
+                        <artifactId>oauth</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webmvc</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
             <dependency>
                 <groupId>org.jasig.resourceserver</groupId>
                 <artifactId>resource-server-content</artifactId>
@@ -489,6 +530,10 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
         <!-- End of logging section -->
+        <dependency>
+            <groupId>org.jasig.portal</groupId>
+            <artifactId>uPortal-spring</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.jasig.resourceserver</groupId>
             <artifactId>resource-server-content</artifactId>
@@ -724,30 +769,50 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
+            <!--
+             | Invoke this plugin as follows to drop and recreate the Announcements database tables...
+             |
+             |   >mvn db-init
+             +-->
             <plugin>
-                <!--
-                 | Invoke this plugin as follows to drop and recreate the Calendar database tables...
-                 |
-                 |   >mvn db-init
-                 +-->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>hibernate3-maven-plugin</artifactId>
-                <version>2.2</version>
+                <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>schema-create</id>
                         <phase>db-init</phase>
                         <goals>
-                            <goal>hbm2ddl</goal>
+                            <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <tasks>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath" />
+                                <property name="plugin_classpath" refid="maven.plugin.classpath" />
+
+                                <!--
+                                 | The following specifies failonerror=false because it will produce an exception like...
+                                 |
+                                 | java.sql.SQLSyntaxErrorException: a FOREIGN KEY constraint already exists on the set
+                                 |     of columns: FK6B30F46A9BF7DB25 in statement [alter table NEWS_CONFIGURATION add
+                                 |     constraint FK6B30F46A9BF7DB25 foreign key (NEWS_ID) references NEWS_DEFINITION]
+                                 |
+                                 | Yet the schema will be created (as well as it ever was).
+                                 |
+                                 | The issue appears to stem from the fact that the NEWS_ID column is declared for
+                                 | both subclasses, but differently, in NewsConfiguration.hbm.xml.
+                                 +-->
+
+                                <java failonerror="false" classname="org.jasig.portlet.newsreader.util.SchemaCreator">
+                                    <sysproperty key="logback.configurationFile" value="command-line.logback.xml" />
+                                    <classpath>
+                                        <pathelement location="${project.build.directory}/${project.artifactId}/WEB-INF/context" />
+                                        <pathelement path="${runtime_classpath}" />
+                                        <pathelement path="${plugin_classpath}" />
+                                    </classpath>
+                                </java>
+                            </tasks>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <componentProperties>
-                        <propertyfile>${project.basedir}/target/combined.properties</propertyfile>
-                        <drop>true</drop>
-                    </componentProperties>
-                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>${jdbc.groupId}</groupId>
