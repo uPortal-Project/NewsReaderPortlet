@@ -32,17 +32,8 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!-- Properties configuration -->
-    <bean id="propertyConfigurer" class="org.jasypt.spring31.properties.EncryptablePropertySourcesPlaceholderConfigurer"
-          lazy-init="false">
-        <!--
-         | Supports encrypted properties within the location(s) listed in this
-         | bean.  The password is the environment variable "UP_JASYPT_KEY"
-         | (see http://www.jasypt.org/).
-         +-->
-        <constructor-arg>
-            <bean class="org.jasig.portlet.newsreader.spring.StringEncryptorFactoryBean"/>
-        </constructor-arg>
-        <property name="locations">
+    <bean id="propertyConfigurer" class="org.springframework.context.support.PortalPropertySourcesPlaceholderConfigurer">
+      <property name="locations">
             <list>
                 <value>classpath:datasource.properties</value>
                 <value>classpath:configuration.properties</value>
