@@ -136,8 +136,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         try {
 
             String query = "from PredefinedNewsDefinition def "
-                    + "where :setId not in (select config.newsSet.id "
-                    + "from def.userConfigurations config) ";
+                    + "where not exists (from def.userConfigurations config where config.newsSet.id = :setId) ";
             for (int i = 0; i < roles.size(); i++) {
                 query = query.concat(
                         "and :role" + i + " not in elements(def.defaultRoles) ");
@@ -167,9 +166,9 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
                 return;
 
             String query = "from PredefinedNewsDefinition def "
-                    + "left join fetch def.defaultRoles role where "
-                    + ":setId not in (select config.newsSet.id "
-                    + "from def.userConfigurations config) "
+                    + "left join fetch def.defaultRoles role "
+                    + " where "
+                    + "not exists (from def.userConfigurations config where config.newsSet.id = :setId) "
                     + "and role in (:roles)";
             String[] params = {"setId", "roles"};
             Object[] values = {set.getId(), roles};
