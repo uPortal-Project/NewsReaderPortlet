@@ -72,9 +72,9 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
             logger.debug("fetching news configurations for " + subscribeId);
             return (List<NewsConfiguration>) getHibernateTemplate().find(
-                    "from NewsConfiguration config where "
-                            + "subscribeId = ? and displayed = true "
-                            + "order by newsDefinition.name", subscribeId);
+                    "FROM NewsConfiguration config WHERE "
+                            + "subscribeId = ? AND displayed = true "
+                            + "ORDER BY newsDefinition.name", subscribeId);
 
         } catch (HibernateException ex) {
             throw convertHibernateAccessException(ex);
@@ -85,12 +85,12 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
             Long setId, boolean visibleOnly) {
         try {
 
-            String query = "from NewsConfiguration config where "
-                    + "config.newsSet.id = ? and "
+            String query = "FROM NewsConfiguration config WHERE "
+                    + "config.newsSet.id = ? AND "
                     + "config.class = UserDefinedNewsConfiguration "
-                    + "order by newsDefinition.name";
+                    + "ORDER BY newsDefinition.name";
             if (visibleOnly)
-                query = query.concat(" and visibleOnly = true");
+                query = query.concat(" AND visibleOnly = true");
 
             return (List<UserDefinedNewsConfiguration>) getHibernateTemplate()
                     .find(query, setId);
@@ -103,12 +103,12 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     public List<PredefinedNewsConfiguration> getPredefinedNewsConfigurations(
             Long setId, boolean visibleOnly) {
         try {
-            String query = "from NewsConfiguration config "
-                    + "where config.newsSet.id = ? and "
+            String query = "FROM NewsConfiguration config "
+                    + "WHERE config.newsSet.id = ? AND "
                     + "config.class = PredefinedNewsConfiguration "
-                    + "order by newsDefinition.name";
+                    + "ORDER BY newsDefinition.name";
             if (visibleOnly)
-                query = query.concat(" and visibleOnly = true");
+                query = query.concat(" AND visibleOnly = true");
 
             return (List<PredefinedNewsConfiguration>) getHibernateTemplate()
                     .find(query, setId);
@@ -121,9 +121,9 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     public List<PredefinedNewsConfiguration> getPredefinedNewsConfigurations() {
         try {
 
-            String query = "from NewsDefinition def "
-                    + "where def.class = PredefinedNewsDefinition "
-                    + "order by def.name";
+            String query = "FROM NewsDefinition def "
+                    + "WHERE def.class = PredefinedNewsDefinition "
+                    + "ORDER BY def.name";
             return (List<PredefinedNewsConfiguration>) getHibernateTemplate()
                     .find(query);
 
@@ -135,11 +135,11 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     public List<PredefinedNewsDefinition> getHiddenPredefinedNewsDefinitions(Long setId, Set<String> roles) {
         try {
 
-            String query = "from PredefinedNewsDefinition def "
-                    + "where not exists (from def.userConfigurations config where config.newsSet.id = :setId) ";
+            String query = "FROM PredefinedNewsDefinition def "
+                    + "WHERE NOT EXISTS (FROM def.userConfigurations config WHERE config.newsSet.id = :setId) ";
             for (int i = 0; i < roles.size(); i++) {
                 query = query.concat(
-                        "and :role" + i + " not in elements(def.defaultRoles) ");
+                        "AND :role" + i + " NOT IN elements(def.defaultRoles) ");
             }
 
             Query q = this.getSession().createQuery(query);
@@ -165,11 +165,11 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
             if (roles.isEmpty())
                 return;
 
-            String query = "from PredefinedNewsDefinition def "
-                    + "left join fetch def.defaultRoles role "
-                    + " where "
-                    + "not exists (from def.userConfigurations config where config.newsSet.id = :setId) "
-                    + "and role in (:roles)";
+            String query = "FROM PredefinedNewsDefinition def "
+                    + "LEFT JOIN FETCH def.defaultRoles role "
+                    + " WHERE "
+                    + "NOT EXISTS (FROM def.userConfigurations config WHERE config.newsSet.id = :setId) "
+                    + "AND role IN (:roles)";
             String[] params = {"setId", "roles"};
             Object[] values = {set.getId(), roles};
             List<PredefinedNewsDefinition> defs = (List<PredefinedNewsDefinition>)
@@ -192,8 +192,8 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
         try {
 
-            String query = "from PredefinedNewsDefinition def "
-                    + "left join fetch def.defaultRoles role where "
+            String query = "FROM PredefinedNewsDefinition def "
+                    + "LEFT JOIN FETCH def.defaultRoles role WHERE "
                     + "def.id = :id";
             Query q = this.getSession().createQuery(query);
             q.setLong("id", id);
@@ -209,8 +209,8 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
         try {
 
-            String query = "from PredefinedNewsDefinition def "
-                    + "left join fetch def.defaultRoles role where "
+            String query = "FROM PredefinedNewsDefinition def "
+                    + "LEFT JOIN FETCH def.defaultRoles role WHERE "
                     + "def.name = :name";
             Query q = this.getSession().createQuery(query);
             q.setString("name", name);
@@ -261,8 +261,8 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     public void deleteNewsDefinition(PredefinedNewsDefinition definition) {
         try {
 
-            String query = "from NewsConfiguration config "
-                + "where config.newsDefinition.id = ? and "
+            String query = "FROM NewsConfiguration config "
+                + "WHERE config.newsDefinition.id = ? AND "
                 + "config.class = PredefinedNewsConfiguration";
 
             List<PredefinedNewsConfiguration> configs = (List<PredefinedNewsConfiguration>) getHibernateTemplate()
@@ -280,8 +280,8 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     public List<String> getUserRoles() {
         try {
 
-            String query = "select distinct elements(def.defaultRoles) " +
-                    "from PredefinedNewsDefinition def ";
+            String query = "SELECT DISTINCT elements(def.defaultRoles) " +
+                    "FROM PredefinedNewsDefinition def ";
 
             return (List<String>) getHibernateTemplate()
                     .find(query);
@@ -308,9 +308,9 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
             logger.debug("fetching news sets for " + userId);
             return (List<NewsSet>) getHibernateTemplate().find(
-                    "from NewsSet newsSet where "
+                    "FROM NewsSet newsSet WHERE "
                             + "newsSet.userId = ? "
-                            + "order by newsSet.name", userId);
+                            + "ORDER BY newsSet.name", userId);
 
         } catch (HibernateException ex) {
             throw convertHibernateAccessException(ex);
@@ -332,8 +332,8 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         try {
 
             logger.debug("fetching news sets for " + userId);
-            String query = "from NewsSet newsSet where :userId = newsSet.userId and " +
-            		":setName = newsSet.name order by newsSet.name";
+            String query = "FROM NewsSet newsSet WHERE :userId = newsSet.userId AND " +
+            		":setName = newsSet.name ORDER BY newsSet.name";
 
 	        Query q = this.getSession().createQuery(query);
 	        q.setString("userId", userId);
