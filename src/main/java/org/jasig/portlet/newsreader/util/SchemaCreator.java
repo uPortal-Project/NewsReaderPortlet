@@ -20,18 +20,22 @@ package org.jasig.portlet.newsreader.util;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.TargetType;
 import org.jasig.portlet.newsreader.spring.PortletApplicationContextLocator;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 /**
  * This tool is responsible for creating the NewsReader portlet database schema (and dropping
@@ -78,12 +82,15 @@ public class SchemaCreator implements ApplicationContextAware {
 
         final LocalSessionFactoryBean sessionFactoryBean = applicationContext
                 .getBean(SESSION_FACTORY_BEAN_NAME, LocalSessionFactoryBean.class);
+        final MetadataSources metadataSources = sessionFactoryBean.getMetadataSources();
+        final Metadata metadata = metadataSources.buildMetadata();
         final DataSource dataSource = applicationContext.getBean(DATA_SOURCE_BEAN_NAME, DataSource.class);
 
         try (final Connection conn = dataSource.getConnection()) {
             final Configuration cfg = sessionFactoryBean.getConfiguration();
-            final SchemaExport schemaExport = new SchemaExport(cfg, conn);
-            schemaExport.execute(true, true, false, false);
+            EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE, TargetType.STDOUT);
+            final SchemaExport schemaExport = new SchemaExport();
+            schemaExport.create(targetTypes, metadata);
 
             final List<Exception> exceptions = schemaExport.getExceptions();
             if (exceptions.size() != 0) {

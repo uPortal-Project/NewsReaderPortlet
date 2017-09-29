@@ -22,12 +22,18 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <!-- Custom uPortal tech that supports global.properties and Jasypt encryption -->
+    <!-- Properties configuration -->
     <bean id="propertyConfigurer" class="org.springframework.context.support.PortalPropertySourcesPlaceholderConfigurer">
-        <property name="locations">
+      <property name="locations">
             <list>
                 <value>classpath:datasource.properties</value>
                 <value>classpath:configuration.properties</value>
@@ -58,6 +64,7 @@
                 <value>file:${portal.home}/news-reader.properties</value>
             </list>
         </property>
+        <property name="ignoreResourceNotFound" value="true"/>
     </bean>
 
     <!-- HIBERNATE CONFIGURATION -->
@@ -86,18 +93,18 @@
     </bean>
 
     <bean id="transactionManager"
-          class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager"
           p:sessionFactory-ref="sessionFactory"/>
 
     <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
           p:dataSource-ref="dataSource"
           p:configLocation="classpath:hibernate.cfg.xml">
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-             </props>
-      </property>
+            </props>
+        </property>
     </bean>
 
     <bean id="dataSource"
