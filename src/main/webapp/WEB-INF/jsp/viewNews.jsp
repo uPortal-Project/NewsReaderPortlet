@@ -34,25 +34,10 @@
         padding-top: 2px;
         padding-bottom: 2px;
     }
-    .ui-tooltip {
-        padding:8px;
-        position:absolute;
-        z-index:9999;
-        -o-box-shadow: 0 0 5px #aaa;
-        -moz-box-shadow: 0 0 5px #aaa;
-        -webkit-box-shadow: 0 0 5px #aaa;
-        box-shadow: 0 0 5px #aaa;
-        max-width: 400px;
-    }
-
-    * html .ui-tooltip { background-image: none; }
-    body .ui-tooltip { border-width:2px; }
-
 </style>
 <portlet:resourceURL var="feedUrl"/>
 
 <div id="${n}" class="container-fluid newsreader-container">
-
     <div class="row">
         <div class="news-reader-feed-list newsreader-content view-news col-md-12">
             <c:choose>
@@ -160,38 +145,16 @@
         Handlebars = ${n}.Handlebars;
         upnews = ${n}.upnews;
 
-
         var newsStoryTemplate = Handlebars.compile($("#${n}news-story-template").html())
         Handlebars.registerHelper('news_stories', function(entries) {
             return newsStoryTemplate(entries);
         });
 
-        var adjustToolTipBasedOnSize = function () {
+        var adjustToolTips = function () {
             <c:if test="${ storyView == 'flyout' }">
-                var tooltipPosition = { offset: "15 15" , collision: "fit" };
-
-                // If there is not enough width in the window to display as a flyout, switch to display the
-                // tooltip under the news item.  Set collision to none instead of 'fit' because fit has a flickering
-                // display when the tip can't cleanly display under the news item (at least with jQuery 1.8.13).
-                // This is still not perfect; at least with jQuery 1.8.13 if the width of the window is small and the
-                // tip flows to a smaller width, the tip can overlap the top of the news item and cause flicker if the
-                // cursor is underneath the tip.
-                if (window.innerWidth < 400 * 2) {
-                    tooltipPosition = { my: "left bottom", at: "left top", collision: "none", offset: "0 -20"}
-                }
-                $(".news-stories li a").tooltip({
-                    showURL: false,
-                    position: tooltipPosition
-                });
+                $(".news-stories li a").tooltip({showURL: false});
             </c:if>
         };
-
-        <c:if test="${ storyView == 'flyout' }">
-                $(window).resize(function() {
-                    adjustToolTipBasedOnSize();
-                });
-        </c:if>
-
 
         newsView = $.extend(upnews.NewsView, {
             newsService: new upnews.newsService("${feedUrl}"),
@@ -225,7 +188,7 @@
             },
             feedDetailView: $.extend(upnews.NewsFeedDetailView, {
                 template: Handlebars.compile($("#${n}feed-detail-template").html()),
-                postRender: adjustToolTipBasedOnSize,
+                postRender: adjustToolTips,
                 loader: function(id) {
                     var view = this;
                     var deferred = $.Deferred();
@@ -241,9 +204,12 @@
                         } else if (feed.entries.length > 0) {
                             $('.news-stories', view.$el).append(newsStoryTemplate(feed.entries));
                             deferred.resolve({page: view.page, success: true});
+                            adjustToolTips();
                         } else if (view.page === 0) {
                             $('.news-stories', view.$el).append("No stories for this feed");
                             deferred.resolve({page: view.page, success: false});
+                        } else {
+                            adjustToolTips();
                         }
                     });
 
@@ -258,16 +224,12 @@
         });
 
         $(document).ready(function() {
-
             $(newsView.feedListView).bind("feedSelected", function(event, id) {
                 if (newsView.newsService.getActiveFeed() !== id) {
                     newsView.getFeed(id);
                 }
             });
-
             newsView.setup("${param.activeFeed}");
-
         });
-
     });
 </rs:compressJs></script>
