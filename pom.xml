@@ -93,10 +93,10 @@
         <ehcache.version>2.6.11</ehcache.version>
         <hibernate.version>3.6.10.Final</hibernate.version>
         <icu4j.version>51.1</icu4j.version>
-        <spring.version>4.1.5.RELEASE</spring.version>
+        <spring.version>4.3.15.RELEASE</spring.version>
         <resource-server.version>1.0.43</resource-server.version>
         <httpclient.version>4.5.5</httpclient.version>
-        <antisamy.version>1.5.3</antisamy.version>
+        <antisamy.version>1.5.7</antisamy.version>
         <junit.version>4.12</junit.version>
         <servlet-api.version>3.0.1</servlet-api.version>
         <uportal-libs.version>5.1.0</uportal-libs.version>
@@ -106,7 +106,7 @@
         <jdbc.artifactId>hsqldb</jdbc.artifactId>
         <jdbc.version>2.2.9</jdbc.version>
         <tomcat-jdbc.version>8.5.4</tomcat-jdbc.version>
-        <logback.version>1.1.7</logback.version>
+        <logback.version>1.2.0</logback.version>
         <slf4j.version>1.7.21</slf4j.version>
     </properties>
 
@@ -206,12 +206,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.3.0</version>
+                <version>2.8.6</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.3.0</version>
+                <version>2.8.11.1</version>
             </dependency>
             <dependency>
                 <groupId>xerces</groupId>
@@ -733,14 +733,14 @@
                                 def env = System.getenv()
                                 def props = new Properties()
                                 new File("${project.basedir}/target/${project.build.finalName}/WEB-INF/classes/datasource.properties").withInputStream {
-                                    stream -&gt; props.load(stream)
+                                    stream -> props.load(stream)
                                 }
 
-                                def readIfExists = {filename -&gt;
+                                def readIfExists = {filename ->
                                     def file = new File(filename)
                                     if (file.exists()) {
                                         file.withInputStream {
-                                            stream -&gt; props.load(stream)
+                                            stream -> props.load(stream)
                                         }
                                     }
                                 }
@@ -780,8 +780,8 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <property name="runtime_classpath" refid="maven.runtime.classpath" />
-                                <property name="plugin_classpath" refid="maven.plugin.classpath" />
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
 
                                 <!--
                                  | The following specifies failonerror=false because it will produce an exception like...
@@ -797,11 +797,11 @@
                                  +-->
 
                                 <java failonerror="false" classname="org.jasig.portlet.newsreader.util.SchemaCreator">
-                                    <sysproperty key="logback.configurationFile" value="command-line.logback.xml" />
+                                    <sysproperty key="logback.configurationFile" value="command-line.logback.xml"/>
                                     <classpath>
-                                        <pathelement location="${project.build.directory}/${project.artifactId}/WEB-INF/context" />
-                                        <pathelement path="${runtime_classpath}" />
-                                        <pathelement path="${plugin_classpath}" />
+                                        <pathelement location="${project.build.directory}/${project.artifactId}/WEB-INF/context"/>
+                                        <pathelement path="${runtime_classpath}"/>
+                                        <pathelement path="${plugin_classpath}"/>
                                     </classpath>
                                 </java>
                             </tasks>
@@ -834,27 +834,27 @@
                         <configuration>
                             <tasks>
                                 <!-- Set default value of data location if it is not set -->
-                                <property name="dir" value="${basedir}/src/main/data" />
+                                <property name="dir" value="${basedir}/src/main/data"/>
 
-                                <property name="runtime_classpath" refid="maven.runtime.classpath" />
-                                <property name="plugin_classpath" refid="maven.plugin.classpath" />
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
                                 <!-- Provided jars don't seem to be added to the runtime
                                      classpath, so we manually add in servlet.jar here  -->
-                                <property name="servlet.jar" value="${maven.dependency.javax.servlet.servlet-api.jar.path}" />
-                                <property name="portlet.jar" value="${maven.dependency.javax.portlet.portlet-api.jar.path}" />
+                                <property name="servlet.jar" value="${maven.dependency.javax.servlet.servlet-api.jar.path}"/>
+                                <property name="portlet.jar" value="${maven.dependency.javax.portlet.portlet-api.jar.path}"/>
 
                                 <java failonerror="true" classname="org.danann.cernunnos.runtime.Main">
-                                    <sysproperty key="logback.configurationFile" value="command-line.logback.xml" />
+                                    <sysproperty key="logback.configurationFile" value="command-line.logback.xml"/>
                                     <classpath>
-                                        <pathelement path="${runtime_classpath}" />
-                                        <pathelement path="${plugin_classpath}" />
-                                        <pathelement location="${servlet.jar}" />
-                                        <pathelement location="${portlet.jar}" />
-                                        <pathelement path="${project.build.directory}/${project.artifactId}/WEB-INF/classes" />
+                                        <pathelement path="${runtime_classpath}"/>
+                                        <pathelement path="${plugin_classpath}"/>
+                                        <pathelement location="${servlet.jar}"/>
+                                        <pathelement location="${portlet.jar}"/>
+                                        <pathelement path="${project.build.directory}/${project.artifactId}/WEB-INF/classes"/>
                                     </classpath>
 
-                                    <arg value="classpath://org/jasig/portlet/newsreader/io/import.crn.xml" />
-                                    <arg value="${dir}" />
+                                    <arg value="classpath://org/jasig/portlet/newsreader/io/import.crn.xml"/>
+                                    <arg value="${dir}"/>
                                 </java>
                             </tasks>
                         </configuration>
@@ -872,27 +872,27 @@
                                     You must set the "dir" parameter.  (-Ddir={something})
                                 </fail>
 
-                                <property name="runtime_classpath" refid="maven.runtime.classpath" />
-                                <property name="plugin_classpath" refid="maven.plugin.classpath" />
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
                                 <!-- Provided jars don't seem to be added to the runtime
                                      classpath, so we manually add in servlet.jar here  -->
-                                <property name="servlet.jar" value="${maven.dependency.javax.servlet.servlet-api.jar.path}" />
-                                <property name="portlet.jar" value="${maven.dependency.javax.portlet.portlet-api.jar.path}" />
+                                <property name="servlet.jar" value="${maven.dependency.javax.servlet.servlet-api.jar.path}"/>
+                                <property name="portlet.jar" value="${maven.dependency.javax.portlet.portlet-api.jar.path}"/>
 
                                 <java failonerror="true" fork="true" classname="org.danann.cernunnos.runtime.Main">
-                                    <sysproperty key="logback.configurationFile" value="command-line.logback.xml" />
+                                    <sysproperty key="logback.configurationFile" value="command-line.logback.xml"/>
                                     <classpath>
-                                        <pathelement path="${runtime_classpath}" />
-                                        <pathelement path="${plugin_classpath}" />
-                                        <pathelement location="${servlet.jar}" />
-                                        <pathelement location="${portlet.jar}" />
-                                        <pathelement path="${project.build.directory}/${project.artifactId}/WEB-INF/classes" />
+                                        <pathelement path="${runtime_classpath}"/>
+                                        <pathelement path="${plugin_classpath}"/>
+                                        <pathelement location="${servlet.jar}"/>
+                                        <pathelement location="${portlet.jar}"/>
+                                        <pathelement path="${project.build.directory}/${project.artifactId}/WEB-INF/classes"/>
                                     </classpath>
                                     <!-- This may be helpful to troubleshoot CAP-137 -->
                                     <!--<jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005" />-->
 
-                                    <arg value="classpath://org/jasig/portlet/newsreader/io/export.crn.xml" />
-                                    <arg value="${dir}" />
+                                    <arg value="classpath://org/jasig/portlet/newsreader/io/export.crn.xml"/>
+                                    <arg value="${dir}"/>
                                 </java>
                             </tasks>
                         </configuration>
