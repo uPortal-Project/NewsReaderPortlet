@@ -53,8 +53,9 @@
         <many-to-one 
             name="newsSet" 
             class="org.jasig.portlet.newsreader.NewsSet"
-            column="SET_ID" 
-            cascade="merge, persist, refresh" lazy="false"/> 
+            cascade="merge, persist, refresh" lazy="false">
+            <column name="SET_ID" index="SET_ID_IDX" />
+        </many-to-one>
         
         
         <!-- SUBCLASSES -->
