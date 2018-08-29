@@ -19,11 +19,12 @@ This project includes:
   ant-launcher under Apache License, Version 2.0
   AntLR under BSD License
   AOP alliance under Public Domain
-  Apache Commons Codec under The Apache Software License, Version 2.0
+  Apache Commons Codec under Apache License, Version 2.0
   Apache Commons Collections under Apache License, Version 2.0
   Apache Commons Logging under The Apache Software License, Version 2.0
   Apache HttpClient under Apache License, Version 2.0
   Apache HttpCore under Apache License, Version 2.0
+  Apache Standard Taglib Implementation under The Apache Software License, Version 2.0
   Batik CSS engine under The Apache Software License, Version 2.0
   Batik external code under The Apache Software License, Version 2.0
   Batik utility library under The Apache Software License, Version 2.0
@@ -49,9 +50,9 @@ This project includes:
   Hibernate Ehcache Integration under GNU Lesser General Public License
   HyperSQL Database under HSQLDB License, a BSD open source license
   ICU4J under ICU License
-  Jackson-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
-  Jackson-core under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
-  jackson-databind under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Jackson-annotations under The Apache Software License, Version 2.0
+  Jackson-core under The Apache Software License, Version 2.0
+  jackson-databind under The Apache Software License, Version 2.0
   JASYPT: Java Simplified Encryption under The Apache Software License, Version 2.0
   Java Portlet Specification V2.0 under Commons Development and Distribution License, Version 1.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
@@ -102,7 +103,6 @@ This project includes:
   Spring Web under The Apache Software License, Version 2.0
   Spring Web MVC under The Apache Software License, Version 2.0
   Spring Web Portlet under The Apache Software License, Version 2.0
-  standard under Apache License, Version 2.0
   tomcat-jdbc under Apache License, Version 2.0
   tomcat-juli under Apache License, Version 2.0
   uPortal under The Apache License, Version 2.0
