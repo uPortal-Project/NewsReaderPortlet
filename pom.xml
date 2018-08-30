@@ -31,7 +31,7 @@
     <groupId>org.jasig.portlet</groupId>
     <artifactId>NewsReaderPortlet</artifactId>
     <packaging>war</packaging>
-    <version>5.0.2</version>
+    <version>5.0.3-SNAPSHOT</version>
 
     <!-- More Project Information -->
     <name>News Portlet</name>
@@ -64,7 +64,7 @@
         <connection>scm:git:git://github.com/Jasig/NewsReaderPortlet.git</connection>
         <developerConnection>scm:git:git@github.com:Jasig/NewsReaderPortlet.git</developerConnection>
         <url>https://github.com/Jasig/NewsReaderPortlet</url>
-      <tag>NewsReaderPortlet-5.0.2</tag>
+      <tag>HEAD</tag>
     </scm>
 
     <repositories>
