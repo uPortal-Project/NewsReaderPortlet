@@ -102,6 +102,7 @@ public class RomeNewsProcessorImpl {
     protected NewsFeedItem getNewsFeedItem(SyndEntry entry, String titlePolicy, String descriptionPolicy) throws PolicyException, ScanException {
         NewsFeedItem item = new NewsFeedItem();
         item.setAuthors(entry.getAuthors());
+        item.setCategories(entry.getCategories());
         item.setLink(entry.getLink());
         item.setUri(entry.getUri());
 
