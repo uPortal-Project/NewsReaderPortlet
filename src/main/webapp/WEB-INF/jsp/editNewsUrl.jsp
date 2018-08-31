@@ -40,6 +40,7 @@
   <div class="row">
     <div class="col-md-12">
       <form:form name="news" commandName="newsListingCommand" action="${postUrl}" class="form-horizontal">
+      <input type='hidden' name='action' value='editUrl' />
 	<form:hidden path="id"/>
         <div class="form-group">
           <label for="name" class="col-md-3 control-label"><spring:message code="edit.news.feed.name"/></label>
