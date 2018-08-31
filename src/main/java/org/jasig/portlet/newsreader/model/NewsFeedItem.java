@@ -21,7 +21,7 @@ package org.jasig.portlet.newsreader.model;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.rometools.rome.feed.synd.SyndCategory;
 import com.rometools.rome.feed.synd.SyndPerson;
 
 /**
@@ -40,6 +40,7 @@ public class NewsFeedItem  implements Comparable<NewsFeedItem> {
     private String uri;
     private FullStory fullStory;
     private Date pubDate;
+    private List<SyndCategory> categories;
 
     public String getImageUrl() {
         return imageUrl;
@@ -119,6 +120,14 @@ public class NewsFeedItem  implements Comparable<NewsFeedItem> {
 
     public void setPubDate(Date pubDate) {
         this.pubDate = pubDate;
+    }
+
+    public List<SyndCategory> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<SyndCategory> categories) {
+        this.categories = categories;
     }
 
     @Override
