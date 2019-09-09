@@ -68,16 +68,15 @@
     </scm>
 
     <repositories>
+        <!-- required for javax.script:groovy-engine:1.1(1.1-jdk14) -->
         <repository>
-            <id>java.net repository</id>
-            <url>http://download.java.net/maven/2</url>
+            <id>Mulesoft Repository</id>
+            <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
         </repository>
+        <!-- required for javax.script:script-api:1.0 transient dep -->
         <repository>
-            <id>jasig-3rd-party</id>
-            <name>Jasig 3rd Party Repository</name>
-            <url>http://developer.jasig.org/repo/content/repositories/3rd-party</url>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>false</enabled></snapshots>
+            <id>Atricore Repository</id>
+            <url>http://repository.atricore.org/m2-release-repository/</url>
         </repository>
     </repositories>
 
@@ -99,7 +98,7 @@
         <antisamy.version>1.5.3</antisamy.version>
         <junit.version>4.12</junit.version>
         <servlet-api.version>3.0.1</servlet-api.version>
-        <uportal-libs.version>5.1.0</uportal-libs.version>
+        <uportal-libs.version>5.8.0</uportal-libs.version>
 
         <!-- The JDBC Driver used by the portlet -->
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
