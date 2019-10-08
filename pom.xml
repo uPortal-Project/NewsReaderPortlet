@@ -719,7 +719,7 @@
             <plugin>
                 <groupId>org.jasig.portal.maven</groupId>
                 <artifactId>uportal-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
                 <!-- extensions must be set to true to pick up the custom phases -->
                 <extensions>true</extensions>
             </plugin>
