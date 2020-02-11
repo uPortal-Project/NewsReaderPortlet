@@ -74,12 +74,14 @@
             <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
         </repository>
         <!-- required for javax.script:script-api:1.0 transient dep -->
+        <!--
         <repository>
             <id>Atricore Repository</id>
             <url>https://repository.atricore.org/m2-release-repository/</url>
         </repository>
+        -->
     </repositories>
-
+<!--
     <pluginRepositories>
         <pluginRepository>
             <id>maven2-repository.dev.java.net</id>
@@ -87,7 +89,7 @@
             <url>https://download.java.net/maven/2</url>
         </pluginRepository>
     </pluginRepositories>
-
+-->
     <properties>
         <ehcache.version>2.6.11</ehcache.version>
         <hibernate.version>3.6.10.Final</hibernate.version>
