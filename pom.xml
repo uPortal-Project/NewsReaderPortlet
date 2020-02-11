@@ -69,10 +69,12 @@
 
     <repositories>
         <!-- required for javax.script:groovy-engine:1.1(1.1-jdk14) -->
+        <!--
         <repository>
             <id>Mulesoft Repository</id>
             <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
         </repository>
+        -->
         <!-- required for javax.script:script-api:1.0 transient dep -->
         <!--
         <repository>
