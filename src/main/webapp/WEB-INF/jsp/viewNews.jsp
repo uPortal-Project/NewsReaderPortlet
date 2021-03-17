@@ -102,7 +102,7 @@
         <script type="text/template" id="${n}news-story-template">
             {{#each this}}
                 <li>
-                    <a href="{{link}}" title="{{{description}}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{{title}}}</a>
+                    <a href="{{link}}" title="{{description}}" ${ newWindow ? "target=\"_blank\"" : "" }>{{{title}}}</a>
                 </li>
             {{/each}}
         </script>
