@@ -76,7 +76,7 @@
         <!-- required for javax.script:script-api:1.0 transient dep -->
         <repository>
             <id>Atricore Repository</id>
-            <url>http://repository.atricore.org/m2-release-repository/</url>
+            <url>https://repository.atricore.org/m2-release-repository/</url>
         </repository>
     </repositories>
 
@@ -84,7 +84,7 @@
         <pluginRepository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Maven 2 Repository</name>
-            <url>http://download.java.net/maven/2</url>
+            <url>https://download.java.net/maven/2</url>
         </pluginRepository>
     </pluginRepositories>
 
