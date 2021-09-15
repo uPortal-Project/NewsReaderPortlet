@@ -92,7 +92,7 @@
         <ehcache.version>2.6.11</ehcache.version>
         <hibernate.version>3.6.10.Final</hibernate.version>
         <icu4j.version>69.1</icu4j.version>
-        <spring.version>4.3.30.RELEASE</spring.version>
+        <spring.version>5.3.10</spring.version>
         <resource-server.version>1.0.43</resource-server.version>
         <httpclient.version>4.5.13</httpclient.version>
         <antisamy.version>1.5.3</antisamy.version>
