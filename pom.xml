@@ -98,7 +98,7 @@
         <antisamy.version>1.5.3</antisamy.version>
         <junit.version>4.13.1</junit.version>
         <servlet-api.version>3.1.0</servlet-api.version>
-        <uportal-libs.version>5.9.0</uportal-libs.version>
+        <uportal-libs.version>5.11.0</uportal-libs.version>
 
         <!-- The JDBC Driver used by the portlet -->
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
