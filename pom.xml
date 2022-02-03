@@ -68,15 +68,11 @@
     </scm>
 
     <repositories>
-        <!-- required for javax.script:groovy-engine:1.1(1.1-jdk14) -->
+        <!-- required for javax.script:groovy-engine:1.1 transient dep -->
+        <!-- required for javax.script:script-api:1.0-osgi transient dep -->
         <repository>
             <id>Mulesoft Repository</id>
             <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
-        </repository>
-        <!-- required for javax.script:script-api:1.0 transient dep -->
-        <repository>
-            <id>Atricore Repository</id>
-            <url>http://repository.atricore.org/m2-release-repository/</url>
         </repository>
     </repositories>
 
@@ -149,7 +145,29 @@
                         <groupId>jdom</groupId>
                         <artifactId>jdom</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>javax.script</groupId>
+                        <artifactId>script-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.script</groupId>
+                        <artifactId>groovy-engine</artifactId>
+                    </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <!-- for cernunnos -->
+                <groupId>javax.script</groupId>
+                <artifactId>script-api</artifactId>
+                <version>1.0-osgi</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+            <!-- for cernunnos -->
+                <groupId>javax.script</groupId>
+                <artifactId>groovy-engine</artifactId>
+                <version>1.1</version>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>com.ibm.icu</groupId>
