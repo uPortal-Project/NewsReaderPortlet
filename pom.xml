@@ -153,6 +153,10 @@
                         <groupId>javax.script</groupId>
                         <artifactId>groovy-engine</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -261,19 +265,6 @@
                 <artifactId>ehcache-core</artifactId>
                 <version>${ehcache.version}</version>
             </dependency>
-            <!-- For sl4j/logback logging, see https://wiki.jasig.org/display/PLT/Logging+Best+Practices -->
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.2</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
-                <scope>provided</scope>
-            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -379,6 +370,12 @@
                 <artifactId>spring-aop</artifactId>
                 <version>${spring.version}</version>
                 <scope>runtime</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -482,6 +479,12 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
