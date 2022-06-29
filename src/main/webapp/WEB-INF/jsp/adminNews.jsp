@@ -41,26 +41,34 @@
 					</tr>
 				</thead>
 				<tbody>
-	<c:forEach items="${ model.feeds }" var="feed">
-    	<tr>
+					<c:forEach items="${ model.feeds }" var="feed">
+						<tr>
 							<td class="col-md-10">${ feed.name }</td>
 							<td class="col-md-1 text-center">
 								<a href="<portlet:renderURL>
-									<portlet:param name="action" value="editNewsDefinition"/>
-									<portlet:param name="id" value="${ feed.id }"/></portlet:renderURL>"
-										title="<spring:message code="edit.news.edit.title"/>" class="text-center">
+										<portlet:param name="action" value="editNewsDefinition"/>
+										<portlet:param name="id" value="${ feed.id }"/>
+									</portlet:renderURL>"
+									title="<spring:message code="edit.news.edit.title"/>" class="text-center">
 									<i class="fa fa-lg fa-edit"></i>
-							</a>
+								</a>
 							</td>
 							<td class="col-md-1 text-center">
-    			<a href="<portlet:actionURL><portlet:param name="action" value="deletePredefinedFeed"/>
-    					<portlet:param name="id" value="${ feed.id }"/></portlet:actionURL>"
-    					title="<spring:message code="edit.news.delete.title"/>">
-										<i class="fa fa-lg fa-trash-o"></i>
-    			</a>
-    		</td>
-    	</tr>
-	</c:forEach>
+								<portlet:actionURL var="deleteFeedUrl">
+									<portlet:param name="action" value="deletePredefinedFeed"/>
+									<portlet:param name="id" value="${ feed.id }"/>
+								</portlet:actionURL>
+								
+								<form action="${deleteFeedUrl}" method="post">
+									<button type="submit">
+										<a href="javascript:void(0);" title="<spring:message code="edit.news.delete.title"/>">
+											<i class="fa fa-lg fa-trash-o"></i>
+										</a>
+									</button>
+								</form>
+							</td>
+						</tr>
+					</c:forEach>
 				</tbody>
 			</table>
 		</div>
