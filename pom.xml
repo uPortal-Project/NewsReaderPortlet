@@ -86,7 +86,7 @@
 
     <properties>
         <ehcache.version>2.6.11</ehcache.version>
-        <hibernate.version>3.6.10.Final</hibernate.version>
+        <hibernate.version>5.4.24.Final</hibernate.version>
         <icu4j.version>71.1</icu4j.version>
         <spring.version>4.3.30.RELEASE</spring.version>
         <resource-server.version>1.0.43</resource-server.version>
