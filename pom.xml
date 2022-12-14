@@ -93,7 +93,7 @@
         <httpclient.version>4.5.14</httpclient.version>
         <antisamy.version>1.7.2</antisamy.version>
         <junit.version>4.13.2</junit.version>
-        <servlet-api.version>3.1.0</servlet-api.version>
+        <servlet-api.version>4.0.1</servlet-api.version>
         <uportal-libs.version>5.12.0</uportal-libs.version>
 
         <!-- The JDBC Driver used by the portlet -->
