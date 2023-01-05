@@ -264,7 +264,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-tools</artifactId>
-                <version>3.6.0.Final</version>
+                <version>3.6.2.Final</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
