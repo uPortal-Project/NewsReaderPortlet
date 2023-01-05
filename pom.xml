@@ -76,14 +76,6 @@
         </repository>
     </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Maven 2 Repository</name>
-            <url>http://download.java.net/maven/2</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <properties>
         <ehcache.version>2.6.11</ehcache.version>
         <hibernate.version>3.6.10.Final</hibernate.version>
