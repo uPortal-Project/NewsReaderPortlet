@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.netbeans.lib.cvsclient.commandLine.command.log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jasig.portlet.newsreader.model.NewsFeedItem;
@@ -34,6 +35,7 @@ import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 
 import com.rometools.rome.feed.module.Module;
@@ -49,6 +51,9 @@ import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
 public class RomeNewsProcessorImpl {
+
+    @Value("${newsreader.synfeedinput.xmlreader.allowDoctypes:false}")
+    private boolean allowDoctypes;
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -74,7 +79,7 @@ public class RomeNewsProcessorImpl {
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
         SyndFeedInput input = new SyndFeedInput();
-        input.setAllowDoctypes(true);
+        input.setAllowDoctypes(allowDoctypes);
         SyndFeed feed = input.build(reader);
 
         PaginatingNewsFeed newsFeed = new PaginatingNewsFeed(entriesPerPage);
