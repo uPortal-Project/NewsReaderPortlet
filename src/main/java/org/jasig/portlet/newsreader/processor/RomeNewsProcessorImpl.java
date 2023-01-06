@@ -34,6 +34,7 @@ import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 
 import com.rometools.rome.feed.module.Module;
@@ -49,6 +50,9 @@ import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
 public class RomeNewsProcessorImpl {
+
+    @Value("${newsreader.synfeedinput.xmlreader.allowDoctypes:false}")
+    private boolean allowDoctypes;
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -74,6 +78,7 @@ public class RomeNewsProcessorImpl {
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
         SyndFeedInput input = new SyndFeedInput();
+        input.setAllowDoctypes(allowDoctypes);
         SyndFeed feed = input.build(reader);
 
         PaginatingNewsFeed newsFeed = new PaginatingNewsFeed(entriesPerPage);
@@ -226,8 +231,8 @@ public class RomeNewsProcessorImpl {
                 item.setImageUrl(enclosure.getUrl());
                 break;
             }
-        }   
-        
+        }
+
         Module mediaModule = entry.getModule(MediaEntryModule.URI);
         if (mediaModule!=null && mediaModule instanceof MediaEntryModule ){
             MediaEntryModule mentry = (MediaEntryModule) mediaModule;
@@ -247,7 +252,7 @@ public class RomeNewsProcessorImpl {
                     item.setImageUrl(mg.getMetadata().getThumbnail()[0].getUrl().toString());
                 }
             }
-            
+
             for (MediaContent mc : mentry.getMediaContents()) {
                 String type = mc.getType();
                 if (StringUtils.isNotBlank(type) && videoTypes.contains(type)) {
@@ -259,12 +264,12 @@ public class RomeNewsProcessorImpl {
                 }
             }
         }
-        
+
         return item;
     }
 
     private Map<String, Policy> policies = new HashMap<String, Policy>();
-    
+
     public void setPolicies(Map<String, Resource> policies) throws PolicyException, IOException {
         for (Map.Entry<String, Resource> policy : policies.entrySet()) {
             InputStream policyStream = policy.getValue().getInputStream();

@@ -22,6 +22,15 @@ hibernate.connection.password=ENC(9ffpQXJi/EPih9o+Xshm5g==)
 
 Specify the encryption key using the `UP_JASYPT_KEY` environment variable.
 
+### Allowing Doctypes in RSS Feeds
+
+For backwards compatibility at a slight security risk, you may opt to allow doctypes in RSS feeds.
+This is disabled by default. To allow this, add the following to a `.properties file`:
+
+```properties
+newsreader.synfeedinput.xmlreader.allowDoctypes=true
+```
+
 [Anthony Colebourne]: https://github.com/acolebourne
 [Jen Bourey]: https://github.com/bourey
 
