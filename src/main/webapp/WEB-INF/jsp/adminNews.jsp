@@ -58,9 +58,9 @@
 									<portlet:param name="action" value="deletePredefinedFeed"/>
 									<portlet:param name="id" value="${ feed.id }"/>
 								</portlet:actionURL>
-								
+
 								<form action="${deleteFeedUrl}" method="post">
-									<button type="submit">
+									<button type="submit" class="not-button">
 										<a href="javascript:void(0);" title="<spring:message code="edit.news.delete.title"/>">
 											<i class="fa fa-lg fa-trash-o"></i>
 										</a>
