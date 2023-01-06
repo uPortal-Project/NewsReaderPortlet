@@ -20,8 +20,6 @@ package org.jasig.portlet.newsreader.adapter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,17 +34,11 @@ import org.slf4j.LoggerFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DecompressingHttpClient;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
 import org.jasig.portlet.newsreader.NewsConfiguration;
 import org.jasig.portlet.newsreader.model.PaginatingNewsFeed;
 import org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl;
@@ -74,7 +66,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
     public static final String DEFAULT_ANTISAMY_POLICY = "antisamy-textonly";
 
     private RomeNewsProcessorImpl processor;
-    private AbstractHttpClient httpClient;   // External configuration sets this one
+    private CloseableHttpClient httpClient;   // External configuration sets this one
     private HttpClient compressingClient;    // Internally we use this one
 
     private String proxyHost = null;
@@ -85,11 +77,11 @@ public class RomeAdapter extends AbstractNewsAdapter {
     private int timesToRetry = 2;
     private String cacheKeyPrefix = "";  // default is no prefix
 
-    public AbstractHttpClient getHttpClient() {
+    public CloseableHttpClient getHttpClient() {
         return httpClient;
     }
 
-    public void setHttpClient(AbstractHttpClient httpClient) {
+    public void setHttpClient(CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
@@ -146,43 +138,10 @@ public class RomeAdapter extends AbstractNewsAdapter {
         this.cacheKeyPrefix = prefix;
     }
 
-    private class RetryHandler extends DefaultHttpRequestRetryHandler {
-        RetryHandler () {
-            super(timesToRetry, true);
-        }
-
-        @Override
-        public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-            if (executionCount >= timesToRetry) {
-                // Do not retry if over max retry count
-                return false;
-            }
-            if (exception instanceof NoHttpResponseException) {
-                // Retry if the server dropped connection on us
-                return true;
-            }
-            if (exception instanceof SocketException) {
-                // Retry if the server reset connection on us
-                return true;
-            }
-            if (exception instanceof SocketTimeoutException) {
-                // Retry if the read timed out
-                return true;
-            }
-            return super.retryRequest(exception, executionCount, context);
-        }
-    }
     /* (non-Javadoc)
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     public void init() throws Exception {
-        final HttpParams params = httpClient.getParams();
-        params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, connectionTimeout);
-        params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, readTimeout);
-        params.setLongParameter(ClientPNames.CONN_MANAGER_TIMEOUT, connectionManagerTimeout);
-
-        httpClient.setHttpRequestRetryHandler(new RetryHandler());
-
         String proxyHost = null;
         String proxyPort = null;
 

@@ -82,11 +82,27 @@
           p:policies-ref="antisamyPolicies" p:entriesPerPage="10"/>
 
     <!-- RSS feed adapter -->
-    <bean id="httpClientConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"
-          p:maxTotal="200" p:defaultMaxPerRoute="20"/>
-    <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient"
-          c:conman-ref="httpClientConnectionManager">
+    <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig"
+          factory-method="custom">
+          <property name="socketTimeout" value="${socketTimeoutInMillis}" />
+          <property name="connectTimeout" value="${connectionTimeoutInMillis}" />
+          <property name="connectionRequestTimeout" value="${connectionTimeoutInMillis}" />
     </bean>
+
+    <bean id="retryHandler" class="org.jasig.portlet.newsreader.adapter.RomeAdapterRetryHandler" >
+          <constructor-arg index="0" value="2" />
+    </bean>
+
+    <bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build" />
+
+    <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder"
+          factory-method="create">
+          <property name="defaultRequestConfig" ref="requestConfig" />
+          <property name="retryHandler" ref="retryHandler" />
+          <property name="SSLSocketFactory" ref="sslSocketFactory" />
+    </bean>
+
+    <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build" />
 
     <bean id="org.jasig.portlet.newsreader.adapter.RomeAdapter"
         class="org.jasig.portlet.newsreader.adapter.RomeAdapter" init-method="init"
