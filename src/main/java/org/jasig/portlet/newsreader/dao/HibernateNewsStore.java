@@ -32,7 +32,10 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import org.springframework.cache.annotation.Cacheable;
 
 /**
  * HibernateNewsStore provides a hibernate implementation of the NewsStore.
@@ -277,6 +280,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    @Cacheable("HibernateNewsStore.userRoles")
     public List<String> getUserRoles() {
         try {
 
@@ -291,6 +295,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    @Cacheable("HibernateNewsStore.newsSetById")
 	public NewsSet getNewsSet(Long id) {
 
         try {
@@ -303,6 +308,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
 	}
 
+    @Cacheable("HibernateNewsStore.newsSetByUser")
 	public List<NewsSet> getNewsSetsForUser(String userId) {
         try {
 
@@ -317,6 +323,11 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
 	}
 
+    @CacheEvict(cacheNames = {
+            "HibernateNewsStore.newsSetById",
+            "HibernateNewsStore.newsSetByUser",
+            "HibernateNewsStore.newsSetByUserAndName"
+    })
 	public void storeNewsSet(NewsSet set) {
         try {
 
@@ -328,6 +339,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
 	}
 
+    @Cacheable("HibernateNewsStore.newsSetByUserAndName")
 	public NewsSet getNewsSet(String userId, String setName) {
         try {
 
