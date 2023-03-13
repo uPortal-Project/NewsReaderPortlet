@@ -52,8 +52,8 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 	/*
 	 * Get the news set from the ID or search the dataabse for a suitable set or create a new
 	 * set if one cannot be found.
-	 * 
-	 * Initalise the NewsSet  
+	 *
+	 * Initalise the NewsSet
 	 */
 	public NewsSet getNewsSet(String fname, PortletRequest request) {
 
@@ -64,11 +64,11 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 		final String userId = userIdService.getUserId(request);
 
 		NewsSet set;
-		
+
 		final Object mutex = PortletUtils.getSessionMutex(session);
 		synchronized (mutex) {
 			logger.debug("Got Mutex {} for userId={}", mutex, userId);
-			
+
 			set = newsStore.getNewsSet(userId, fname);
 
 			if (set == null) {
@@ -77,8 +77,9 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 		        set.setUserId(userId);
 		        set.setName(fname);
 		        newsStore.storeNewsSet(set);
-			}	
-		
+				set = newsStore.getNewsSet(userId, fname); // get set_id
+			}
+
 			// Persistent set is now loaded but may still need re-initalising since last use.
 			// by adding setId to session, we signal that initialisation has taken place.
 			if (session.getAttribute("setId", PortletSession.PORTLET_SCOPE) == null) {
