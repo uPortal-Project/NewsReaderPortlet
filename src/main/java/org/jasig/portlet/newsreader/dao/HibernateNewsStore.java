@@ -356,6 +356,11 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 	        NewsSet set = (NewsSet) q.uniqueResult();
             if (logger.isDebugEnabled()) {
                 logger.debug(this.getSessionFactory().getStatistics().toString());
+                if (set != null) {
+                    logger.debug("found " + set.getNewsConfigurations().size() + " news configurations");
+                } else {
+                    logger.debug("no news configurations found");
+                }
             }
             return set;
 

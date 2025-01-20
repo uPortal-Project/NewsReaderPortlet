@@ -22,11 +22,14 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.jasig.portlet.newsreader.NewsConfiguration;
+import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.UserDefinedNewsDefinition;
 import org.jasig.portlet.newsreader.adapter.RomeAdapter;
 import org.jasig.portlet.newsreader.dao.NewsStore;
+import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
 import org.jasig.portlet.newsreader.mvc.NewsListingCommand;
 import org.jasig.portlet.newsreader.service.NewsSetResolvingService;
 import org.slf4j.Logger;
@@ -96,7 +99,32 @@ public class EditUserRomeController {
     }
 
     @RenderMapping(params = "action=editUrl")
-    public String getUserEditView(PortletRequest request) {
+    public String getUserEditView(PortletRequest request, RenderResponse response) {
+        log.debug("Returning editNewsUrl view");
+
+        // get the to-be-edited news configuration id
+        String[] formIdValues = request.getParameterMap().get("id");
+        String formId = null;
+        if (formIdValues != null && formIdValues.length > 0) {
+            formId = formIdValues[0];
+        }
+
+        // if user doesn't have permissions, redirect
+        if (StringUtils.isNotBlank(formId)) {
+            long lFormId = Long.parseLong(formId);
+            if (lFormId > -1) {
+                if (!canEditNewsConfiguration(request, lFormId)) {
+                    log.warn("User [ {} ] with IP [ {} ] tried to edit news configuration [ {} ] without permission!",
+                            request.getRemoteUser(),
+                            request.getProperty("REMOTE_ADDR"),
+                            lFormId);
+                    PortletURL redirectUrl = response.createRenderURL();
+                    redirectUrl.setParameter("action", "editPreferences");
+                    request.setAttribute("redirectUrl", redirectUrl.toString());
+                }
+            }
+        }
+
         return "editNewsUrl";
     }
     
@@ -110,11 +138,19 @@ public class EditUserRomeController {
 
         if (form.getId() > -1) {
 
-            config = (UserDefinedNewsConfiguration) newsStore.getNewsConfiguration(form.getId());
-            definition = (UserDefinedNewsDefinition) config.getNewsDefinition();
-            definition.addParameter("url", form.getUrl());
-            definition.setName(form.getName());
-            log.debug("Updating");
+            if (canEditNewsConfiguration(request, form.getId())) {
+                config = (UserDefinedNewsConfiguration) newsStore.getNewsConfiguration(form.getId());
+                log.debug("User [ {} ] is updating news", request.getRemoteUser());
+                definition = (UserDefinedNewsDefinition) config.getNewsDefinition();
+                definition.addParameter("url", form.getUrl());
+                definition.setName(form.getName());
+            } else {
+                log.warn("User [ {} ] with IP [ {} ] tried to edit news configuration [ {} ] without permission!",
+                        request.getRemoteUser(),
+                        request.getProperty("REMOTE_ADDR"),
+                        form.getId());
+                return;
+            }
 
         } else {
 
@@ -141,6 +177,21 @@ public class EditUserRomeController {
         // send the user back to the main edit page
         response.setRenderParameter("action", "editPreferences");
 
+    }
+
+    private boolean isPredefinedNewsConfiguration(NewsConfiguration newsConfiguration) {
+        return newsConfiguration.getNewsDefinition() instanceof PredefinedNewsDefinition;
+    }
+
+    private boolean canEditNewsConfiguration(PortletRequest request, long configurationId) {
+        boolean isAdmin = request.isUserInRole(AbstractNewsController.NEWS_ADMIN_ROLE);
+        NewsConfiguration configuration = newsStore.getNewsConfiguration(configurationId);
+        if (isPredefinedNewsConfiguration(configuration)) {
+            return isAdmin;
+        } else {
+            UserDefinedNewsConfiguration userConfiguration = (UserDefinedNewsConfiguration) configuration;
+            return isAdmin || userConfiguration.getNewsSet().getUserId().equals(request.getRemoteUser());
+        }
     }
 
 }
