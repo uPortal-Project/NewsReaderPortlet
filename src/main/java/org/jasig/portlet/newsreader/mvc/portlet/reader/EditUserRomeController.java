@@ -21,6 +21,8 @@ package org.jasig.portlet.newsreader.mvc.portlet.reader;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
+import javax.portlet.RenderResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jasig.portlet.newsreader.NewsConfiguration;
