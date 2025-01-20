@@ -77,13 +77,19 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 		        set.setUserId(userId);
 		        set.setName(fname);
 		        newsStore.storeNewsSet(set);
+				//TODO: the persisted set (line above) isn't always available to the line below. Hibernate being lazy?
 				set = newsStore.getNewsSet(userId, fname); // get set_id
 			}
 
 			// Persistent set is now loaded but may still need re-initalising since last use.
 			// by adding setId to session, we signal that initialisation has taken place.
 			if (session.getAttribute("setId", PortletSession.PORTLET_SCOPE) == null) {
-				logger.debug("re-initalising loaded newsSet "+set.getName());
+				if (set != null) {
+					logger.debug("re-initalising loaded newsSet " + set.getName());
+				} else {
+					logger.debug("attempting to re-initialize loaded newsSet, but it is null");
+				}
+
 				@SuppressWarnings("unchecked")
 				final Set<String> roles = rolesService.getUserRoles(request);
 

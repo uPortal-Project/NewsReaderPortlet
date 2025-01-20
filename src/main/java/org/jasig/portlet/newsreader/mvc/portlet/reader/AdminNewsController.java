@@ -20,10 +20,16 @@ package org.jasig.portlet.newsreader.mvc.portlet.reader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletSecurityException;
 import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import javax.servlet.http.HttpServletRequest;
 
+import org.jasig.portlet.newsreader.mvc.AbstractNewsController;
+import org.jasig.portlet.newsreader.service.RolesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
@@ -35,6 +41,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import org.springframework.web.portlet.context.PortletApplicationContextUtils;
+import org.springframework.web.portlet.util.PortletUtils;
 
 
 /**
@@ -54,7 +62,13 @@ public class AdminNewsController {
     private NewsStore newsStore;
 
     @RenderMapping(params="action=administration")
-    public ModelAndView getAdminView(RenderRequest request,RenderResponse response) {
+    public ModelAndView getAdminView(RenderRequest request) throws PortletSecurityException {
+        if (!request.isUserInRole(AbstractNewsController.NEWS_ADMIN_ROLE)) {
+            log.warn("User [ {} ] with IP [ {} ] tried to access news administration!",
+                    request.getRemoteUser(),
+                    request.getProperty("REMOTE_ADDR"));
+            throw new PortletSecurityException("User does not have required admin role");
+        }
 
         log.debug("Entering news admin");
 
@@ -67,7 +81,14 @@ public class AdminNewsController {
     }
 
     @ActionMapping(params="action=deletePredefinedFeed")
-    public void deleteFeed(@RequestParam("id") Long id) {
+    public void deleteFeed(@RequestParam("id") Long id, ActionRequest request) throws PortletSecurityException {
+        if (!request.isUserInRole(AbstractNewsController.NEWS_ADMIN_ROLE)) {
+            log.warn("User [ {} ] with IP [ {} ] tried to access news administration!",
+                    request.getRemoteUser(),
+                    request.getProperty("REMOTE_ADDR"));
+            throw new PortletSecurityException("User does not have required admin role");
+        }
+
         PredefinedNewsDefinition def = newsStore.getPredefinedNewsDefinition(id);
         newsStore.deleteNewsDefinition(def);
     }
