@@ -25,6 +25,7 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   test:
@@ -38,24 +39,23 @@ jobs:
           - temurin
           - zulu
         java-version:
-          - 8
-          - 11
+          - 17
         include:
           - platform: windows-latest
             java-distribution: adopt-hotspot
-            java-version: 11
+            java-version: 17
           - platform: macos-latest
             java-distribution: adopt-hotspot
-            java-version: 11
+            java-version: 17
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Java
+        uses: actions/checkout@v3
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: ${{ matrix.java-distribution }}
-          java-version: ${{ matrix.java-version }} 
+          java-version: ${{ matrix.java-version }}
       - name: Build and Test
         run: mvn -B package
