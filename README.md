@@ -1,7 +1,7 @@
 # Apereo News Reader Portlet
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jasig.portlet/NewsReaderPortlet/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jasig.portlet/NewsReaderPortlet)
-[![build status](https://github.com/uPortal-Project/NewsReaderPortlet/workflows/CI/badge.svg?branch=master)](https://github.com/uPortal-Project/NewsReaderPortlet/actions)
+[![CI](https://github.com/uPortal-Project/NewsReaderPortlet/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/uPortal-Project/NewsReaderPortlet/actions/workflows/CI.yml)
 
 This Java Portlet is a [Sponsored Portlet][] in the uPortal project.
 
