@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.portlet.newsreader.hibernate;
 
 import java.sql.Connection;
@@ -39,6 +38,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * using encrypted database connection settings (in datasource.properties).
  *
  * @author drewwills
+ * @since 5.1.1
  */
 public class ApplicationContextConnectionProvider implements ConnectionProvider {
 
@@ -48,6 +48,7 @@ public class ApplicationContextConnectionProvider implements ConnectionProvider 
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws HibernateException {
         if (context != null) {
@@ -55,11 +56,13 @@ public class ApplicationContextConnectionProvider implements ConnectionProvider 
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void closeConnection(Connection conn) throws SQLException {
         conn.close();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void configure(Properties props) throws HibernateException {
         /*
@@ -68,6 +71,7 @@ public class ApplicationContextConnectionProvider implements ConnectionProvider 
          */
     }
 
+    /** {@inheritDoc} */
     @Override
     public Connection getConnection() throws SQLException {
 
@@ -82,6 +86,7 @@ public class ApplicationContextConnectionProvider implements ConnectionProvider 
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean supportsAggressiveRelease() {
         return false;  // WTF?

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -36,9 +36,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Pays attention to the state of skin aggregation and only applies the fitler if it is disabled
- * 
+ *
  * @author Eric Dalquist
  * @version $Revision$
+ * @since 5.1.1
  */
 public class AggregationAwareFilterBean implements Filter {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -48,21 +49,30 @@ public class AggregationAwareFilterBean implements Filter {
 
     /**
      * The filter to delegate to
+     *
+     * @param filter a {@link javax.servlet.Filter} object
      */
     public void setFilter(Filter filter) {
         this.filter = filter;
     }
 
+    /**
+     * <p>Setter for the field <code>elementsProvider</code>.</p>
+     *
+     * @param elementsProvider a {@link org.jasig.resourceserver.utils.aggr.ResourcesElementsProvider} object
+     */
     @Autowired
     public void setElementsProvider(ResourcesElementsProvider elementsProvider) {
         this.elementsProvider = elementsProvider;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void destroy() {
         this.filter.destroy();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filter.init(filterConfig);
@@ -71,6 +81,7 @@ public class AggregationAwareFilterBean implements Filter {
     /* (non-Javadoc)
      * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
+    /** {@inheritDoc} */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (this.elementsProvider.getIncludedType((HttpServletRequest)request) == Included.AGGREGATED) {

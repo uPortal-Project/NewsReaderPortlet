@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -31,6 +31,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.portlet.util.PortletUtils;
 
+/**
+ * <p>SharedNewsSetServiceImpl class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 @Service("setCreationService")
 public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 
@@ -44,6 +50,11 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 
 	private Logger logger = LoggerFactory.getLogger(SharedNewsSetServiceImpl.class);
 
+	/**
+	 * <p>Setter for the field <code>newsStore</code>.</p>
+	 *
+	 * @param newsStore a {@link org.jasig.portlet.newsreader.dao.NewsStore} object
+	 */
 	@Autowired
 	public void setNewsStore(NewsStore newsStore) {
 		this.newsStore = newsStore;
@@ -55,6 +66,7 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 	 *
 	 * Initalise the NewsSet
 	 */
+	/** {@inheritDoc} */
 	public NewsSet getNewsSet(String fname, PortletRequest request) {
 
 		final PortletSession session = request.getPortletSession();

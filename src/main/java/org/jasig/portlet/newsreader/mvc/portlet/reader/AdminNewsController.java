@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -51,6 +51,7 @@ import org.springframework.web.portlet.util.PortletUtils;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 @Controller
 @RequestMapping("EDIT")
@@ -61,6 +62,13 @@ public class AdminNewsController {
     @Autowired(required = true)
     private NewsStore newsStore;
 
+    /**
+     * <p>getAdminView.</p>
+     *
+     * @param request a {@link javax.portlet.RenderRequest} object
+     * @return a {@link org.springframework.web.portlet.ModelAndView} object
+     * @throws javax.portlet.PortletSecurityException if any.
+     */
     @RenderMapping(params="action=administration")
     public ModelAndView getAdminView(RenderRequest request) throws PortletSecurityException {
         if (!request.isUserInRole(AbstractNewsController.NEWS_ADMIN_ROLE)) {
@@ -80,6 +88,13 @@ public class AdminNewsController {
 
     }
 
+    /**
+     * <p>deleteFeed.</p>
+     *
+     * @param id a {@link java.lang.Long} object
+     * @param request a {@link javax.portlet.ActionRequest} object
+     * @throws javax.portlet.PortletSecurityException if any.
+     */
     @ActionMapping(params="action=deletePredefinedFeed")
     public void deleteFeed(@RequestParam("id") Long id, ActionRequest request) throws PortletSecurityException {
         if (!request.isUserInRole(AbstractNewsController.NEWS_ADMIN_ROLE)) {

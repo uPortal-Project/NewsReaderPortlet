@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.portlet.newsreader.dao;
 
 import java.util.List;
@@ -42,11 +41,13 @@ import org.springframework.cache.annotation.Cacheable;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    /** {@inheritDoc} */
     public void storeNewsDefinition(NewsDefinition listing) {
         try {
 
@@ -58,6 +59,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     public void storeNewsConfiguration(NewsConfiguration configuration) {
         try {
 
@@ -69,6 +71,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     public List<NewsConfiguration> getNewsConfigurations(
             String subscribeId) {
         try {
@@ -84,6 +87,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     public List<UserDefinedNewsConfiguration> getUserDefinedNewsConfigurations(
             Long setId, boolean visibleOnly) {
         try {
@@ -103,6 +107,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     public List<PredefinedNewsConfiguration> getPredefinedNewsConfigurations(
             Long setId, boolean visibleOnly) {
         try {
@@ -121,6 +126,11 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /**
+     * <p>getPredefinedNewsConfigurations.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<PredefinedNewsConfiguration> getPredefinedNewsConfigurations() {
         try {
 
@@ -135,6 +145,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     public List<PredefinedNewsDefinition> getHiddenPredefinedNewsDefinitions(Long setId, Set<String> roles) {
         try {
 
@@ -159,6 +170,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     public void initNews(NewsSet set, Set<String> roles) {
         try {
 
@@ -191,6 +203,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     public PredefinedNewsDefinition getPredefinedNewsDefinition(Long id) {
 
         try {
@@ -208,6 +221,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
     }
 
+    /** {@inheritDoc} */
     public PredefinedNewsDefinition getPredefinedNewsDefinitionByName(String name) {
 
         try {
@@ -225,6 +239,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
     }
 
+    /** {@inheritDoc} */
     public NewsDefinition getNewsDefinition(Long id) {
 
         try {
@@ -237,6 +252,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
     }
 
+    /** {@inheritDoc} */
     public NewsConfiguration getNewsConfiguration(Long id) {
 
         try {
@@ -250,6 +266,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
     }
 
+    /** {@inheritDoc} */
     public void deleteNewsConfiguration(NewsConfiguration configuration) {
         try {
 
@@ -261,6 +278,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     public void deleteNewsDefinition(PredefinedNewsDefinition definition) {
         try {
 
@@ -280,6 +298,11 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /**
+     * <p>getUserRoles.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     @Cacheable("HibernateNewsStore.userRoles")
     public List<String> getUserRoles() {
         try {
@@ -295,6 +318,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
     }
 
+    /** {@inheritDoc} */
     @Cacheable("HibernateNewsStore.newsSetById")
 	public NewsSet getNewsSet(Long id) {
 
@@ -308,6 +332,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
 
 	}
 
+    /** {@inheritDoc} */
     @Cacheable("HibernateNewsStore.newsSetByUser")
 	public List<NewsSet> getNewsSetsForUser(String userId) {
         try {
@@ -323,6 +348,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
 	}
 
+    /** {@inheritDoc} */
     @CacheEvict(cacheNames = {
             "HibernateNewsStore.newsSetById",
             "HibernateNewsStore.newsSetByUser",
@@ -339,6 +365,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
         }
 	}
 
+    /** {@inheritDoc} */
     @Cacheable("HibernateNewsStore.newsSetByUserAndName")
 	public NewsSet getNewsSet(String userId, String setName) {
         try {

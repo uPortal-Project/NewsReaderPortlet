@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -21,6 +21,9 @@ package org.jasig.portlet.newsreader.adapter;
 /**
  * An adapter subclass of {@code RomeAdapter} that is only required due to the current
  * approach of using class name as a distinguisher between implementations of adapters.
+ *
+ * @author bgonzalez
+ * @since 5.1.1
  */
 public class RomeAdapterFullStory extends RomeAdapter { }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -24,13 +24,15 @@ import org.springframework.beans.factory.xml.XmlReaderContext;
 import org.w3c.dom.Element;
 
 /**
- * Extends the Spring DefaultBeanDefinitionDocumentReader to set the {@link BeanDefinitionParserDelegate#DEFAULT_LAZY_INIT_ATTRIBUTE}
+ * Extends the Spring DefaultBeanDefinitionDocumentReader to set the {@link org.springframework.beans.factory.xml.BeanDefinitionParserDelegate#DEFAULT_LAZY_INIT_ATTRIBUTE}
  * to true, usefull when loading a context during testing or with command line tools.
- * 
+ *
  * @author Eric Dalquist
  * @version $Revision$
+ * @since 5.1.1
  */
 public class LazyInitByDefaultBeanDefinitionDocumentReader extends DefaultBeanDefinitionDocumentReader {
+    /** {@inheritDoc} */
     @Override
     protected BeanDefinitionParserDelegate createDelegate(XmlReaderContext readerContext, Element root, BeanDefinitionParserDelegate parentDelegate) {
         root.setAttribute(BeanDefinitionParserDelegate.DEFAULT_LAZY_INIT_ATTRIBUTE, "true");

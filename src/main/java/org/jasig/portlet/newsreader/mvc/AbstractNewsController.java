@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -36,24 +36,29 @@ import org.jasig.portlet.newsreader.service.Whitelist;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
- * Creating an abstract superclass for news in VIEW mode as a first step toward 
- * combining controllers for single-feed and regular.  I believe we'd be better 
- * served -- have less chance for mismatch and regression -- if the 2 approaches 
- * used the same controllers, and the differences in behavior were factored out 
- * into different subclasses of service objects.  We could then configure these 
+ * Creating an abstract superclass for news in VIEW mode as a first step toward
+ * combining controllers for single-feed and regular.  I believe we'd be better
+ * served -- have less chance for mismatch and regression -- if the 2 approaches
+ * used the same controllers, and the differences in behavior were factored out
+ * into different subclasses of service objects.  We could then configure these
  * services appropriately in each portlet's Spring sub-context.
- * 
- * So I suggest factoring common code out of the subclasses (and into here) 
- * bit-by-bit until the controllers are no different, at which point we can 
+ *
+ * So I suggest factoring common code out of the subclasses (and into here)
+ * bit-by-bit until the controllers are no different, at which point we can
  * remove this class if it seems like a good idea then.
- * 
+ *
  * @author awills
+ * @since 5.1.1
  */
 public class AbstractNewsController {
+    /** Constant <code>INITIALIZED="initialized"</code> */
     public static final String INITIALIZED = "initialized";
+    /** Constant <code>NEWS_ADMIN_ROLE="newsAdmin"</code> */
     public static final String NEWS_ADMIN_ROLE = "newsAdmin";
 
+    /** Constant <code>ALLOW_EDIT_PREFERENCE="allowEdit"</code> */
     public static final String ALLOW_EDIT_PREFERENCE = "allowEdit";
+    /** Constant <code>ALLOW_HELP_PREFERENCE="allowHelp"</code> */
     public static final String ALLOW_HELP_PREFERENCE = "allowHelp";
 
     private static final NewsConfigurationWhitelist WHITELIST = new NewsConfigurationWhitelist();
@@ -61,22 +66,44 @@ public class AbstractNewsController {
     /**
      * Utility function for filtering a collection of NewsConfiguration objects
      * based on the Whitelist for this portlet-definition.
+     *
+     * @param req a {@link javax.portlet.PortletRequest} object
+     * @param items a {@link java.util.Collection} object
+     * @return a {@link java.util.List} object
      */
     public static List<NewsConfiguration> filterNonWhitelistedConfigurations(PortletRequest req, Collection<NewsConfiguration> items) {
     	List<NewsConfiguration> filtered = WHITELIST.filter(req, items);
     	return filtered;
     }
 
+    /**
+     * <p>isAdmin.</p>
+     *
+     * @param req a {@link javax.portlet.PortletRequest} object
+     * @return a boolean
+     */
     @ModelAttribute("isAdmin")
     public boolean isAdmin(PortletRequest req) {
         return req.isUserInRole(NEWS_ADMIN_ROLE);
     }
 
+    /**
+     * <p>isGuest.</p>
+     *
+     * @param req a {@link javax.portlet.PortletRequest} object
+     * @return a boolean
+     */
     @ModelAttribute("isGuest")
     public boolean isGuest(PortletRequest req) {
         return req.getRemoteUser() == null;
     }
 
+    /**
+     * <p>supportsEdit.</p>
+     *
+     * @param req a {@link javax.portlet.PortletRequest} object
+     * @return a boolean
+     */
     @ModelAttribute("supportsEdit")
     public boolean supportsEdit(PortletRequest req) {
         final PortletPreferences prefs = req.getPreferences();
@@ -84,6 +111,12 @@ public class AbstractNewsController {
         return Boolean.parseBoolean(allowEdit);
     }
 
+    /**
+     * <p>supportsHelp.</p>
+     *
+     * @param req a {@link javax.portlet.PortletRequest} object
+     * @return a boolean
+     */
     @ModelAttribute("supportsHelp")
     public boolean supportsHelp(PortletRequest req) {
         // workaround for UP-3267
@@ -94,6 +127,12 @@ public class AbstractNewsController {
         return Boolean.parseBoolean(allowHelp);
     }
 
+    /**
+     * <p>getMaxStories.</p>
+     *
+     * @param prefs a {@link javax.portlet.PortletPreferences} object
+     * @return a int
+     */
     public static int getMaxStories(final PortletPreferences prefs) {
         int maxStories = -1;
         final String maxPref = prefs.getValue("maxStories", "-1");

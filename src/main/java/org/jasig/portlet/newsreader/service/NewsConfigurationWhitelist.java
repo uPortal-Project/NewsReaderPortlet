@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -31,8 +31,15 @@ import org.jasig.portlet.newsreader.NewsDefinition;
 import org.jasig.portlet.newsreader.PredefinedNewsConfiguration;
 import org.jasig.portlet.newsreader.PredefinedNewsDefinition;
 
+/**
+ * <p>NewsConfigurationWhitelist class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class NewsConfigurationWhitelist extends Whitelist {
 
+	/** Constant <code>WHITELIST_CALLBACK</code> */
 	public static final Whitelist.Callback<PredefinedNewsConfiguration> WHITELIST_CALLBACK =
             new Whitelist.Callback<PredefinedNewsConfiguration>() {
                 @Override
@@ -56,6 +63,13 @@ public class NewsConfigurationWhitelist extends Whitelist {
      * make Whitelist less generic then this calss could be removed and all the filtering coudl be done in 
      * one iteration of the set within Whitelist
      */
+	/**
+	 * <p>filter.</p>
+	 *
+	 * @param req a {@link javax.portlet.PortletRequest} object
+	 * @param items a {@link java.util.Collection} object
+	 * @return a {@link java.util.List} object
+	 */
 	public List<NewsConfiguration> filter(PortletRequest req, Collection<NewsConfiguration> items) {
 		List<NewsConfiguration> rslt = new ArrayList<NewsConfiguration>();
         for (NewsConfiguration config : items) {

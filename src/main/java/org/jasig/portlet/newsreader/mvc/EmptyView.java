@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -34,8 +34,17 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.view.AbstractView;
 
+/**
+ * <p>EmptyView class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class EmptyView extends AbstractView {
 
+    /**
+     * <p>Constructor for EmptyView.</p>
+     */
     public EmptyView() {
         setContentType(DEFAULT_CONTENT_TYPE);
     }
@@ -52,13 +61,15 @@ public class EmptyView extends AbstractView {
     private Set<String> renderedAttributes;
 
     /**
-     * Sets the {@code ObjectMapper} for this view. If not set, a default {@link ObjectMapper#ObjectMapper() ObjectMapper}
+     * Sets the {@code ObjectMapper} for this view. If not set, a default {@link com.fasterxml.jackson.databind.ObjectMapper#ObjectMapper() ObjectMapper}
      * is used.
      *
      * <p>Setting a custom-configured {@code ObjectMapper} is one way to take further control of the JSON serialization
-     * process. For example, an extended {@link SerializerFactory} can be configured that provides custom serializers for
+     * process. For example, an extended {@link com.fasterxml.jackson.databind.ser.SerializerFactory} can be configured that provides custom serializers for
      * specific types. The other option for refining the serialization process is to use Jackson's provided annotations on
      * the types to be serialized, in which case a custom-configured ObjectMapper is unnecessary.
+     *
+     * @param objectMapper a {@link com.fasterxml.jackson.databind.ObjectMapper} object
      */
     public void setObjectMapper(ObjectMapper objectMapper) {
         Assert.notNull(objectMapper, "'objectMapper' must not be null");
@@ -67,6 +78,8 @@ public class EmptyView extends AbstractView {
 
     /**
      * Sets the {@code JsonEncoding} for this converter. By default, {@linkplain JsonEncoding#UTF8 UTF-8} is used.
+     *
+     * @param encoding a {@link com.fasterxml.jackson.core.JsonEncoding} object
      */
     public void setEncoding(JsonEncoding encoding) {
         Assert.notNull(encoding, "'encoding' must not be null");
@@ -76,17 +89,21 @@ public class EmptyView extends AbstractView {
     /**
      * Sets the attributes in the model that should be rendered by this view. When set, all other model attributes will be
      * ignored.
+     *
+     * @param renderedAttributes a {@link java.util.Set} object
      */
     public void setRenderedAttributes(Set<String> renderedAttributes) {
         this.renderedAttributes = renderedAttributes;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void prepareResponse(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType(getContentType());
         response.setCharacterEncoding(encoding.getJavaName());
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void renderMergedOutputModel(Map<String, Object> model,
             HttpServletRequest request,
@@ -97,11 +114,11 @@ public class EmptyView extends AbstractView {
     }
 
     /**
-     * Filters out undesired attributes from the given model. The return value can be either another {@link Map}, or a
+     * Filters out undesired attributes from the given model. The return value can be either another {@link java.util.Map}, or a
      * single value object.
      *
-     * <p>Default implementation removes {@link BindingResult} instances and entries not included in the {@link
-     * #setRenderedAttributes(Set) renderedAttributes} property.
+     * <p>Default implementation removes {@link org.springframework.validation.BindingResult} instances and entries not included in the {@link
+     *#setRenderedAttributes(Set) renderedAttributes} property.
      *
      * @param model the model, as passed on to {@link #renderMergedOutputModel}
      * @return the object to be rendered

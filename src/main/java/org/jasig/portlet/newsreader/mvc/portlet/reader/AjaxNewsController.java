@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -53,6 +53,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
+/**
+ * <p>AjaxNewsController class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 @Controller
 @RequestMapping("VIEW")
 public class AjaxNewsController {
@@ -61,6 +67,11 @@ public class AjaxNewsController {
 
     private NewsStore newsStore;
 
+    /**
+     * <p>Setter for the field <code>newsStore</code>.</p>
+     *
+     * @param newsStore a {@link org.jasig.portlet.newsreader.dao.NewsStore} object
+     */
     @Autowired
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
@@ -68,6 +79,11 @@ public class AjaxNewsController {
 
     private NewsSetResolvingService setCreationService;
 
+    /**
+     * <p>Setter for the field <code>setCreationService</code>.</p>
+     *
+     * @param setCreationService a {@link org.jasig.portlet.newsreader.service.NewsSetResolvingService} object
+     */
     @Autowired
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
         this.setCreationService = setCreationService;
@@ -75,12 +91,26 @@ public class AjaxNewsController {
 
     private ApplicationContext applicationContext;
 
+    /**
+     * <p>Setter for the field <code>applicationContext</code>.</p>
+     *
+     * @param applicationContext a {@link org.springframework.context.ApplicationContext} object
+     * @throws org.springframework.beans.BeansException if any.
+     */
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * <p>getJSONFeeds.</p>
+     *
+     * @param request a {@link javax.portlet.ResourceRequest} object
+     * @param response a {@link javax.portlet.ResourceResponse} object
+     * @return a {@link org.springframework.web.portlet.ModelAndView} object
+     * @throws java.lang.Exception if any.
+     */
     @ResourceMapping
     public ModelAndView getJSONFeeds(ResourceRequest request, ResourceResponse response) throws Exception {
         log.debug("handleAjaxRequestInternal (AjaxNewsController)");

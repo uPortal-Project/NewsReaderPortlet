@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -27,6 +27,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+/**
+ * <p>NewsFeed class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class NewsFeed implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,50 +43,98 @@ public class NewsFeed implements Serializable {
     private String title;
     private String copyright;
 
+    /**
+     * <p>Getter for the field <code>entries</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<NewsFeedItem> getEntries() {
         return Collections.unmodifiableList(entries);
     }
 
+    /**
+     * <p>Setter for the field <code>entries</code>.</p>
+     *
+     * @param entries a {@link java.util.List} object
+     */
     public void setEntries(List<NewsFeedItem> entries) {
         this.entries.clear();
         this.entries.addAll(entries);
     }
 
+    /**
+     * <p>Getter for the field <code>author</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getAuthor() {
         return author;
     }
 
+    /**
+     * <p>Setter for the field <code>author</code>.</p>
+     *
+     * @param author a {@link java.lang.String} object
+     */
     public void setAuthor(String author) {
         this.author = author;
     }
 
+    /**
+     * <p>Getter for the field <code>link</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getLink() {
         return link;
     }
 
+    /**
+     * <p>Setter for the field <code>link</code>.</p>
+     *
+     * @param link a {@link java.lang.String} object
+     */
     public void setLink(String link) {
         this.link = link;
     }
 
+    /**
+     * <p>Getter for the field <code>title</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * <p>Setter for the field <code>title</code>.</p>
+     *
+     * @param title a {@link java.lang.String} object
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * <p>Getter for the field <code>copyright</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getCopyright() {
         return copyright;
     }
 
+    /**
+     * <p>Setter for the field <code>copyright</code>.</p>
+     *
+     * @param copyright a {@link java.lang.String} object
+     */
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
     
-    /**
-     * @see java.lang.Object#equals(Object)
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -100,9 +154,7 @@ public class NewsFeed implements Serializable {
             .isEquals();
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return new HashCodeBuilder(464270933, -1074792143)
@@ -114,9 +166,7 @@ public class NewsFeed implements Serializable {
             .toHashCode();
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

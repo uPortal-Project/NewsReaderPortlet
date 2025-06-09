@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -45,6 +45,7 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 @Controller
 @RequestMapping("EDIT")
@@ -57,11 +58,23 @@ public class EditNewsDefinitionController {
     @Autowired
     private List<INewsAdapter> availableAdapters;
 
+    /**
+     * <p>Setter for the field <code>newsStore</code>.</p>
+     *
+     * @param newsStore a {@link org.jasig.portlet.newsreader.dao.NewsStore} object
+     */
     @Autowired
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
     }
 
+    /**
+     * <p>getNewsForm.</p>
+     *
+     * @param request a {@link javax.portlet.PortletRequest} object
+     * @return a {@link org.jasig.portlet.newsreader.mvc.NewsDefinitionForm} object
+     * @throws java.lang.Exception if any.
+     */
     @ModelAttribute("newsDefinitionForm")
     public NewsDefinitionForm getNewsForm(PortletRequest request) throws Exception {
         // if we're editing a news, retrieve the news definition from
@@ -91,11 +104,24 @@ public class EditNewsDefinitionController {
         }
     }
 
+    /**
+     * <p>getAdminNewsEditView.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     @RenderMapping(params = "action=editNewsDefinition")
     public String getAdminNewsEditView() {
         return "editNewsDefinition";
     }
     
+    /**
+     * <p>onSubmitAction.</p>
+     *
+     * @param request a {@link javax.portlet.ActionRequest} object
+     * @param response a {@link javax.portlet.ActionResponse} object
+     * @param form a {@link org.jasig.portlet.newsreader.mvc.NewsDefinitionForm} object
+     * @throws java.lang.Exception if any.
+     */
     @ActionMapping(params = "action=editNewsDefinition")
     public void onSubmitAction(ActionRequest request,
                                   ActionResponse response, NewsDefinitionForm form)
@@ -126,6 +152,11 @@ public class EditNewsDefinitionController {
 
     }
     
+    /**
+     * <p>Getter for the field <code>availableAdapters</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     @ModelAttribute("availableAdapters")
     public List<INewsAdapter> getAvailableAdapters() {
         return availableAdapters;

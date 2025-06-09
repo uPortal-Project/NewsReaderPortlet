@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.portlet.newsreader.service;
 
 import java.util.HashSet;
@@ -35,6 +34,7 @@ import org.springframework.stereotype.Service;
  * belongs to.
  *
  * @author drewwills
+ * @since 5.1.1
  */
 @Service
 public class RolesService {
@@ -44,6 +44,12 @@ public class RolesService {
     @Autowired
     private NewsStore newsStore;
 
+    /**
+     * <p>getUserRoles.</p>
+     *
+     * @param req a {@link javax.portlet.PortletRequest} object
+     * @return a {@link java.util.Set} object
+     */
     public Set<String> getUserRoles(PortletRequest req) {
 
         final PortletSession session = req.getPortletSession();

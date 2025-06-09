@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -21,15 +21,27 @@ package org.jasig.portlet.newsreader.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * <p>DefaultFullStory class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class DefaultFullStory implements FullStory {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
     private final String content;
 
+    /**
+     * <p>Constructor for DefaultFullStory.</p>
+     *
+     * @param content a {@link java.lang.String} object
+     */
     public DefaultFullStory(String content) {
         this.content = content;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFullStoryText() {
         return content;

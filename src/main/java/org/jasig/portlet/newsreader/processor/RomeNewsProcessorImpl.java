@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -49,6 +49,12 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
+/**
+ * <p>RomeNewsProcessorImpl class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class RomeNewsProcessorImpl {
 
     @Value("${newsreader.synfeedinput.xmlreader.allowDoctypes:false}")
@@ -60,20 +66,49 @@ public class RomeNewsProcessorImpl {
 
     private int entriesPerPage = 10;
 
+    /**
+     * <p>Setter for the field <code>entriesPerPage</code>.</p>
+     *
+     * @param perPage a int
+     */
     public void setEntriesPerPage(int perPage) {
         this.entriesPerPage = perPage;
     }
 
+    /**
+     * <p>Setter for the field <code>imageTypes</code>.</p>
+     *
+     * @param imageTypes a {@link java.util.List} object
+     */
     public void setImageTypes(List<String> imageTypes) {
         this.imageTypes = imageTypes;
     }
 
     private List<String> videoTypes;
 
+    /**
+     * <p>Setter for the field <code>videoTypes</code>.</p>
+     *
+     * @param videoTypes a {@link java.util.List} object
+     */
     public void setVideoTypes(List<String> videoTypes) {
         this.videoTypes = videoTypes;
     }
 
+    /**
+     * <p>getFeed.</p>
+     *
+     * @param in a {@link java.io.InputStream} object
+     * @param titlePolicy a {@link java.lang.String} object
+     * @param descriptionPolicy a {@link java.lang.String} object
+     * @param maxStories a int
+     * @return a {@link org.jasig.portlet.newsreader.model.PaginatingNewsFeed} object
+     * @throws java.io.IOException if any.
+     * @throws java.lang.IllegalArgumentException if any.
+     * @throws com.rometools.rome.io.FeedException if any.
+     * @throws org.owasp.validator.html.PolicyException if any.
+     * @throws org.owasp.validator.html.ScanException if any.
+     */
     public PaginatingNewsFeed getFeed(InputStream in, String titlePolicy, String descriptionPolicy, int maxStories) throws IOException, IllegalArgumentException, FeedException, PolicyException, ScanException {
         // get a vanilla SyndFeed from the input stream
         XmlReader reader = new XmlReader(in);
@@ -104,6 +139,16 @@ public class RomeNewsProcessorImpl {
         return newsFeed;
     }
 
+    /**
+     * <p>getNewsFeedItem.</p>
+     *
+     * @param entry a {@link com.rometools.rome.feed.synd.SyndEntry} object
+     * @param titlePolicy a {@link java.lang.String} object
+     * @param descriptionPolicy a {@link java.lang.String} object
+     * @return a {@link org.jasig.portlet.newsreader.model.NewsFeedItem} object
+     * @throws org.owasp.validator.html.PolicyException if any.
+     * @throws org.owasp.validator.html.ScanException if any.
+     */
     protected NewsFeedItem getNewsFeedItem(SyndEntry entry, String titlePolicy, String descriptionPolicy) throws PolicyException, ScanException {
         NewsFeedItem item = new NewsFeedItem();
         item.setAuthors(entry.getAuthors());
@@ -270,6 +315,13 @@ public class RomeNewsProcessorImpl {
 
     private Map<String, Policy> policies = new HashMap<String, Policy>();
 
+    /**
+     * <p>Setter for the field <code>policies</code>.</p>
+     *
+     * @param policies a {@link java.util.Map} object
+     * @throws org.owasp.validator.html.PolicyException if any.
+     * @throws java.io.IOException if any.
+     */
     public void setPolicies(Map<String, Resource> policies) throws PolicyException, IOException {
         for (Map.Entry<String, Resource> policy : policies.entrySet()) {
             InputStream policyStream = policy.getValue().getInputStream();

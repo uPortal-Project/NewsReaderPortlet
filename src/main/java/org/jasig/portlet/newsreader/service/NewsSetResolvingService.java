@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -22,14 +22,24 @@ import javax.portlet.PortletRequest;
 
 import org.jasig.portlet.newsreader.NewsSet;
 
+/**
+ * <p>NewsSetResolvingService interface.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public interface NewsSetResolvingService {
 
 	/**
 	 * Returns a NewsSet based on the implemented algorithem.
-	 * 
+	 *
 	 * Returned NewsSets are 'initalised' (loaded with pushed feeds).
-	 * 
+	 *
 	 * The returned NewsSet is associated with the calling portlel via a PortletPreference.
+	 *
+	 * @param fname a {@link java.lang.String} object
+	 * @param request a {@link javax.portlet.PortletRequest} object
+	 * @return a {@link org.jasig.portlet.newsreader.NewsSet} object
 	 */
 	public NewsSet getNewsSet(String fname, PortletRequest request);
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -22,10 +22,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
+/**
+ * <p>HelpController class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 @Controller
 @RequestMapping("HELP")
 public class HelpController {
 
+    /**
+     * <p>getHelpView.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     @RenderMapping
     public String getHelpView() {
         return "help";

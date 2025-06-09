@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -28,9 +28,9 @@ import org.owasp.validator.html.ScanException;
 import com.rometools.rome.feed.synd.SyndEntry;
 
 /**
- * Strategy implementation derived from {@link RomeNewsProcessorImpl} with support for full story.
+ * Strategy implementation derived from {@link org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl} with support for full story.
  *
- * Rather than set the {@code link} in the {@link NewsFeedItem}, a {@link RemoteHttpFullStory} is created
+ * Rather than set the {@code link} in the {@link org.jasig.portlet.newsreader.model.NewsFeedItem}, a {@link org.jasig.portlet.newsreader.model.RemoteHttpFullStory} is created
  * using the link as the URL.
  *
  * @author Benito J. Gonzalez (bgonzalez@unicon.net)
@@ -40,6 +40,7 @@ public class RomeNewsFullStoryProcessorImpl extends RomeNewsProcessorImpl {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    /** {@inheritDoc} */
     @Override
     protected NewsFeedItem getNewsFeedItem(SyndEntry entry, String titlePolicy, String descriptionPolicy) throws PolicyException, ScanException {
         log.debug("getNewsFeedItem() in full story method");

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -56,13 +56,17 @@ import com.rometools.rome.io.FeedException;;
  * Note: This class can process and feed supported by ROME https://rome.dev.java.net/.
  *
  * @author Anthony Colebourne
+ * @since 5.1.1
  */
 public class RomeAdapter extends AbstractNewsAdapter {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    /** Constant <code>PREFERENCE_TITLE_POLICY="titlePolicy"</code> */
     public static final String PREFERENCE_TITLE_POLICY = "titlePolicy";
+    /** Constant <code>PREFERENCE_DESCRIPTION_POLICY="descriptionPolicy"</code> */
     public static final String PREFERENCE_DESCRIPTION_POLICY = "descriptionPolicy";
+    /** Constant <code>DEFAULT_ANTISAMY_POLICY="antisamy-textonly"</code> */
     public static final String DEFAULT_ANTISAMY_POLICY = "antisamy-textonly";
 
     private RomeNewsProcessorImpl processor;
@@ -77,54 +81,119 @@ public class RomeAdapter extends AbstractNewsAdapter {
     private int timesToRetry = 2;
     private String cacheKeyPrefix = "";  // default is no prefix
 
+    /**
+     * <p>Getter for the field <code>httpClient</code>.</p>
+     *
+     * @return a {@link org.apache.http.impl.client.CloseableHttpClient} object
+     */
     public CloseableHttpClient getHttpClient() {
         return httpClient;
     }
 
+    /**
+     * <p>Setter for the field <code>httpClient</code>.</p>
+     *
+     * @param httpClient a {@link org.apache.http.impl.client.CloseableHttpClient} object
+     */
     public void setHttpClient(CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
+    /**
+     * <p>Setter for the field <code>proxyHost</code>.</p>
+     *
+     * @param proxyHost a {@link java.lang.String} object
+     */
     public void setProxyHost(String proxyHost) {
         this.proxyHost = proxyHost;
     }
 
+    /**
+     * <p>Setter for the field <code>proxyPort</code>.</p>
+     *
+     * @param proxyPort a {@link java.lang.String} object
+     */
     public void setProxyPort(String proxyPort) {
         this.proxyPort = proxyPort;
     }
 
+    /**
+     * <p>Getter for the field <code>connectionTimeout</code>.</p>
+     *
+     * @return a int
+     */
     public int getConnectionTimeout() {
         return connectionTimeout;
     }
 
+    /**
+     * <p>Setter for the field <code>connectionTimeout</code>.</p>
+     *
+     * @param connectionTimeout a int
+     */
     public void setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
     }
 
+    /**
+     * <p>Getter for the field <code>readTimeout</code>.</p>
+     *
+     * @return a int
+     */
     public int getReadTimeout() {
         return readTimeout;
     }
 
+    /**
+     * <p>Setter for the field <code>readTimeout</code>.</p>
+     *
+     * @param readTimeout a int
+     */
     public void setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
     }
 
+    /**
+     * <p>Getter for the field <code>connectionManagerTimeout</code>.</p>
+     *
+     * @return a long
+     */
     public long getConnectionManagerTimeout() {
         return connectionManagerTimeout;
     }
 
+    /**
+     * <p>Setter for the field <code>connectionManagerTimeout</code>.</p>
+     *
+     * @param connectionManagerTimeout a long
+     */
     public void setConnectionManagerTimeout(long connectionManagerTimeout) {
         this.connectionManagerTimeout = connectionManagerTimeout;
     }
 
+    /**
+     * <p>Getter for the field <code>timesToRetry</code>.</p>
+     *
+     * @return a int
+     */
     public int getTimesToRetry() {
         return timesToRetry;
     }
 
+    /**
+     * <p>Setter for the field <code>timesToRetry</code>.</p>
+     *
+     * @param timesToRetry a int
+     */
     public void setTimesToRetry(int timesToRetry) {
         this.timesToRetry = timesToRetry;
     }
 
+    /**
+     * <p>Setter for the field <code>processor</code>.</p>
+     *
+     * @param processor a {@link org.jasig.portlet.newsreader.processor.RomeNewsProcessorImpl} object
+     */
     public void setProcessor(RomeNewsProcessorImpl processor) {
         this.processor = processor;
     }
@@ -140,6 +209,11 @@ public class RomeAdapter extends AbstractNewsAdapter {
 
     /* (non-Javadoc)
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    /**
+     * <p>init.</p>
+     *
+     * @throws java.lang.Exception if any.
      */
     public void init() throws Exception {
         String proxyHost = null;
@@ -172,6 +246,12 @@ public class RomeAdapter extends AbstractNewsAdapter {
         compressingClient = new DecompressingHttpClient(httpClient);
     }
 
+    /**
+     * <p>getPolicyPref.</p>
+     *
+     * @param policyKey a {@link java.lang.String} object
+     * @return an array of {@link java.lang.String} objects
+     */
     protected String[] getPolicyPref(String... policyKey) {
         String[] values = new String[policyKey.length];
         try {
@@ -198,6 +278,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
     /* (non-Javadoc)
       * @see org.jasig.portlet.newsreader.adapter.INewsAdapter#getSyndFeed(org.jasig.portlet.newsreader.NewsConfiguration, javax.portlet.PortletRequest)
       */
+    /** {@inheritDoc} */
     @Override
     public PaginatingNewsFeed getSyndFeed(NewsConfiguration config, int page, int maxStories) throws NewsException {
 
@@ -283,6 +364,7 @@ public class RomeAdapter extends AbstractNewsAdapter {
      * @param descriptionPolicy String the cleaning policy for the description
      * @param maxStories        limit number of news items
      * @return SyndFeed Feed object
+     * @throws org.jasig.portlet.newsreader.adapter.NewsException if any.
      */
     protected PaginatingNewsFeed getSyndFeed(String url, String titlePolicy, String descriptionPolicy, int maxStories) throws NewsException {
 
@@ -356,6 +438,11 @@ public class RomeAdapter extends AbstractNewsAdapter {
 
     private Cache cache;
 
+    /**
+     * <p>Setter for the field <code>cache</code>.</p>
+     *
+     * @param cache a {@link net.sf.ehcache.Cache} object
+     */
     public void setCache(Cache cache) {
         this.cache = cache;
     }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -29,6 +29,7 @@ import java.util.Map;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 public class PredefinedNewsConfiguration extends NewsConfiguration {
 
@@ -45,7 +46,7 @@ public class PredefinedNewsConfiguration extends NewsConfiguration {
     /**
      * Get the user-specific preferences for this configuration.
      *
-     * @return
+     * @return a {@link java.util.Map} object
      */
     public Map<String, String> getPreferences() {
         return preferences;
@@ -54,7 +55,7 @@ public class PredefinedNewsConfiguration extends NewsConfiguration {
     /**
      * Set the user-specific preferences for this configuration.
      *
-     * @param preferences
+     * @param preferences a {@link java.util.Map} object
      */
     public void setPreferences(Map<String, String> preferences) {
         this.preferences = preferences;

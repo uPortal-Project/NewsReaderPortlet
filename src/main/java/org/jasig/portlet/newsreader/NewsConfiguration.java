@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -26,6 +26,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 public class NewsConfiguration implements Comparable<NewsConfiguration> {
 
@@ -39,7 +40,7 @@ public class NewsConfiguration implements Comparable<NewsConfiguration> {
     /**
      * Determine whether this feed is active.
      *
-     * @return
+     * @return a boolean
      */
     public boolean isActive() {
         return active;
@@ -48,7 +49,7 @@ public class NewsConfiguration implements Comparable<NewsConfiguration> {
     /**
      * Set whether this feed should be displayed or hidden.
      *
-     * @param active
+     * @param active a boolean
      */
     public void setActive(boolean active) {
         this.active = active;
@@ -57,7 +58,7 @@ public class NewsConfiguration implements Comparable<NewsConfiguration> {
     /**
      * Determine whether this news should be displayed or hidden.
      *
-     * @return
+     * @return a boolean
      */
     public boolean isDisplayed() {
         return displayed;
@@ -66,7 +67,7 @@ public class NewsConfiguration implements Comparable<NewsConfiguration> {
     /**
      * Set whether this news should be displayed or hidden.
      *
-     * @param displayed
+     * @param displayed a boolean
      */
     public void setDisplayed(boolean displayed) {
         this.displayed = displayed;
@@ -75,7 +76,7 @@ public class NewsConfiguration implements Comparable<NewsConfiguration> {
     /**
      * Get the unique ID for this NewsConfiguration.
      *
-     * @return
+     * @return a {@link java.lang.Long} object
      */
     public Long getId() {
         return id;
@@ -84,7 +85,7 @@ public class NewsConfiguration implements Comparable<NewsConfiguration> {
     /**
      * Set the unique ID for this NewsConfiguration.
      *
-     * @param id
+     * @param id a {@link java.lang.Long} object
      */
     public void setId(Long id) {
         this.id = id;
@@ -93,29 +94,40 @@ public class NewsConfiguration implements Comparable<NewsConfiguration> {
     /**
      * Get the NewsDefinition for the news being configured.
      *
-     * @return
+     * @return a {@link org.jasig.portlet.newsreader.NewsDefinition} object
      */
     public NewsDefinition getNewsDefinition() {
         return newsDefinition;
     }
 
-    /**
-     * Set the NewsDefinition for the news being configured.
-     *
-     * @param definition
-     */
+	/**
+	 * Set the NewsDefinition for the news being configured.
+	 *
+	 * @param definition a {@link org.jasig.portlet.newsreader.NewsDefinition} object
+	 */
 	public void setNewsDefinition(NewsDefinition definition) {
 		this.newsDefinition = definition;
 	}
 
+	/**
+	 * <p>Getter for the field <code>newsSet</code>.</p>
+	 *
+	 * @return a {@link org.jasig.portlet.newsreader.NewsSet} object
+	 */
 	public NewsSet getNewsSet() {
 		return newsSet;
 	}
 
+	/**
+	 * <p>Setter for the field <code>newsSet</code>.</p>
+	 *
+	 * @param newsSet a {@link org.jasig.portlet.newsreader.NewsSet} object
+	 */
 	public void setNewsSet(NewsSet newsSet) {
 		this.newsSet = newsSet;
 	}
 	
+    /** {@inheritDoc} */
     @Override
     public int compareTo(NewsConfiguration config) {
         return new CompareToBuilder()

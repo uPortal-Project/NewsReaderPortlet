@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -29,6 +29,7 @@ import java.util.Set;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 public class PredefinedNewsDefinition extends NewsDefinition {
 
@@ -46,9 +47,9 @@ public class PredefinedNewsDefinition extends NewsDefinition {
     /**
      * Construct a new predefined news definition
      *
-     * @param id
-     * @param className
-     * @param name
+     * @param id a {@link java.lang.Long} object
+     * @param className a {@link java.lang.String} object
+     * @param name a {@link java.lang.String} object
      */
     public PredefinedNewsDefinition(Long id, String className, String name) {
         super(id, className, name);
@@ -57,7 +58,7 @@ public class PredefinedNewsDefinition extends NewsDefinition {
     /**
      * Get all the user configurations for this news definition
      *
-     * @return
+     * @return a {@link java.util.Set} object
      */
     public Set<PredefinedNewsConfiguration> getUserConfigurations() {
         return userConfigurations;
@@ -66,7 +67,7 @@ public class PredefinedNewsDefinition extends NewsDefinition {
     /**
      * Set the user configurations for this news definition
      *
-     * @param configurations
+     * @param configurations a {@link java.util.Set} object
      */
     public void setUserConfigurations(Set<PredefinedNewsConfiguration> configurations) {
         this.userConfigurations = configurations;
@@ -93,26 +94,36 @@ public class PredefinedNewsDefinition extends NewsDefinition {
     /**
      * Add a user configuration for this news definition
      *
-     * @param config
+     * @param config a {@link org.jasig.portlet.newsreader.PredefinedNewsConfiguration} object
      */
     public void addUserConfiguration(PredefinedNewsConfiguration config) {
         this.userConfigurations.add(config);
     }
 
-    /**
-     * Add a user role to the set of roles that should get this news
-     * by default.
-     *
-     * @param role user role to be added
-     */
+	/**
+	 * Add a user role to the set of roles that should get this news
+	 * by default.
+	 *
+	 * @param role user role to be added
+	 */
 	public void addDefaultRole(String role) {
 		this.defaultRoles.add(role);
 	}
 
+    /**
+     * <p>Getter for the field <code>fname</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getFname() {
         return fname;
     }
 
+    /**
+     * <p>Setter for the field <code>fname</code>.</p>
+     *
+     * @param fname a {@link java.lang.String} object
+     */
     public void setFname(String fname) {
         this.fname = fname;
     }

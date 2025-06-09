@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -34,6 +34,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 public class NewsDefinition implements Comparable<NewsDefinition> {
 
@@ -47,6 +48,13 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
      */
     public NewsDefinition() {}
 
+    /**
+     * <p>Constructor for NewsDefinition.</p>
+     *
+     * @param id a {@link java.lang.Long} object
+     * @param className a {@link java.lang.String} object
+     * @param name a {@link java.lang.String} object
+     */
     public NewsDefinition(Long id, String className, String name) {
         this.id = id;
         this.className = className;
@@ -56,7 +64,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
     /**
      * Return the unique id of this news.
      *
-     * @return
+     * @return a {@link java.lang.Long} object
      */
     public Long getId() {
         return id;
@@ -65,7 +73,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
     /**
      * Set the unique id for this news.
      *
-     * @param id
+     * @param id a {@link java.lang.Long} object
      */
     public void setId(Long id) {
         this.id = id;
@@ -76,7 +84,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
      * determine how the news is retrieved.  This id must match a
      * news adapter registered in the spring context files.
      *
-     * @return
+     * @return a {@link java.lang.String} object
      */
     public String getClassName() {
         return className;
@@ -87,7 +95,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
      * determine how the news is retrieved.  This id must match a
      * news adapter registered in the spring context files.
      *
-     * @param className
+     * @param className a {@link java.lang.String} object
      */
     public void setClassName(String className) {
         this.className = className;
@@ -96,7 +104,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
     /**
      * Return the display name for this news.
      *
-     * @return
+     * @return a {@link java.lang.String} object
      */
     public String getName() {
         return name;
@@ -105,12 +113,17 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
     /**
      * Set the display name for this news.
      *
-     * @param name
+     * @param name a {@link java.lang.String} object
      */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * <p>isPredefined.</p>
+     *
+     * @return a boolean
+     */
     public boolean isPredefined() {
         return this instanceof PredefinedNewsDefinition;
     }
@@ -149,6 +162,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
         this.parameters.put(name, value);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 	    return new EqualsBuilder()
@@ -158,6 +172,7 @@ public class NewsDefinition implements Comparable<NewsDefinition> {
 	        .toString();
 	}
 
+    /** {@inheritDoc} */
     @Override
     public int compareTo(NewsDefinition def) {
         return new CompareToBuilder()

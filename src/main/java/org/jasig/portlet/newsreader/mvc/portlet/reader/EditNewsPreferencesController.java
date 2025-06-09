@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -63,6 +63,7 @@ import org.springframework.web.portlet.bind.annotation.ResourceMapping;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 @Controller
 @RequestMapping("EDIT")
@@ -72,6 +73,11 @@ public class EditNewsPreferencesController {
 
     private Map<String,String> predefinedEditActions;
 
+    /**
+     * <p>Setter for the field <code>predefinedEditActions</code>.</p>
+     *
+     * @param predefinedEditActions a {@link java.util.Map} object
+     */
     @Resource(name = "predefinedEditActions")
     public void setPredefinedEditActions(Map<String,String> predefinedEditActions) {
         this.predefinedEditActions = predefinedEditActions;
@@ -82,6 +88,11 @@ public class EditNewsPreferencesController {
 
     private NewsStore newsStore;
 
+    /**
+     * <p>Setter for the field <code>newsStore</code>.</p>
+     *
+     * @param newsStore a {@link org.jasig.portlet.newsreader.dao.NewsStore} object
+     */
     @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
@@ -89,11 +100,24 @@ public class EditNewsPreferencesController {
 
     private NewsSetResolvingService setCreationService;
 
+    /**
+     * <p>Setter for the field <code>setCreationService</code>.</p>
+     *
+     * @param setCreationService a {@link org.jasig.portlet.newsreader.service.NewsSetResolvingService} object
+     */
     @Autowired(required = true)
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
         this.setCreationService = setCreationService;
     }
 
+    /**
+     * <p>showPreferencesView.</p>
+     *
+     * @param request a {@link javax.portlet.RenderRequest} object
+     * @param response a {@link javax.portlet.RenderResponse} object
+     * @return a {@link org.springframework.web.portlet.ModelAndView} object
+     * @throws java.lang.Exception if any.
+     */
     @RenderMapping
     public ModelAndView showPreferencesView(RenderRequest request,
             RenderResponse response) throws Exception {
@@ -136,6 +160,13 @@ public class EditNewsPreferencesController {
         return new ModelAndView("editNews", "model", model);
     }
 
+    /**
+     * <p>saveNewsPreference.</p>
+     *
+     * @param request a {@link javax.portlet.ActionRequest} object
+     * @param response a {@link javax.portlet.ActionResponse} object
+     * @throws java.lang.Exception if any.
+     */
     @ActionMapping
     protected void saveNewsPreference(ActionRequest request,
             ActionResponse response) throws Exception {
@@ -173,6 +204,14 @@ public class EditNewsPreferencesController {
         }
     }
 
+    /**
+     * <p>saveDisplayPreference.</p>
+     *
+     * @param request a {@link javax.portlet.ResourceRequest} object
+     * @param response a {@link javax.portlet.ResourceResponse} object
+     * @return a {@link org.springframework.web.portlet.ModelAndView} object
+     * @throws java.io.IOException if any.
+     */
     @ResourceMapping
     public ModelAndView saveDisplayPreference(ResourceRequest request,
             ResourceResponse response) throws IOException {

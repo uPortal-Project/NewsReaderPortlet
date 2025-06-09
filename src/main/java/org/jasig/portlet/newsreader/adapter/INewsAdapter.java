@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -24,13 +24,16 @@ import org.jasig.portlet.newsreader.model.NewsFeed;
 import org.jasig.portlet.newsreader.model.PaginatingNewsFeed;
 
 /**
+ * <p>INewsAdapter interface.</p>
+ *
  * @author Anthony Colebourne
+ * @since 5.1.1
  */
 public interface INewsAdapter {
 
     /**
      * Provides the fully-qualified name of the concrete INewsAdapter class,
-     * which is used in creating a {@link NewsDefinition}.
+     * which is used in creating a {@link org.jasig.portlet.newsreader.NewsDefinition}.
      *
      * @return concrete class name
      * @see org.jasig.portlet.newsreader.NewsDefinition
@@ -53,6 +56,15 @@ public interface INewsAdapter {
      */
     String getDescriptionKey();
 
+    /**
+     * <p>getSyndFeed.</p>
+     *
+     * @param config a {@link org.jasig.portlet.newsreader.NewsConfiguration} object
+     * @param page a int
+     * @param maxStories a int
+     * @return a {@link org.jasig.portlet.newsreader.model.PaginatingNewsFeed} object
+     * @throws org.jasig.portlet.newsreader.adapter.NewsException if any.
+     */
     PaginatingNewsFeed getSyndFeed(NewsConfiguration config, int page, int maxStories) throws NewsException;
 
 }

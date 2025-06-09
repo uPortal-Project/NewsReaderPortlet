@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -20,6 +20,18 @@ package org.jasig.portlet.newsreader.model;
 
 import org.jasig.portlet.newsreader.adapter.NewsException;
 
+/**
+ * <p>FullStory interface.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public interface FullStory {
+    /**
+     * <p>getFullStoryText.</p>
+     *
+     * @return a {@link java.lang.String} object
+     * @throws org.jasig.portlet.newsreader.adapter.NewsException if any.
+     */
     String getFullStoryText() throws NewsException;
 }

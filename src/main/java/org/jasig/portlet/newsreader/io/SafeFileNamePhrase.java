@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -35,8 +35,11 @@ import org.danann.cernunnos.TaskRequest;
 import org.danann.cernunnos.TaskResponse;
 
 /**
+ * <p>SafeFileNamePhrase class.</p>
+ *
  * @author Eric Dalquist
  * @version $Revision$
+ * @since 5.1.1
  */
 public class SafeFileNamePhrase implements Phrase {
 
@@ -60,6 +63,7 @@ public class SafeFileNamePhrase implements Phrase {
         REPLACEMENT_PAIRS = Collections.unmodifiableMap(pairs);
     }
 
+    /** Constant <code>HUMAN_FILE_NAME</code> */
     public static final Reagent HUMAN_FILE_NAME = new SimpleReagent("HUMAN_FILE_NAME", "descendant-or-self::text()", ReagentType.PHRASE,
             String.class, "Human readable version of the file name to make safe");
     
@@ -69,12 +73,18 @@ public class SafeFileNamePhrase implements Phrase {
     /* (non-Javadoc)
      * @see org.danann.cernunnos.Bootstrappable#init(org.danann.cernunnos.EntityConfig)
      */
+    /** {@inheritDoc} */
     public void init(EntityConfig config) {
         this.humanFileNamePhrase = (Phrase) config.getValue(HUMAN_FILE_NAME);
     }
 
     /* (non-Javadoc)
      * @see org.danann.cernunnos.Bootstrappable#getFormula()
+     */
+    /**
+     * <p>getFormula.</p>
+     *
+     * @return a {@link org.danann.cernunnos.Formula} object
      */
     public Formula getFormula() {
         return new SimpleFormula(SafeFileNamePhrase.class, new Reagent[] { HUMAN_FILE_NAME });
@@ -83,12 +93,19 @@ public class SafeFileNamePhrase implements Phrase {
     /* (non-Javadoc)
      * @see org.danann.cernunnos.Phrase#evaluate(org.danann.cernunnos.TaskRequest, org.danann.cernunnos.TaskResponse)
      */
+    /** {@inheritDoc} */
     public Object evaluate(TaskRequest req, TaskResponse res) {
         final String humanFileName = (String)this.humanFileNamePhrase.evaluate(req, res);
         
         return this.getSafeFileName(humanFileName);
     }
 
+    /**
+     * <p>getSafeFileName.</p>
+     *
+     * @param name a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     protected String getSafeFileName(String name) {
         //Replace invalid characters
         for (final Map.Entry<Pattern, String> pair : REPLACEMENT_PAIRS.entrySet()) {

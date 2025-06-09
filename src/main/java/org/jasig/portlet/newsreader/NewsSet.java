@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -21,6 +21,12 @@ package org.jasig.portlet.newsreader;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * <p>NewsSet class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class NewsSet {
 
 	private Long id = new Long(-1);
@@ -29,31 +35,76 @@ public class NewsSet {
 	private String userId;
 	
 	
+	/**
+	 * <p>Getter for the field <code>id</code>.</p>
+	 *
+	 * @return a {@link java.lang.Long} object
+	 */
 	public Long getId() {
 		return id;
 	}
+	/**
+	 * <p>Setter for the field <code>id</code>.</p>
+	 *
+	 * @param id a {@link java.lang.Long} object
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object
+	 */
 	public String getName() {
 		return name;
 	}
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link java.lang.String} object
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	/**
+	 * <p>Getter for the field <code>newsConfigurations</code>.</p>
+	 *
+	 * @return a {@link java.util.Set} object
+	 */
 	public Set<NewsConfiguration> getNewsConfigurations() {
 		return newsConfigurations;
 	}
+	/**
+	 * <p>Setter for the field <code>newsConfigurations</code>.</p>
+	 *
+	 * @param calendars a {@link java.util.Set} object
+	 */
 	public void setNewsConfigurations(Set<NewsConfiguration> calendars) {
 		this.newsConfigurations = calendars;
 	}
+	/**
+	 * <p>Getter for the field <code>userId</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object
+	 */
 	public String getUserId() {
 		return userId;
 	}
+	/**
+	 * <p>Setter for the field <code>userId</code>.</p>
+	 *
+	 * @param userId a {@link java.lang.String} object
+	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	
+	/**
+	 * <p>addNewsConfiguration.</p>
+	 *
+	 * @param config a {@link org.jasig.portlet.newsreader.NewsConfiguration} object
+	 */
 	public void addNewsConfiguration(NewsConfiguration config) {
 		config.setNewsSet(this);
 		this.newsConfigurations.add(config);

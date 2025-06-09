@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -18,21 +18,30 @@
  */
 package org.jasig.portlet.newsreader.adapter;
 
+/**
+ * <p>Abstract AbstractNewsAdapter class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public abstract class AbstractNewsAdapter implements INewsAdapter {
     
     private static final String NAME_KEY_SUFFIX = ".messages.name";
     private static final String DESCRIPTION_KEY_SUFFIX = ".messages.description";
 
+    /** {@inheritDoc} */
     @Override
     public String getClassName() {
         return getClass().getName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getNameKey() {
         return this.getClassName() + NAME_KEY_SUFFIX;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescriptionKey() {
         return this.getClassName() + DESCRIPTION_KEY_SUFFIX;

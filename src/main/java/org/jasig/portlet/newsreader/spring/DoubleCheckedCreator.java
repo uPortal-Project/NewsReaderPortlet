@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -27,10 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of double-checked locking for object creation using a {@link ReadWriteLock}
- * 
+ * Implementation of double-checked locking for object creation using a {@link java.util.concurrent.locks.ReadWriteLock}
+ *
  * @author Eric Dalquist
  * @version $Revision$
+ * @since 5.1.1
  */
 public abstract class DoubleCheckedCreator<T> {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -39,10 +40,18 @@ public abstract class DoubleCheckedCreator<T> {
     protected final Lock readLock;
     protected final Lock writeLock;
 
+    /**
+     * <p>Constructor for DoubleCheckedCreator.</p>
+     */
     public DoubleCheckedCreator() {
         this(new ReentrantReadWriteLock());
     }
 
+    /**
+     * <p>Constructor for DoubleCheckedCreator.</p>
+     *
+     * @param readWriteLock a {@link java.util.concurrent.locks.ReadWriteLock} object
+     */
     public DoubleCheckedCreator(ReadWriteLock readWriteLock) {
         Validate.notNull(readWriteLock, "readWriteLock can not be null");
         this.readWriteLock = readWriteLock;
@@ -51,12 +60,16 @@ public abstract class DoubleCheckedCreator<T> {
     }
 
     /**
+     * <p>create.</p>
+     *
      * @param args Arguments to use when creating the object
      * @return A newly created object
      */
     protected abstract T create(Object... args);
 
     /**
+     * <p>retrieve.</p>
+     *
      * @param args Arguments to use when retrieving the object
      * @return An existing object if available
      */
@@ -64,7 +77,7 @@ public abstract class DoubleCheckedCreator<T> {
 
     /**
      * The default impl returns true if value is null.
-     * 
+     *
      * @param value The object to validate
      * @param args Arguments to use when validating the object
      * @return true if the object is invalid and should be created, false if not.
@@ -75,7 +88,7 @@ public abstract class DoubleCheckedCreator<T> {
 
     /**
      * Double checking retrieval/creation of an object
-     * 
+     *
      * @param args Optional arguments to pass to {@link #retrieve(Object...)}, {@link #create(Object...)}, and {@link #invalid(Object, Object...)}.
      * @return A retrieved or created object.
      */

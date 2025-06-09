@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -30,9 +30,23 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * <p>NewsReaderBeans class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 @Configuration
 public class NewsReaderBeans {
 
+	/**
+	 * <p>sslSocketFactory.</p>
+	 *
+	 * @return a {@link org.apache.http.conn.socket.ConnectionSocketFactory} object
+	 * @throws java.security.KeyManagementException if any.
+	 * @throws java.security.NoSuchAlgorithmException if any.
+	 * @throws java.security.KeyStoreException if any.
+	 */
 	@Bean
 	public ConnectionSocketFactory sslSocketFactory() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		// https://stackoverflow.com/questions/39762760/javax-net-ssl-sslexception-certificate-doesnt-match-any-of-the-subject-alterna

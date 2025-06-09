@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -33,6 +33,7 @@ import javax.portlet.PortletRequest;
  * Allows content to be filtered per portlet-definition.
  *
  * @author drewwills
+ * @since 5.1.1
  */
 public class Whitelist<T> {
 
@@ -46,6 +47,14 @@ public class Whitelist<T> {
      */
     private static final String WHITELIST_REGEX_PREFERENCE = "Whitelist.regexValues";
 
+    /**
+     * <p>filter.</p>
+     *
+     * @param req a {@link javax.portlet.PortletRequest} object
+     * @param items a {@link java.util.Collection} object
+     * @param callback a {@link org.jasig.portlet.newsreader.service.Whitelist.Callback} object
+     * @return a {@link java.util.List} object
+     */
     public List<T> filter(PortletRequest req, Collection<T> items, Callback<T> callback) {
 
         final PortletPreferences prefs = req.getPreferences();

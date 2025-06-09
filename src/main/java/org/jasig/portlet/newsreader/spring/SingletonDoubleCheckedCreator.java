@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -25,9 +25,10 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Provides a DoubleCheckedCreator impl that tracks the singleton instance internally
- * 
+ *
  * @author Eric Dalquist
  * @version $Revision$
+ * @since 5.1.1
  */
 public abstract class SingletonDoubleCheckedCreator<T> extends DoubleCheckedCreator<T> {
     private final AtomicBoolean creating = new AtomicBoolean(false);
@@ -36,14 +37,17 @@ public abstract class SingletonDoubleCheckedCreator<T> extends DoubleCheckedCrea
     
     /**
      * Called only once as long as it returns successfully
-     * 
+     *
      * @see DoubleCheckedCreator#create(Object...)
+     * @param args a {@link java.lang.Object} object
+     * @return a T object
      */
     protected abstract T createSingleton(Object... args);
 
     /* (non-Javadoc)
      * @see org.jasig.portal.utils.threading.DoubleCheckedCreator#create(java.lang.Object[])
      */
+    /** {@inheritDoc} */
     @Override
     protected final T create(Object... args) {
         if (this.creating.get()) {
@@ -65,21 +69,22 @@ public abstract class SingletonDoubleCheckedCreator<T> extends DoubleCheckedCrea
     /* (non-Javadoc)
      * @see org.jasig.portal.utils.threading.DoubleCheckedCreator#retrieve(java.lang.Object[])
      */
+    /** {@inheritDoc} */
     @Override
     protected final T retrieve(Object... args) {
         return this.instance;
     }
     
     /**
+     * <p>isCreated.</p>
+     *
      * @return true if the singleton has been created as of this call
      */
     public final boolean isCreated() {
         return this.created.get();
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

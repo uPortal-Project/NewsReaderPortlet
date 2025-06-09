@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -34,15 +34,40 @@ import org.jasig.portlet.newsreader.UserDefinedNewsConfiguration;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 public interface NewsStore {
 
+	/**
+	 * <p>getNewsSet.</p>
+	 *
+	 * @param id a {@link java.lang.Long} object
+	 * @return a {@link org.jasig.portlet.newsreader.NewsSet} object
+	 */
 	public NewsSet getNewsSet(Long id);
 
+	/**
+	 * <p>getNewsSet.</p>
+	 *
+	 * @param userId a {@link java.lang.String} object
+	 * @param setName a {@link java.lang.String} object
+	 * @return a {@link org.jasig.portlet.newsreader.NewsSet} object
+	 */
 	public NewsSet getNewsSet(String userId, String setName);
 
+	/**
+	 * <p>getNewsSetsForUser.</p>
+	 *
+	 * @param userId a {@link java.lang.String} object
+	 * @return a {@link java.util.List} object
+	 */
 	public List<NewsSet> getNewsSetsForUser(String userId);
 
+	/**
+	 * <p>storeNewsSet.</p>
+	 *
+	 * @param set a {@link org.jasig.portlet.newsreader.NewsSet} object
+	 */
 	public void storeNewsSet(NewsSet set);
 
     /**
@@ -56,7 +81,7 @@ public interface NewsStore {
      * Retrieve a news definition.
      *
      * @param id ID of the news definition to be retrieved
-     * @return
+     * @return a {@link org.jasig.portlet.newsreader.NewsDefinition} object
      */
     public NewsDefinition getNewsDefinition(Long id);
 
@@ -64,10 +89,16 @@ public interface NewsStore {
      * Retrieve a pre-defined news definition
      *
      * @param id ID of the news definition to be retrieved
-     * @return
+     * @return a {@link org.jasig.portlet.newsreader.PredefinedNewsDefinition} object
      */
     public PredefinedNewsDefinition getPredefinedNewsDefinition(Long id);
 
+    /**
+     * <p>getPredefinedNewsDefinitionByName.</p>
+     *
+     * @param fname a {@link java.lang.String} object
+     * @return a {@link org.jasig.portlet.newsreader.PredefinedNewsDefinition} object
+     */
     public PredefinedNewsDefinition getPredefinedNewsDefinitionByName(String fname);
 
     /**
@@ -81,7 +112,7 @@ public interface NewsStore {
      * Retrieve a news configuration.
      *
      * @param id ID of the news configuration to be retrieved
-     * @return
+     * @return a {@link org.jasig.portlet.newsreader.NewsConfiguration} object
      */
     public NewsConfiguration getNewsConfiguration(Long id);
 
@@ -89,7 +120,7 @@ public interface NewsStore {
      * Retrieve a list of news configurations for the specified portlet.
      *
      * @param subscribeId unique ID for this portlet subscription
-     * @return
+     * @return a {@link java.util.List} object
      */
     public List<NewsConfiguration> getNewsConfigurations(
             String subscribeId);
@@ -101,7 +132,7 @@ public interface NewsStore {
      * @param setId       unique ID for this portlet subscription
      * @param visibleOnly <code>true</code> to retrieve only non-hidden news
      *                    configurations, <code>false</code> otherwise
-     * @return
+     * @return a {@link java.util.List} object
      */
     public List<UserDefinedNewsConfiguration> getUserDefinedNewsConfigurations(
             Long setId, boolean visibleOnly);
@@ -113,7 +144,7 @@ public interface NewsStore {
      * @param setId       unique ID for this portlet subscription
      * @param visibleOnly <code>true</code> to retrieve only non-hidden news
      *                    configurations, <code>false</code> otherwise
-     * @return
+     * @return a {@link java.util.List} object
      */
     public List<PredefinedNewsConfiguration> getPredefinedNewsConfigurations(
             Long setId, boolean visibleOnly);
@@ -121,7 +152,7 @@ public interface NewsStore {
     /**
      * Retrieve a list of all pre-defined news configurations.
      *
-     * @return
+     * @return a {@link java.util.List} object
      */
     public List<PredefinedNewsConfiguration> getPredefinedNewsConfigurations();
 
@@ -153,16 +184,16 @@ public interface NewsStore {
      *
      * @param setId       unique ID for this portlet subscription
      * @param role        user role to use to find default newss
-     * @return
+     * @return a {@link java.util.List} object
      */
     public List<PredefinedNewsDefinition> getHiddenPredefinedNewsDefinitions(
 			Long setId, Set<String> role);
 
 	/**
-     * Get a list of all user roles currently in use.
-     *
-     * @return
-     */
+	 * Get a list of all user roles currently in use.
+	 *
+	 * @return a {@link java.util.List} object
+	 */
 	public List<String> getUserRoles();
 
 }

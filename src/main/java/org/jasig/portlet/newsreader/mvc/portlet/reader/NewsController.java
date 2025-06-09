@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -61,6 +61,12 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 /*
  * @author Anthony Colebourne
  */
+/**
+ * <p>NewsController class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 @Controller
 @RequestMapping("VIEW")
 public class NewsController extends AbstractNewsController {
@@ -69,6 +75,11 @@ public class NewsController extends AbstractNewsController {
 
     private NewsStore newsStore;
 
+    /**
+     * <p>Setter for the field <code>newsStore</code>.</p>
+     *
+     * @param newsStore a {@link org.jasig.portlet.newsreader.dao.NewsStore} object
+     */
     @Autowired
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
@@ -78,22 +89,41 @@ public class NewsController extends AbstractNewsController {
     private RolesService rolesService;
 
     private int defaultItems = 2;
+    /**
+     * <p>Setter for the field <code>defaultItems</code>.</p>
+     *
+     * @param defaultItems a int
+     */
     public void setDefaultItems(int defaultItems) {
         this.defaultItems = defaultItems;
     }
 
     private List<IInitializationService> initializationServices;
 
+    /**
+     * <p>Setter for the field <code>initializationServices</code>.</p>
+     *
+     * @param services a {@link java.util.List} object
+     */
     @Resource(name = "initializationServices")
     public void setInitializationServices(List<IInitializationService> services) {
         this.initializationServices = services;
     }
 
+    /**
+     * <p>defaultAction.</p>
+     */
     @ActionMapping
     public void defaultAction() {
         // do nothing
     }
 
+    /**
+     * <p>getPreferences.</p>
+     *
+     * @param request a {@link javax.portlet.RenderRequest} object
+     * @param model a {@link org.springframework.ui.Model} object
+     */
     @ModelAttribute
     public void getPreferences(RenderRequest request, Model model) {
          PortletPreferences prefs = request.getPreferences();
@@ -103,6 +133,13 @@ public class NewsController extends AbstractNewsController {
          model.addAttribute("maxStories", Integer.valueOf(prefs.getValue("maxStories", "-1")));
     }
 
+    /**
+     * <p>showMainView.</p>
+     *
+     * @param request a {@link javax.portlet.RenderRequest} object
+     * @return a {@link java.lang.String} object
+     * @throws java.lang.Exception if any.
+     */
     @RenderMapping
     public String showMainView(RenderRequest request) throws Exception {
 
@@ -143,6 +180,18 @@ public class NewsController extends AbstractNewsController {
         return viewName;
     }
 
+    /**
+     * <p>fullStory.</p>
+     *
+     * @param activeFeed a {@link java.lang.Long} object
+     * @param itemIndex a int
+     * @param page a int
+     * @param request a {@link javax.portlet.RenderRequest} object
+     * @param response a {@link javax.portlet.RenderResponse} object
+     * @param model a {@link org.springframework.ui.Model} object
+     * @return a {@link org.springframework.web.portlet.ModelAndView} object
+     * @throws java.lang.Exception if any.
+     */
     @RenderMapping(params="action=fullStory")
     public ModelAndView fullStory(
             @RequestParam Long activeFeed, 
@@ -236,6 +285,12 @@ public class NewsController extends AbstractNewsController {
     }
 
     private ApplicationContext applicationContext;
+    /**
+     * <p>Setter for the field <code>applicationContext</code>.</p>
+     *
+     * @param applicationContext a {@link org.springframework.context.ApplicationContext} object
+     * @throws org.springframework.beans.BeansException if any.
+     */
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
@@ -243,6 +298,11 @@ public class NewsController extends AbstractNewsController {
     }
     
     private NewsSetResolvingService setCreationService;
+    /**
+     * <p>Setter for the field <code>setCreationService</code>.</p>
+     *
+     * @param setCreationService a {@link org.jasig.portlet.newsreader.service.NewsSetResolvingService} object
+     */
     @Autowired
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
         this.setCreationService = setCreationService;

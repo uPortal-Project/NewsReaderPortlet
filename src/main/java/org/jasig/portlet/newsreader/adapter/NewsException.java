@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -19,25 +19,47 @@
 package org.jasig.portlet.newsreader.adapter;
 
 /**
+ * <p>NewsException class.</p>
+ *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 public class NewsException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * <p>Constructor for NewsException.</p>
+     */
     public NewsException() {
         super();
     }
 
+    /**
+     * <p>Constructor for NewsException.</p>
+     *
+     * @param message a {@link java.lang.String} object
+     * @param cause a {@link java.lang.Throwable} object
+     */
     public NewsException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * <p>Constructor for NewsException.</p>
+     *
+     * @param message a {@link java.lang.String} object
+     */
     public NewsException(String message) {
         super(message);
     }
 
+    /**
+     * <p>Constructor for NewsException.</p>
+     *
+     * @param cause a {@link java.lang.Throwable} object
+     */
     public NewsException(Throwable cause) {
         super(cause);
     }

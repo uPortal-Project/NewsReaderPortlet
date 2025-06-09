@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -23,8 +23,10 @@ import java.util.List;
 import org.springframework.beans.support.PagedListHolder;
 
 /**
+ * <p>PaginatingNewsFeed class.</p>
  *
  * @author Chris White (christopher.white@manchester.ac.uk)
+ * @since 5.1.1
  */
 public class PaginatingNewsFeed extends NewsFeed {
 
@@ -35,10 +37,21 @@ public class PaginatingNewsFeed extends NewsFeed {
     // need to track page separate from holder due to holder.setPage(int)/.getPage() staying within last page
     private int page = 0;
 
+    /**
+     * <p>Constructor for PaginatingNewsFeed.</p>
+     *
+     * @param entriesPerPage a int
+     */
     public PaginatingNewsFeed(int entriesPerPage) {
         this(entriesPerPage, 0);
     }
 
+    /**
+     * <p>Constructor for PaginatingNewsFeed.</p>
+     *
+     * @param entriesPerPage a int
+     * @param initialPage a int
+     */
     public PaginatingNewsFeed(int entriesPerPage, int initialPage) {
         this.page = initialPage;
         holder.setPage(page);
@@ -46,27 +59,53 @@ public class PaginatingNewsFeed extends NewsFeed {
         holder.setSource(super.getEntries());
     }
 
+    /**
+     * <p>Getter for the field <code>page</code>.</p>
+     *
+     * @return a int
+     */
     public int getPage() {
         return holder.getPage();
     }
 
+    /**
+     * <p>Setter for the field <code>page</code>.</p>
+     *
+     * @param p a int
+     */
     public void setPage(int p) {
         this.page = p;
         holder.setPage(p);
     }
 
+    /**
+     * <p>getPageCount.</p>
+     *
+     * @return a double
+     */
     public double getPageCount() {
         return holder.getPageCount();
     }
 
+    /**
+     * <p>Setter for the field <code>maxStories</code>.</p>
+     *
+     * @param maxStories a int
+     */
     public void setMaxStories(int maxStories) {
         this.maxStories = maxStories;
     }
 
+    /**
+     * <p>Getter for the field <code>maxStories</code>.</p>
+     *
+     * @return a int
+     */
     public int getMaxStories() {
         return this.maxStories;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<NewsFeedItem> getEntries() {
         if (page < holder.getPageCount()) {  // using .getPage() was always returning a valid value, so never reaching empty set

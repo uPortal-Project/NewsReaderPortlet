@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -25,8 +25,10 @@ import com.rometools.rome.feed.synd.SyndCategory;
 import com.rometools.rome.feed.synd.SyndPerson;
 
 /**
- * 
+ * <p>NewsFeedItem class.</p>
+ *
  * @author Jen Bourey, jennifer.bourey@gmail.com
+ * @since 5.1.1
  */
 public class NewsFeedItem  implements Comparable<NewsFeedItem> {
 
@@ -42,94 +44,205 @@ public class NewsFeedItem  implements Comparable<NewsFeedItem> {
     private Date pubDate;
     private List<SyndCategory> categories;
 
+    /**
+     * <p>Getter for the field <code>imageUrl</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getImageUrl() {
         return imageUrl;
     }
 
+    /**
+     * <p>Setter for the field <code>imageUrl</code>.</p>
+     *
+     * @param imageUrl a {@link java.lang.String} object
+     */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
+    /**
+     * <p>Getter for the field <code>authors</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<SyndPerson> getAuthors() {
         return authors;
     }
 
+    /**
+     * <p>Setter for the field <code>authors</code>.</p>
+     *
+     * @param authors a {@link java.util.List} object
+     */
     public void setAuthors(List<SyndPerson> authors) {
         this.authors = authors;
     }
 
+    /**
+     * <p>Getter for the field <code>description</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * <p>Setter for the field <code>description</code>.</p>
+     *
+     * @param description a {@link java.lang.String} object
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * <p>Getter for the field <code>content</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * <p>Setter for the field <code>content</code>.</p>
+     *
+     * @param content a {@link java.lang.String} object
+     */
     public void setContent(String content) {
         this.content = content;
     }
 
+    /**
+     * <p>Getter for the field <code>videoUrl</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getVideoUrl() {
         return videoUrl;
     }
 
+    /**
+     * <p>Setter for the field <code>videoUrl</code>.</p>
+     *
+     * @param videoUrl a {@link java.lang.String} object
+     */
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
     }
 
+    /**
+     * <p>Getter for the field <code>link</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getLink() {
         return link;
     }
 
+    /**
+     * <p>Setter for the field <code>link</code>.</p>
+     *
+     * @param link a {@link java.lang.String} object
+     */
     public void setLink(String link) {
         this.link = link;
     }
 
+    /**
+     * <p>Getter for the field <code>title</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * <p>Setter for the field <code>title</code>.</p>
+     *
+     * @param title a {@link java.lang.String} object
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * <p>Getter for the field <code>uri</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getUri() {
         return uri;
     }
 
+    /**
+     * <p>Setter for the field <code>uri</code>.</p>
+     *
+     * @param uri a {@link java.lang.String} object
+     */
     public void setUri(String uri) {
         this.uri = uri;
     }
 
+    /**
+     * <p>Getter for the field <code>fullStory</code>.</p>
+     *
+     * @return a {@link org.jasig.portlet.newsreader.model.FullStory} object
+     */
     public FullStory getFullStory() {
 		return fullStory;
 	}
 
+    /**
+     * <p>Setter for the field <code>fullStory</code>.</p>
+     *
+     * @param fullStory a {@link org.jasig.portlet.newsreader.model.FullStory} object
+     */
     public void setFullStory(FullStory fullStory) {
         this.fullStory = fullStory;
     }
 
+    /**
+     * <p>Getter for the field <code>pubDate</code>.</p>
+     *
+     * @return a {@link java.util.Date} object
+     */
     public Date getPubDate() {
         return pubDate;
     }
 
+    /**
+     * <p>Setter for the field <code>pubDate</code>.</p>
+     *
+     * @param pubDate a {@link java.util.Date} object
+     */
     public void setPubDate(Date pubDate) {
         this.pubDate = pubDate;
     }
 
+    /**
+     * <p>Getter for the field <code>categories</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<SyndCategory> getCategories() {
         return categories;
     }
 
+    /**
+     * <p>Setter for the field <code>categories</code>.</p>
+     *
+     * @param categories a {@link java.util.List} object
+     */
     public void setCategories(List<SyndCategory> categories) {
         this.categories = categories;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int compareTo(NewsFeedItem that) {
         if (this.pubDate == null) {

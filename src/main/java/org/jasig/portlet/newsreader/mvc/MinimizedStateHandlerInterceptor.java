@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -24,8 +24,15 @@ import javax.portlet.WindowState;
 
 import org.springframework.web.portlet.handler.HandlerInterceptorAdapter;
 
+/**
+ * <p>MinimizedStateHandlerInterceptor class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class MinimizedStateHandlerInterceptor extends HandlerInterceptorAdapter {
 
+    /** {@inheritDoc} */
     @Override
     public boolean preHandleRender(RenderRequest request, RenderResponse response, Object handler) throws Exception {
         if (WindowState.MINIMIZED.equals(request.getWindowState())) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -26,14 +26,26 @@ import org.apache.http.NoHttpResponseException;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.protocol.HttpContext;
 
+/**
+ * <p>RomeAdapterRetryHandler class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class RomeAdapterRetryHandler extends DefaultHttpRequestRetryHandler{
 
     private int timesToRetry;
 
+    /**
+     * <p>Constructor for RomeAdapterRetryHandler.</p>
+     *
+     * @param timesToRetry a int
+     */
     public RomeAdapterRetryHandler (int timesToRetry) {
         super(timesToRetry, true);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
         if (executionCount >= timesToRetry) {

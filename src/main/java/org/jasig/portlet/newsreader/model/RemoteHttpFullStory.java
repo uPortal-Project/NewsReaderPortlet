@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -34,20 +34,37 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * <p>RemoteHttpFullStory class.</p>
+ *
+ * @author bgonzalez
+ * @since 5.1.1
+ */
 public class RemoteHttpFullStory implements FullStory {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
     private final String remoteHttpUrl;
 
     @JsonCreator
+    /**
+     * <p>Constructor for RemoteHttpFullStory.</p>
+     *
+     * @param remoteHttpUrl a {@link java.lang.String} object
+     */
     public RemoteHttpFullStory(@JsonProperty("remoteHttpUrl") String remoteHttpUrl) {
         this.remoteHttpUrl = remoteHttpUrl;
     }
 
+    /**
+     * <p>Getter for the field <code>remoteHttpUrl</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getRemoteHttpUrl() {
         return remoteHttpUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     @JsonIgnore
     public String getFullStoryText() {

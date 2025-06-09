@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -50,6 +50,7 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 @Controller
 @RequestMapping("EDIT")
@@ -59,6 +60,11 @@ public class EditUserRomeController {
 
     private NewsStore newsStore;
 
+    /**
+     * <p>Setter for the field <code>newsStore</code>.</p>
+     *
+     * @param newsStore a {@link org.jasig.portlet.newsreader.dao.NewsStore} object
+     */
     @Autowired(required = true)
     public void setNewsStore(NewsStore newsStore) {
         this.newsStore = newsStore;
@@ -66,11 +72,23 @@ public class EditUserRomeController {
 
     private NewsSetResolvingService setCreationService;
 
+    /**
+     * <p>Setter for the field <code>setCreationService</code>.</p>
+     *
+     * @param setCreationService a {@link org.jasig.portlet.newsreader.service.NewsSetResolvingService} object
+     */
     @Autowired(required = true)
     public void setSetCreationService(NewsSetResolvingService setCreationService) {
         this.setCreationService = setCreationService;
     }
 
+    /**
+     * <p>getNewsForm.</p>
+     *
+     * @param request a {@link javax.portlet.PortletRequest} object
+     * @return a {@link org.jasig.portlet.newsreader.mvc.NewsListingCommand} object
+     * @throws java.lang.Exception if any.
+     */
     @ModelAttribute("newsListingCommand")
     public NewsListingCommand getNewsForm(PortletRequest request) throws Exception {
 
@@ -100,6 +118,13 @@ public class EditUserRomeController {
         }
     }
 
+    /**
+     * <p>getUserEditView.</p>
+     *
+     * @param request a {@link javax.portlet.PortletRequest} object
+     * @param response a {@link javax.portlet.RenderResponse} object
+     * @return a {@link java.lang.String} object
+     */
     @RenderMapping(params = "action=editUrl")
     public String getUserEditView(PortletRequest request, RenderResponse response) {
         log.debug("Returning editNewsUrl view");
@@ -130,6 +155,14 @@ public class EditUserRomeController {
         return "editNewsUrl";
     }
     
+    /**
+     * <p>onSubmitAction.</p>
+     *
+     * @param request a {@link javax.portlet.ActionRequest} object
+     * @param response a {@link javax.portlet.ActionResponse} object
+     * @param form a {@link org.jasig.portlet.newsreader.mvc.NewsListingCommand} object
+     * @throws java.lang.Exception if any.
+     */
     @ActionMapping(params = "action=editUrl")
     public void onSubmitAction(ActionRequest request, ActionResponse response,
             @ModelAttribute("newsListingCommand") NewsListingCommand form) throws Exception {

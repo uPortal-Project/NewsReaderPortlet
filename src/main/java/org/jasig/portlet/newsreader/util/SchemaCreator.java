@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -40,6 +40,9 @@ import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
  * with NewsReader's Spring-managed ORM strategy and NewsReader's configuration features (esp.
  * encrypted properties).  It is invokable from the command line with '$ java', but designed to be
  * integrated with build tools like Gradle.
+ *
+ * @author bgonzalez
+ * @since 5.1.1
  */
 public class SchemaCreator implements ApplicationContextAware {
 
@@ -55,6 +58,11 @@ public class SchemaCreator implements ApplicationContextAware {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects
+     */
     public static void main(String[] args) {
 
         // There will be an instance of this class in the ApplicationContent
@@ -65,6 +73,7 @@ public class SchemaCreator implements ApplicationContextAware {
         System.exit(schemaCreator.create());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;

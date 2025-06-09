@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Apereo under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -23,6 +23,7 @@ package org.jasig.portlet.newsreader;
  *
  * @author Anthony Colebourne
  * @author Jen Bourey
+ * @since 5.1.1
  */
 public class UserDefinedNewsDefinition extends NewsDefinition {
 
@@ -38,9 +39,9 @@ public class UserDefinedNewsDefinition extends NewsDefinition {
     /**
      * Construct a new user-defined news definition
      *
-     * @param id
-     * @param className
-     * @param name
+     * @param id a {@link java.lang.Long} object
+     * @param className a {@link java.lang.String} object
+     * @param name a {@link java.lang.String} object
      */
     public UserDefinedNewsDefinition(Long id, String className, String name) {
         super(id, className, name);
@@ -50,6 +51,7 @@ public class UserDefinedNewsDefinition extends NewsDefinition {
       * (non-Javadoc)
       * @see java.lang.Object#toString()
       */
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "id: " + getId() + ", name: " + getName() + ", parameters: "
@@ -59,7 +61,7 @@ public class UserDefinedNewsDefinition extends NewsDefinition {
     /**
      * Get the news configuration for this definition.
      *
-     * @return
+     * @return a {@link org.jasig.portlet.newsreader.UserDefinedNewsConfiguration} object
      */
     public UserDefinedNewsConfiguration getUserConfiguration() {
         return userConfiguration;
@@ -68,7 +70,7 @@ public class UserDefinedNewsDefinition extends NewsDefinition {
     /**
      * Set the news configuration for this definition.
      *
-     * @param userConfiguration
+     * @param userConfiguration a {@link org.jasig.portlet.newsreader.UserDefinedNewsConfiguration} object
      */
     public void setUserConfiguration(
             UserDefinedNewsConfiguration userConfiguration) {
