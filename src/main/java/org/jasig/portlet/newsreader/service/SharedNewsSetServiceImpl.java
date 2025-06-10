@@ -68,12 +68,20 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 	 */
 	/** {@inheritDoc} */
 	public NewsSet getNewsSet(String fname, PortletRequest request) {
+		if (request == null) {
+			logger.warn("Null PortletRequest passed to getNewsSet method");
+			return null;
+		}
 
 		final PortletSession session = request.getPortletSession();
 
 		// get the user id associated with the current user, or use the configured
 		// guest username if no user is authenticated
 		final String userId = userIdService.getUserId(request);
+		if (userId == null) {
+			logger.warn("Unable to determine userId from request");
+			return null;
+		}
 
 		NewsSet set;
 
@@ -88,19 +96,30 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 		        set = new NewsSet();
 		        set.setUserId(userId);
 		        set.setName(fname);
-		        newsStore.storeNewsSet(set);
-				//TODO: the persisted set (line above) isn't always available to the line below. Hibernate being lazy?
-				set = newsStore.getNewsSet(userId, fname); // get set_id
+		        
+		        try {
+		            newsStore.storeNewsSet(set);
+		            
+		            if (set.getId() == null) {
+		                logger.warn("NewsSet was saved but no ID was generated for userId={}, fname={}", userId, fname);
+		                NewsSet retrievedSet = newsStore.getNewsSet(userId, fname);
+		                if (retrievedSet != null) {
+		                    set = retrievedSet;
+		                } else {
+		                    logger.error("Failed to create or retrieve NewsSet for userId={}, fname={}", userId, fname);
+		                    return null;
+		                }
+		            }
+		        } catch (Exception e) {
+		            logger.error("Error creating NewsSet for userId={}, fname={}: {}", userId, fname, e.getMessage());
+		            return null;
+		        }
 			}
 
 			// Persistent set is now loaded but may still need re-initalising since last use.
 			// by adding setId to session, we signal that initialisation has taken place.
 			if (session.getAttribute("setId", PortletSession.PORTLET_SCOPE) == null) {
-				if (set != null) {
-					logger.debug("re-initalising loaded newsSet " + set.getName());
-				} else {
-					logger.debug("attempting to re-initialize loaded newsSet, but it is null");
-				}
+				logger.debug("re-initalising loaded newsSet " + set.getName());
 
 				@SuppressWarnings("unchecked")
 				final Set<String> roles = rolesService.getUserRoles(request);

@@ -124,6 +124,11 @@ public class AjaxNewsController {
 
         String setName = request.getPreferences().getValue("newsSetName", "default");
         NewsSet set = setCreationService.getNewsSet(setName, request);
+        if (set == null) {
+            log.warn("Unable to retrieve NewsSet for setName={}", setName);
+            model.put("message", "Unable to load news feeds. Please try again later.");
+            return new ModelAndView("json", model);
+        }
         final List<NewsConfiguration> feeds = AbstractNewsController.filterNonWhitelistedConfigurations(request, set.getNewsConfigurations());
         Collections.sort(feeds);
 
