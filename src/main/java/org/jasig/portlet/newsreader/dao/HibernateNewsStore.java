@@ -173,11 +173,15 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     /** {@inheritDoc} */
     public void initNews(NewsSet set, Set<String> roles) {
         try {
+            if (set == null) {
+                logger.warn("Null NewsSet passed to initNews method");
+                return;
+            }
 
             // if the user doesn't have any roles, we don't have any
             // chance of getting predefined news, so just go ahead
             // and return
-            if (roles.isEmpty())
+            if (roles == null || roles.isEmpty())
                 return;
 
             String query = "FROM PredefinedNewsDefinition def "
@@ -356,6 +360,10 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     })
 	public void storeNewsSet(NewsSet set) {
         try {
+            if (set == null) {
+                logger.warn("Null NewsSet passed to storeNewsSet method");
+                return;
+            }
 
             getHibernateTemplate().saveOrUpdate(set);
             getHibernateTemplate().flush();
