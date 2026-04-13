@@ -18,25 +18,13 @@
     under the License.
 
 --%>
-<rs:aggregatedResources path="skin${ usePortalJsLibs ? '-shared' : '' }.xml"/>
+<rs:aggregatedResources path="skin.xml"/>
 
 <script type="text/javascript"><rs:compressJs>
     var ${n} = ${n} || {};
-    <c:choose>
-        <c:when test="${!usePortalJsLibs}">
-            ${n}.jQuery = jQuery.noConflict(true);
-            ${n}.Handlebars = Handlebars;
-            Handlebars.noConflict();
-            fluid = null;
-            fluid_1_5 = null;
-        </c:when>
-        <c:otherwise>
-            <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>
-            ${n}.jQuery = ${ ns }jQuery;
-            ${n}.Handlebars = Handlebars;
-            Handlebars.noConflict();
-        </c:otherwise>
-    </c:choose>
+    ${n}.jQuery = (typeof up !== 'undefined' && up.jQuery) ? up.jQuery : jQuery;
+    ${n}.Handlebars = Handlebars;
+    Handlebars.noConflict();
     if (!upnews.initialized) upnews.init(${n}.jQuery, ${n}.Handlebars);
     ${n}.upnews = upnews;
     upnews = null;

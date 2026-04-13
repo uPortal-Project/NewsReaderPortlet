@@ -38,7 +38,7 @@
             $.post(savePrefUrl, { prefName: 'summaryView', prefValue: $('#${n}storyView').val() }, null, 'json');
         });
         $("#${n}newWindow").change(function(e){
-            $.post(savePrefUrl, { prefName: 'newWindow', prefValue: ($(e.target).attr("checked") == 'checked') }, null, 'json');
+            $.post(savePrefUrl, { prefName: 'newWindow', prefValue: $(e.target).prop("checked") }, null, 'json');
         });
         $('#${n}maxStories').change(function(){
             $.post(savePrefUrl, { prefName: 'maxStories', prefValue: $('#${n}maxStories').val() }, null, 'json');

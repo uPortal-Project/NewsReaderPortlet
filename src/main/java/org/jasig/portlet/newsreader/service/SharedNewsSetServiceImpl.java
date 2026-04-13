@@ -87,18 +87,25 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 
 		final Object mutex = PortletUtils.getSessionMutex(session);
 		synchronized (mutex) {
-			logger.debug("Got Mutex {} for userId={}", mutex, userId);
+			logger.info("DIAG [{}] getNewsSet called for userId={}, fname={}, mutex={}",
+					Thread.currentThread().getName(), userId, fname, System.identityHashCode(mutex));
 
 			set = newsStore.getNewsSet(userId, fname);
 
+			logger.info("DIAG [{}] newsStore.getNewsSet returned: {}",
+					Thread.currentThread().getName(), set == null ? "NULL" : "SET id=" + set.getId());
+
 			if (set == null) {
-				logger.debug("No existing set found for "+userId+", creating and saving new set.");
+				logger.info("DIAG [{}] Attempting insert for userId={}, fname={}",
+						Thread.currentThread().getName(), userId, fname);
 		        set = new NewsSet();
 		        set.setUserId(userId);
 		        set.setName(fname);
 		        
 		        try {
 		            newsStore.storeNewsSet(set);
+		            logger.info("DIAG [{}] storeNewsSet completed, set.getId()={}",
+		            		Thread.currentThread().getName(), set.getId());
 		            
 		            if (set.getId() == null) {
 		                logger.warn("NewsSet was saved but no ID was generated for userId={}, fname={}", userId, fname);

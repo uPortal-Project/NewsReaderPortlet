@@ -22,27 +22,15 @@
     <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 <c:set var="n"><portlet:namespace/></c:set>
 <%--
-  -- Attache jQuery and Handlebars to ${n}.
+  -- Attach jQuery and Handlebars to ${n}.
   -- Similar to scripts.js but without initializing "upnews"
   --%>
-<rs:aggregatedResources path="skin${ mobile ? '-mobile' : '' }${ usePortalJsLibs ? '-shared' : '' }.xml"/>
+<rs:aggregatedResources path="skin.xml"/>
 <script type="text/javascript"><rs:compressJs>
     var ${n} = ${n} || {};
-    <c:choose>
-        <c:when test="${!usePortalJsLibs}">
-            ${n}.jQuery = jQuery.noConflict(true);
-            ${n}.Handlebars = Handlebars;
-            Handlebars.noConflict();
-            fluid = null;
-            fluid_1_5 = null;
-        </c:when>
-        <c:otherwise>
-            <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>
-            ${n}.jQuery = ${ ns }jQuery;
-            ${n}.Handlebars = Handlebars;
-            Handlebars.noConflict();
-        </c:otherwise>
-    </c:choose>
+    ${n}.jQuery = (typeof up !== 'undefined' && up.jQuery) ? up.jQuery : jQuery;
+    ${n}.Handlebars = Handlebars;
+    Handlebars.noConflict();
 </rs:compressJs></script>
 
 <div class="org-jasig-portlet-newsreader">
@@ -53,7 +41,7 @@
                     <select class="news-feeds-container"></select>
                 </c:when>
                 <c:otherwise>
-                    <ul class="news-feeds-container"></ul>
+                    <ul class="news-feeds-container nav nav-tabs" role="tablist"></ul>
                 </c:otherwise>
             </c:choose>
             <br />
@@ -109,7 +97,7 @@
             <option value="{{id}}">{{name}}</option>
         </c:when>
         <c:otherwise>
-            <li id="${n}feed{{id}}-tab"><a href="#${n}feed{{id}}">{{name}}</a></li>
+            <li id="${n}feed{{id}}-tab" class="nav-item" role="presentation"><a class="nav-link" href="#${n}feed{{id}}" role="tab">{{name}}</a></li>
         </c:otherwise>
     </c:choose>
     {{/each}}
@@ -140,15 +128,21 @@
             window.location = url;
         });
     } else {
-        // initialize the jQueryUI tabs widget and set the initially selected tab
-        var index = $("#${n}feed${activeFeed}-tab").index();
-        $("#${n} .view-news").tabs({
-            activate: function (event, ui) {
-                var id = ui.newPanel[0].id.split("feed")[1];
-                var url = "${newsListUrl}" + "&pP_activeFeed=" + id;
-                window.location = url;
-            },
-            active: index
+        // BS5 nav-tabs: show active tab and panel
+        $("#${n} .news-stories-container").hide();
+        $("#${n}feed${activeFeed}").show();
+        $("#${n}feed${activeFeed}-tab .nav-link").addClass("active");
+
+        $("#${n} .nav-tabs .nav-link").on("click", function (e) {
+            e.preventDefault();
+            var panelId = $(this).attr("href");
+            var id = panelId.split("feed")[1];
+            $("#${n} .nav-tabs .nav-link").removeClass("active");
+            $(this).addClass("active");
+            $("#${n} .news-stories-container").hide();
+            $(panelId).show();
+            var url = "${newsListUrl}" + "&pP_activeFeed=" + id;
+            window.location = url;
         });
     }
 
