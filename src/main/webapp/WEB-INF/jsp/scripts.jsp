@@ -22,10 +22,13 @@
 
 <script type="text/javascript"><rs:compressJs>
     var ${n} = ${n} || {};
-    ${n}.jQuery = (typeof up !== 'undefined' && up.jQuery) ? up.jQuery : jQuery;
+    ${n}.jQuery = up.jQuery;
     ${n}.Handlebars = Handlebars;
     Handlebars.noConflict();
-    if (!upnews.initialized) upnews.init(${n}.jQuery, ${n}.Handlebars);
-    ${n}.upnews = upnews;
+    ${n}.upnews = ${n}.upnews || upnews;
+    if (!${n}.upnews.initialized) {
+        ${n}.upnews.init(${n}.jQuery, ${n}.Handlebars);
+        ${n}.upnews.initialized = true;
+    }
     upnews = null;
 </rs:compressJs></script>
