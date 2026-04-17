@@ -63,7 +63,7 @@
     <div class="videos"></div>
 </div>
 
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript">
 'use strict';
 
 (function () {
@@ -155,4 +155,4 @@
 
     renderPage();
 }());
-</rs:compressJs></script>
+</script>

@@ -25,7 +25,7 @@
     <portlet:param name="action" value="editNewsDefinition"/>
 </portlet:actionURL>
 
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript">
 	function addRole(id) {
 		var div = document.getElementById(id);
 		var container = document.createElement('div');
@@ -86,7 +86,7 @@
 		var div = link.parentNode;
 		div.parentNode.removeChild(div);
 	}
-</rs:compressJs></script>
+</script>
 
 <div class="container-fluid newsreader-container">
 	<div class="row newsreader-portlet-toolbar">

@@ -24,7 +24,7 @@
 <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript">
     ${n}.jQuery(function() {
 
         var $ = ${n}.jQuery;
@@ -45,7 +45,7 @@
         });
 
     });
-</rs:compressJs></script>
+</script>
 
 <div class="container-fluid newsreader-container">
     <div class="row newsreader-portlet-toolbar">

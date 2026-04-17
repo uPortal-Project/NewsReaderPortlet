@@ -20,7 +20,7 @@
 --%>
 <rs:aggregatedResources path="skin.xml"/>
 
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript">
     var ${n} = ${n} || {};
     ${n}.jQuery = up.jQuery;
     ${n}.Handlebars = Handlebars;
@@ -31,4 +31,4 @@
         ${n}.upnews.initialized = true;
     }
     upnews = null;
-</rs:compressJs></script>
+</script>

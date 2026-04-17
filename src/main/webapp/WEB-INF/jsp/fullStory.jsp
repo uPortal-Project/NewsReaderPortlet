@@ -26,12 +26,12 @@
   -- Similar to scripts.js but without initializing "upnews"
   --%>
 <rs:aggregatedResources path="skin.xml"/>
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript">
     var ${n} = ${n} || {};
     ${n}.jQuery = (typeof up !== 'undefined' && up.jQuery) ? up.jQuery : jQuery;
     ${n}.Handlebars = Handlebars;
     Handlebars.noConflict();
-</rs:compressJs></script>
+</script>
 
 <div class="org-jasig-portlet-newsreader">
     <div id="${n}">

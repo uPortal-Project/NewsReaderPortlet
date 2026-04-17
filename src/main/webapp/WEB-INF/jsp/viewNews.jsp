@@ -136,7 +136,7 @@
 </c:choose>
 
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript">
     ${n}.jQuery(function() {
 
         var $, Handlebars, newsView, upnews;
@@ -257,4 +257,4 @@
             newsView.setup("${param.activeFeed}");
         });
     });
-</rs:compressJs></script>
+</script>
