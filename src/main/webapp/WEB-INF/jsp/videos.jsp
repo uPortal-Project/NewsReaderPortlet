@@ -67,7 +67,7 @@
 'use strict';
 
 (function () {
-    var $ = (typeof up !== 'undefined' && up.jQuery) ? up.jQuery : jQuery;
+    var $ = up.jQuery;
 
     var videos = [];
     <c:forEach items="${ feed.entries }" var="entry">
@@ -98,10 +98,29 @@
         videos.slice(start, end).forEach(function (video) {
             var div = document.createElement('div');
             div.className = 'video';
-            div.innerHTML =
-                '<h3><a href="' + video.link + '" class="video-title">' + video.title + '</a></h3>' +
-                (video.imageUrl ? '<img class="img" src="' + video.imageUrl + '" alt=""/>' : '') +
-                '<p class="description">' + video.description + '</p>';
+
+            var h3 = document.createElement('h3');
+            var a = document.createElement('a');
+            var href = video.link || '';
+            if (/^https?:\/\//i.test(href)) { a.href = href; }
+            a.className = 'video-title';
+            a.textContent = video.title;
+            h3.appendChild(a);
+            div.appendChild(h3);
+
+            if (video.imageUrl && /^https?:\/\//i.test(video.imageUrl)) {
+                var img = document.createElement('img');
+                img.className = 'img';
+                img.src = video.imageUrl;
+                img.alt = '';
+                div.appendChild(img);
+            }
+
+            var p = document.createElement('p');
+            p.className = 'description';
+            p.textContent = video.description;
+            div.appendChild(p);
+
             videosEl.appendChild(div);
         });
 
