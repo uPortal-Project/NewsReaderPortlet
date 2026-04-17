@@ -59,10 +59,10 @@
                     <c:forEach var="feed" items="${feeds}">
                         <c:choose>
                             <c:when test="${feed.id == activeFeed}">
-                                <div id="${n}feed${feed.id}">${fullStory}</div>
+                                <div id="${n}feed${feed.id}" class="news-stories-container">${fullStory}</div>
                             </c:when>
                             <c:otherwise>
-                                <div id="${n}feed${feed.id}"></div>
+                                <div id="${n}feed${feed.id}" class="news-stories-container"></div>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
