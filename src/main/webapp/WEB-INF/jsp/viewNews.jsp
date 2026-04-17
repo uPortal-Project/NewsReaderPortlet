@@ -172,21 +172,40 @@
                         $("#${n}feed" + id).show();
                     });
                 } else {
+                    var initializeTabAccessibility = function () {
+                        $("#${n} .nav-tabs").attr("role", "tablist");
+                        $("#${n} .nav-tabs .nav-link").each(function () {
+                            var $tab = $(this);
+                            var panelId = $tab.attr("href");
+                            if (!panelId || panelId.charAt(0) !== "#") { return; }
+                            var panelDomId = panelId.substring(1);
+                            var tabId = $tab.attr("id") || (panelDomId + "-tab");
+                            $tab.attr("id", tabId);
+                            $tab.attr({ "role": "tab", "aria-controls": panelDomId, "aria-selected": "false", "tabindex": "-1" });
+                            $(panelId).attr({ "role": "tabpanel", "aria-labelledby": tabId });
+                        });
+                    };
+
+                    var activateTab = function ($tab) {
+                        var panelId = $tab.attr("href");
+                        $("#${n} .nav-tabs .nav-link").removeClass("active").attr({ "aria-selected": "false", "tabindex": "-1" });
+                        $tab.addClass("active").attr({ "aria-selected": "true", "tabindex": "0" });
+                        $("#${n} .news-stories-container").hide();
+                        $(panelId).show();
+                    };
+
+                    initializeTabAccessibility();
+
                     // Show the active feed tab and panel
                     var activeFeedId = newsView.newsService.getActiveFeed();
-                    $("#${n} .news-stories-container").hide();
-                    $("#${n}feed" + activeFeedId).show();
-                    $("#${n}feed" + activeFeedId + "-tab .nav-link").addClass("active");
+                    activateTab($("#${n}feed" + activeFeedId + "-tab .nav-link"));
 
                     // Tab click handler
                     $("#${n} .nav-tabs .nav-link").on("click", function (e) {
                         e.preventDefault();
                         var panelId = $(this).attr("href");
                         var id = panelId.split("feed")[1];
-                        $("#${n} .nav-tabs .nav-link").removeClass("active");
-                        $(this).addClass("active");
-                        $("#${n} .news-stories-container").hide();
-                        $(panelId).show();
+                        activateTab($(this));
                         $(newsView.feedListView).trigger("feedSelected", id);
                     });
                 }
