@@ -90,6 +90,13 @@
     var pageSize = parseInt(pageSizeSelect.value, 10);
 
     function renderPage() {
+        if (videos.length === 0) {
+            summaryEl.textContent = '0 / 0';
+            prevBtn.parentElement.classList.add('disabled');
+            nextBtn.parentElement.classList.add('disabled');
+            return;
+        }
+
         var start = currentPage * pageSize;
         var end = Math.min(start + pageSize, videos.length);
         var totalPages = Math.ceil(videos.length / pageSize);
