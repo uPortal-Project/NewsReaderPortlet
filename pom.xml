@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.jasig.portlet</groupId>
         <artifactId>uportal-portlet-parent</artifactId>
-        <version>42</version>
+        <version>46</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -152,6 +152,12 @@
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
+                    <!-- cernunnos pulls json-lib:jdk15 which pulls commons-collections 3.2.2
+                         (CVE-2015-6420, banned by uportal-portlet-parent). -->
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -173,12 +179,6 @@
                 <groupId>com.ibm.icu</groupId>
                 <artifactId>icu4j</artifactId>
                 <version>${icu4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.2.2</version>
-                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
@@ -262,6 +262,14 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
+                <exclusions>
+                    <!-- hibernate-core 3.6.10 pulls commons-collections 3.2.2
+                         (CVE-2015-6420, banned by uportal-portlet-parent). -->
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -441,6 +449,13 @@
                         <groupId>commons-httpclient</groupId>
                         <artifactId>commons-httpclient</artifactId>
                     </exclusion>
+                    <!-- antisamy transitively pulls batik-css -> xmlgraphics-commons ->
+                         commons-logging 1.0.4 (banned by uportal-portlet-parent, use
+                         jcl-over-slf4j instead). -->
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -486,10 +501,6 @@
         <dependency>
             <groupId>com.googlecode.cernunnos</groupId>
             <artifactId>cernunnos</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
