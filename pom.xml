@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.jasig.portlet</groupId>
         <artifactId>uportal-portlet-parent</artifactId>
-        <version>46</version>
+        <version>47</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -77,15 +77,10 @@
     </repositories>
 
     <properties>
-        <ehcache.version>2.6.11</ehcache.version>
         <hibernate.version>3.6.10.Final</hibernate.version>
-        <icu4j.version>72.1</icu4j.version>
         <spring.version>4.3.30.RELEASE</spring.version>
         <resource-server.version>1.0.43</resource-server.version>
-        <httpclient.version>4.5.14</httpclient.version>
         <antisamy.version>1.7.5</antisamy.version>
-        <junit.version>4.13.2</junit.version>
-        <servlet-api.version>3.1.0</servlet-api.version>
         <uportal-libs.version>5.16.0</uportal-libs.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-impl.version>2.3.3</jaxb-impl.version>
@@ -94,403 +89,9 @@
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
         <jdbc.artifactId>hsqldb</jdbc.artifactId>
         <jdbc.version>2.7.1</jdbc.version>
-        <tomcat-jdbc.version>8.5.84</tomcat-jdbc.version>
-        <logback.version>1.3.12</logback.version>
-        <slf4j.version>2.0.6</slf4j.version>
         <xalan.version>2.7.3</xalan.version>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>${jdbc.groupId}</groupId>
-                <artifactId>${jdbc.artifactId}</artifactId>
-                <version>${jdbc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.googlecode.cernunnos</groupId>
-                <artifactId>cernunnos</artifactId>
-                <version>1.4.0</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>rhino</groupId>
-                        <artifactId>js</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>jdom</groupId>
-                        <artifactId>jdom</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.script</groupId>
-                        <artifactId>script-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.script</groupId>
-                        <artifactId>groovy-engine</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <!-- cernunnos pulls json-lib:jdk15 which pulls commons-collections 3.2.2
-                         (CVE-2015-6420, banned by uportal-portlet-parent). -->
-                    <exclusion>
-                        <groupId>commons-collections</groupId>
-                        <artifactId>commons-collections</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <!-- for cernunnos -->
-                <groupId>javax.script</groupId>
-                <artifactId>script-api</artifactId>
-                <version>1.0-osgi</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-            <!-- for cernunnos -->
-                <groupId>javax.script</groupId>
-                <artifactId>groovy-engine</artifactId>
-                <version>1.1</version>
-                <classifier>jdk14</classifier>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.ibm.icu</groupId>
-                <artifactId>icu4j</artifactId>
-                <version>${icu4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-jdbc</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.6</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.portlet</groupId>
-                <artifactId>portlet-api</artifactId>
-                <version>2.0-Draft32</version>
-                <type>jar</type>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
-                <version>1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${servlet-api.version}</version>
-                <type>jar</type>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb-api.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>${jaxb-impl.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>2.18.6</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.14.1</version>
-            </dependency>
-            <dependency>
-                <groupId>xerces</groupId>
-                <artifactId>xercesImpl</artifactId>
-                <version>2.12.2</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
-            <dependency>
-                <groupId>xml-apis</groupId>
-                <artifactId>xml-apis</artifactId>
-                <version>1.4.01</version>
-            </dependency>
-            <dependency>
-                <groupId>javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>3.12.1.GA</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-                <exclusions>
-                    <!-- hibernate-core 3.6.10 pulls commons-collections 3.2.2
-                         (CVE-2015-6420, banned by uportal-portlet-parent). -->
-                    <exclusion>
-                        <groupId>commons-collections</groupId>
-                        <artifactId>commons-collections</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-ehcache</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-            <!-- Needed for schema reset;  version compatible with org.hibernate:hibernate-core:3.6.10.FINAL -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-tools</artifactId>
-                <version>3.6.2.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache-core</artifactId>
-                <version>${ehcache.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>log4j-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <!-- End of logging section -->
-
-            <!-- Provides the PortalPropertySourcesPlaceholderConfigurer
-                 that supports global.properties and Jasypt encryption-->
-            <dependency>
-                <groupId>org.jasig.portal</groupId>
-                <artifactId>uPortal-spring</artifactId>
-                <version>${uportal-libs.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jasig.portal</groupId>
-                        <artifactId>uPortal-api-internal</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.jasig.portal</groupId>
-                        <artifactId>uPortal-security-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.jasig.portal</groupId>
-                        <artifactId>uPortal-security-mvc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.jasig.portal</groupId>
-                        <artifactId>uPortal-tools</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.oauth.core</groupId>
-                        <artifactId>oauth</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-webmvc</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jasig.resourceserver</groupId>
-                <artifactId>resource-server-content</artifactId>
-                <version>${resource-server.version}</version>
-                <type>war</type>
-            </dependency>
-            <dependency>
-                <groupId>org.jasig.resourceserver</groupId>
-                <artifactId>resource-server-utils</artifactId>
-                <version>${resource-server.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>jcl-over-slf4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.sf.ehcache</groupId>
-                        <artifactId>ehcache</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jasypt</groupId>
-                <artifactId>jasypt-spring31</artifactId>
-                <version>1.9.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>4.11.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${spring.version}</version>
-                <scope>runtime</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>${spring.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc-portlet</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.owasp.antisamy</groupId>
-                <artifactId>antisamy</artifactId>
-                <version>${antisamy.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-httpclient</groupId>
-                        <artifactId>commons-httpclient</artifactId>
-                    </exclusion>
-                    <!-- antisamy transitively pulls batik-css -> xmlgraphics-commons ->
-                         commons-logging 1.0.4 (banned by uportal-portlet-parent, use
-                         jcl-over-slf4j instead). -->
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.rometools</groupId>
-                <artifactId>rome</artifactId>
-                <version>1.18.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.rometools</groupId>
-                <artifactId>rome-modules</artifactId>
-                <version>1.18.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.taglibs</groupId>
-                <artifactId>taglibs-standard-impl</artifactId>
-                <version>1.2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>${xalan.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>serializer</artifactId>
-                <version>${xalan.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.10.19</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -501,20 +102,64 @@
         <dependency>
             <groupId>com.googlecode.cernunnos</groupId>
             <artifactId>cernunnos</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <version>1.4.0</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-tx</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>rhino</groupId>
+                    <artifactId>js</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jdom</groupId>
+                    <artifactId>jdom</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.script</groupId>
+                    <artifactId>script-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.script</groupId>
+                    <artifactId>groovy-engine</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
+                <!-- cernunnos pulls json-lib:jdk15 which pulls commons-collections 3.2.2
+                     (CVE-2015-6420, banned by uportal-portlet-parent). -->
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jdbc</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -523,10 +168,15 @@
         <dependency>
             <groupId>javax.portlet</groupId>
             <artifactId>portlet-api</artifactId>
+            <version>2.0-Draft32</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
+            <!-- Override parent's jstl 1.1.2; this portlet uses 1.2. -->
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -536,12 +186,16 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb-impl.version}</version>
+            <scope>runtime</scope>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -556,14 +210,25 @@
         <dependency>
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
+            <version>3.12.1.GA</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+            <exclusions>
+                <!-- hibernate-core 3.6.10 pulls commons-collections 3.2.2
+                     (CVE-2015-6420, banned by uportal-portlet-parent). -->
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
@@ -587,9 +252,12 @@
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
         <dependency>
+            <!-- for cernunnos -->
             <groupId>javax.script</groupId>
             <artifactId>groovy-engine</artifactId>
+            <version>1.1</version>
             <classifier>jdk14</classifier>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -599,87 +267,173 @@
         <dependency>
             <groupId>org.jasig.portal</groupId>
             <artifactId>uPortal-spring</artifactId>
+            <version>${uportal-libs.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jasig.portal</groupId>
+                    <artifactId>uPortal-api-internal</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jasig.portal</groupId>
+                    <artifactId>uPortal-security-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jasig.portal</groupId>
+                    <artifactId>uPortal-security-mvc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jasig.portal</groupId>
+                    <artifactId>uPortal-tools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.oauth.core</groupId>
+                    <artifactId>oauth</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jasig.resourceserver</groupId>
             <artifactId>resource-server-content</artifactId>
+            <version>${resource-server.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.jasig.resourceserver</groupId>
             <artifactId>resource-server-utils</artifactId>
+            <version>${resource-server.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt-spring31</artifactId>
+            <version>1.9.3</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <version>4.11.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc-portlet</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.owasp.antisamy</groupId>
             <artifactId>antisamy</artifactId>
+            <version>${antisamy.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-httpclient</groupId>
+                    <artifactId>commons-httpclient</artifactId>
+                </exclusion>
+                <!-- antisamy transitively pulls batik-css → xmlgraphics-commons →
+                     commons-logging 1.0.4 (banned by parent). -->
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>com.rometools</groupId>
             <artifactId>rome-modules</artifactId>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-impl</artifactId>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
+            <version>${xalan.version}</version>
         </dependency>
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>serializer</artifactId>
+            <version>${xalan.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -858,7 +612,7 @@
                     <dependency>
                         <groupId>javax.servlet</groupId>
                         <artifactId>javax.servlet-api</artifactId>
-                        <version>${servlet-api.version}</version>
+                        <version>3.1.0</version>
                     </dependency>
                     <dependency>
                         <groupId>javax.portlet</groupId>
