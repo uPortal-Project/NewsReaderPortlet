@@ -24,7 +24,7 @@
 <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript">
     ${n}.jQuery(function() {
 
         var $ = ${n}.jQuery;
@@ -38,14 +38,14 @@
             $.post(savePrefUrl, { prefName: 'summaryView', prefValue: $('#${n}storyView').val() }, null, 'json');
         });
         $("#${n}newWindow").change(function(e){
-            $.post(savePrefUrl, { prefName: 'newWindow', prefValue: ($(e.target).attr("checked") == 'checked') }, null, 'json');
+            $.post(savePrefUrl, { prefName: 'newWindow', prefValue: $(e.target).prop("checked") }, null, 'json');
         });
         $('#${n}maxStories').change(function(){
             $.post(savePrefUrl, { prefName: 'maxStories', prefValue: $('#${n}maxStories').val() }, null, 'json');
         });
 
     });
-</rs:compressJs></script>
+</script>
 
 <div class="container-fluid newsreader-container">
     <div class="row newsreader-portlet-toolbar">

@@ -45,7 +45,7 @@
                     <select class="news-feeds-container"></select>
                 </c:when>
                 <c:otherwise>
-                    <ul class="news-feeds-container"></ul>
+                    <ul class="news-feeds-container nav nav-tabs" role="tablist"></ul>
                 </c:otherwise>
             </c:choose>
         </div>
@@ -80,7 +80,7 @@
             <option value="{{id}}">{{name}}</option>
         </c:when>
         <c:otherwise>
-            <li id="${n}feed{{id}}-tab"><a href="#${n}feed{{id}}">{{name}}</a></li>
+            <li id="${n}feed{{id}}-tab" class="nav-item" role="presentation"><a class="nav-link" href="#${n}feed{{id}}" role="tab">{{name}}</a></li>
         </c:otherwise>
     </c:choose>
     {{/each}}
@@ -136,7 +136,7 @@
 </c:choose>
 
 <jsp:directive.include file="/WEB-INF/jsp/scripts.jsp"/>
-<script type="text/javascript"><rs:compressJs>
+<script type="text/javascript">
     ${n}.jQuery(function() {
 
         var $, Handlebars, newsView, upnews;
@@ -152,7 +152,7 @@
 
         var adjustToolTips = function () {
             <c:if test="${ storyView == 'flyout' }">
-                $(".news-stories li a").tooltip({showURL: false});
+                // Native title attribute provides tooltip; no jQuery UI needed
             </c:if>
         };
 
@@ -172,16 +172,41 @@
                         $("#${n}feed" + id).show();
                     });
                 } else {
-                    // compute the index of the currently selected feed
-                    var index = $("#${n} .news-stories-container").index($("#${n}feed" + newsView.newsService.getActiveFeed()));
-                    // initialize the jQueryUI tabs widget and set the initially
-                    // selected tab
-                    $("#${n} .view-news").tabs({
-                        activate: function (event, ui) {
-                            var id = ui.newPanel[0].id.split("feed")[1];
-                            $(newsView.feedListView).trigger("feedSelected", id);
-                        },
-                        active: index
+                    var initializeTabAccessibility = function () {
+                        $("#${n} .nav-tabs").attr("role", "tablist");
+                        $("#${n} .nav-tabs .nav-link").each(function () {
+                            var $tab = $(this);
+                            var panelId = $tab.attr("href");
+                            if (!panelId || panelId.charAt(0) !== "#") { return; }
+                            var panelDomId = panelId.substring(1);
+                            var tabId = $tab.attr("id") || (panelDomId + "-tab");
+                            $tab.attr("id", tabId);
+                            $tab.attr({ "role": "tab", "aria-controls": panelDomId, "aria-selected": "false", "tabindex": "-1" });
+                            $(panelId).attr({ "role": "tabpanel", "aria-labelledby": tabId });
+                        });
+                    };
+
+                    var activateTab = function ($tab) {
+                        var panelId = $tab.attr("href");
+                        $("#${n} .nav-tabs .nav-link").removeClass("active").attr({ "aria-selected": "false", "tabindex": "-1" });
+                        $tab.addClass("active").attr({ "aria-selected": "true", "tabindex": "0" });
+                        $("#${n} .news-stories-container").hide();
+                        $(panelId).show();
+                    };
+
+                    initializeTabAccessibility();
+
+                    // Show the active feed tab and panel
+                    var activeFeedId = newsView.newsService.getActiveFeed();
+                    activateTab($("#${n}feed" + activeFeedId + "-tab .nav-link"));
+
+                    // Tab click handler
+                    $("#${n} .nav-tabs .nav-link").on("click", function (e) {
+                        e.preventDefault();
+                        var panelId = $(this).attr("href");
+                        var id = panelId.split("feed")[1];
+                        activateTab($(this));
+                        $(newsView.feedListView).trigger("feedSelected", id);
                     });
                 }
 
@@ -224,7 +249,7 @@
         });
 
         $(document).ready(function() {
-            $(newsView.feedListView).bind("feedSelected", function(event, id) {
+            $(newsView.feedListView).on("feedSelected", function(event, id) {
                 if (newsView.newsService.getActiveFeed() !== id) {
                     newsView.getFeed(id);
                 }
@@ -232,4 +257,4 @@
             newsView.setup("${param.activeFeed}");
         });
     });
-</rs:compressJs></script>
+</script>

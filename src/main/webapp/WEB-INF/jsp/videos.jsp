@@ -19,140 +19,140 @@
 
 --%>
 <jsp:directive.include file="/WEB-INF/jsp/include.jsp"/>
+<%--
+  -- This view is selected by setting the 'viewName' portlet preference to 'videos'.
+  --
+  -- NOTE: This view was originally designed for use with a custom video/media RSS adapter
+  -- (believed to have been institution-specific) that populated a 'feed' model attribute
+  -- containing entries with imageUrl, videoUrl, title, description, and link fields.
+  -- The standard RomeAdapter does NOT populate the 'feed' model attribute from this
+  -- controller path (NewsController.showMainView() only returns a view name), so with
+  -- a standard RSS feed the videos array will always be empty.
+  --
+  -- If you are using this view, you will need a custom adapter or controller that puts
+  -- a 'feed' object (with a populated 'entries' list) into the Spring model before
+  -- this JSP renders.
+  --
+  -- The Fluid Infusion pager that was previously used here has been replaced with a
+  -- vanilla JavaScript implementation that behaves identically with respect to empty data.
+  --%>
 <c:set var="n"><portlet:namespace/></c:set>
 
-<rs:aggregatedResources path="${ usePortalJsLibs ? '/skin-shared.xml' : '/skin.xml' }"/>
-
-<div id="${n}" class="portlet">
-    <div class="fl-pager">
-        <div class="view-pager flc-pager-top portlet-section-options">
-            <ul id="pager-top" class="fl-pager-ui">
-                <li class="flc-pager-previous"><a href="#">&lt; <spring:message code="videos.previous"/></a></li>
-                <li style="display:none">
-                    <ul class="fl-pager-links flc-pager-links" style="margin:0; display:inline">
-                        <li class="flc-pager-pageLink"><a href="javascript:;">1</a></li>
-                        <li class="flc-pager-pageLink-disabled">2</li>
-                        <li class="flc-pager-pageLink"><a href="javascript:;">3</a></li>
-                    </ul>
-                </li>
-                <li class="flc-pager-next"><a href="#"><spring:message code="videos.next"/> &gt;</a></li>
-                <li style="display:none">
-                    <span class="flc-pager-summary"><spring:message code="videos.show"/></span>
-                    <span>
-                        <select class="pager-page-size flc-pager-page-size">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                    </span> <spring:message code="videos.per.page"/>
-                </li>
+<div id="${n}" class="container-fluid newsreader-container">
+    <div class="d-flex align-items-center gap-3 mb-2">
+        <nav aria-label="<spring:message code='videos.previous'/> <spring:message code='videos.next'/>">
+            <ul id="${n}pager-top" class="pagination mb-0">
+                <li class="page-item pager-previous"><a class="page-link" href="#"><spring:message code="videos.previous"/></a></li>
+                <li class="page-item pager-next"><a class="page-link" href="#"><spring:message code="videos.next"/></a></li>
             </ul>
-        </div><!-- end: portlet-section-options -->
-
-        <div class="videos">
-            <div class="video">
-                <h3><a href="javascript:;" class="video-title"></a></h3>
-                <img class="img"/>
-                <p class="description"></p>
-            </div>
+        </nav>
+        <span class="pager-summary text-muted small"></span>
+        <div class="d-flex align-items-center gap-1 small">
+            <span><spring:message code="videos.show"/></span>
+            <select class="form-select form-select-sm pager-page-size" style="width:auto">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <span><spring:message code="videos.per.page"/></span>
         </div>
     </div>
+
+    <div class="videos"></div>
 </div>
 
-<script type="text/javascript"><rs:compressJs>
-    var ${n} = ${n} || {};
-<c:choose>
-    <c:when test="${!usePortalJsLibs}">
-        ${n}.jQuery = jQuery.noConflict(true);
-        ${n}._ = _.noConflict();
-        ${n}.Backbone = Backbone.noConflict();
-        ${n}.fluid = fluid;
-        fluid = null;
-        fluid_1_5 = null;
-</c:when>
-    <c:otherwise>
-        <c:set var="ns"><c:if test="${ not empty portalJsNamespace }">${ portalJsNamespace }.</c:if></c:set>
-        ${n}.jQuery = ${ ns }jQuery;
-        ${n}._ = ${ ns }_;
-        ${n}.Backbone = ${ ns }Backbone;
-    </c:otherwise>
-</c:choose>
-    ${n}.jQuery(document).ready(function(){
-        var $ = ${n}.jQuery;
-        var fluid = ${n}.fluid;
-        
-        var videos = [];
-        <c:forEach items="${ feed.entries }" var="entry">
-        videos.push({ title: '<spring:escapeBody javaScriptEscape="true">${ entry.title }</spring:escapeBody>', description: '<spring:escapeBody javaScriptEscape="true">${ entry.description }</spring:escapeBody>', imageUrl: '<spring:escapeBody javaScriptEscape="true">${ entry.imageUrl }</spring:escapeBody>', link: '<spring:escapeBody javaScriptEscape="true">${ entry.link }</spring:escapeBody>' });
-        </c:forEach>
-        
-        var cutpoints = [
-            { id: "video:", selector: ".video" },
-            { id: "title", selector: ".video-title" },
-            { id: "description", selector: ".description" },
-            { id: "image", selector: ".img" }
-        ];
-        
-        var columnDefs = [
-            {
-                key: "title",
-                valuebinding: "*.title",
-                components: {
-                    target: '${"${*.link}"}',
-                    linktext: '${"${*.title}"}'
-                }
-            },
-            {
-                key: "description",
-                valuebinding: "*.description"
-            },
-            {
-                key: "image",
-                valuebinding: "*.img",
-                components: function (row) {
-                    return {
-                        decorators: [{ type: "attrs", attributes: { src: row.imageUrl } }]
-                    };
-                }
-            }
-        ];
-                              
-        var pagerOptions = {
-            dataModel: videos,
-            annotateColumnRange: "title",
-            columnDefs: columnDefs,
-            components: {
-                bodyRenderer: {
-                    type: "fluid.table.selfRender",
-                    options: {
-                        selectors: {
-                            root: ".videos"
-                        },
-                        row: "video:",
-                        rendererOptions: {
-                            cutpoints: cutpoints
-                        }
-                    }
-                },
-                pagerBar: {
-                    type: "fluid.pager.pagerBar",
-                    options: {
-                        pageList: {
-                            type: "fluid.pager.renderedPageList",
-                            options: {
-                                linkBody: "a"
-                            }
-                        }
-                    }
-                }
-            }
-        };
-        
-        // initialize the pager and set it to 6 items per page.
-        var pager = fluid.pagedTable($("#${n} .fl-pager"), pagerOptions);
-        pager.events.initiatePageSizeChange.fire(1);
+<script type="text/javascript">
+'use strict';
 
-    }); 
-</rs:compressJs></script>
+(function () {
+    var $ = up.jQuery;
+
+    var videos = [];
+    <c:forEach items="${ feed.entries }" var="entry">
+    videos.push({
+        title: '<spring:escapeBody javaScriptEscape="true">${ entry.title }</spring:escapeBody>',
+        description: '<spring:escapeBody javaScriptEscape="true">${ entry.description }</spring:escapeBody>',
+        imageUrl: '<spring:escapeBody javaScriptEscape="true">${ entry.imageUrl }</spring:escapeBody>',
+        link: '<spring:escapeBody javaScriptEscape="true">${ entry.link }</spring:escapeBody>'
+    });
+    </c:forEach>
+
+    var container = document.getElementById('${n}');
+    var videosEl = container.querySelector('.videos');
+    var pageSizeSelect = container.querySelector('.pager-page-size');
+    var prevBtn = container.querySelector('.pager-previous a');
+    var nextBtn = container.querySelector('.pager-next a');
+    var summaryEl = container.querySelector('.pager-summary');
+
+    var currentPage = 0;
+    var pageSize = parseInt(pageSizeSelect.value, 10);
+
+    function renderPage() {
+        if (videos.length === 0) {
+            summaryEl.textContent = '0 / 0';
+            prevBtn.parentElement.classList.add('disabled');
+            nextBtn.parentElement.classList.add('disabled');
+            return;
+        }
+
+        var start = currentPage * pageSize;
+        var end = Math.min(start + pageSize, videos.length);
+        var totalPages = Math.ceil(videos.length / pageSize);
+
+        videosEl.innerHTML = '';
+        videos.slice(start, end).forEach(function (video) {
+            var div = document.createElement('div');
+            div.className = 'video';
+
+            var h3 = document.createElement('h3');
+            var a = document.createElement('a');
+            var href = video.link || '';
+            if (/^https?:\/\//i.test(href)) { a.href = href; }
+            a.className = 'video-title';
+            a.textContent = video.title;
+            h3.appendChild(a);
+            div.appendChild(h3);
+
+            if (video.imageUrl && /^https?:\/\//i.test(video.imageUrl)) {
+                var img = document.createElement('img');
+                img.className = 'img';
+                img.src = video.imageUrl;
+                img.alt = '';
+                div.appendChild(img);
+            }
+
+            var p = document.createElement('p');
+            p.className = 'description';
+            p.textContent = video.description;
+            div.appendChild(p);
+
+            videosEl.appendChild(div);
+        });
+
+        summaryEl.textContent = (start + 1) + ' - ' + end + ' / ' + videos.length;
+        prevBtn.parentElement.classList.toggle('disabled', currentPage === 0);
+        nextBtn.parentElement.classList.toggle('disabled', currentPage >= totalPages - 1);
+    }
+
+    prevBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (currentPage > 0) { currentPage--; renderPage(); }
+    });
+
+    nextBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var totalPages = Math.ceil(videos.length / pageSize);
+        if (currentPage < totalPages - 1) { currentPage++; renderPage(); }
+    });
+
+    pageSizeSelect.addEventListener('change', function () {
+        pageSize = parseInt(this.value, 10);
+        currentPage = 0;
+        renderPage();
+    });
+
+    renderPage();
+}());
+</script>

@@ -79,9 +79,12 @@
     <properties>
         <hibernate.version>3.6.10.Final</hibernate.version>
         <spring.version>4.3.30.RELEASE</spring.version>
-        <resource-server.version>1.0.43</resource-server.version>
+        <resource-server.version>1.5.2</resource-server.version>
+        <httpclient.version>4.5.14</httpclient.version>
         <antisamy.version>1.7.5</antisamy.version>
-        <uportal-libs.version>5.16.0</uportal-libs.version>
+        <junit.version>4.13.2</junit.version>
+        <servlet-api.version>3.1.0</servlet-api.version>
+        <uportal-libs.version>5.17.2</uportal-libs.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-impl.version>2.3.3</jaxb-impl.version>
 
@@ -497,10 +500,6 @@
                             <groupId>org.jasig.resourceserver</groupId>
                             <artifactId>resource-server-content</artifactId>
                             <includes>
-                                <include>rs/jquery/1.11.0/</include>
-                                <include>rs/jquery-migrate/</include>
-                                <include>rs/jqueryui/1.10.3/</include>
-                                <include>rs/fluid/1.5.0/</include>
                                 <include>rs/famfamfam/silk/1.3/bullet_feed.png</include>
                             </includes>
                         </overlay>

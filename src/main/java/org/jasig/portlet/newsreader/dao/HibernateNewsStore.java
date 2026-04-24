@@ -60,6 +60,11 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     }
 
     /** {@inheritDoc} */
+    @CacheEvict(cacheNames = {
+            "HibernateNewsStore.newsSetById",
+            "HibernateNewsStore.newsSetByUser",
+            "HibernateNewsStore.newsSetByUserAndName"
+    }, allEntries = true)
     public void storeNewsConfiguration(NewsConfiguration configuration) {
         try {
 
@@ -271,6 +276,11 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
     }
 
     /** {@inheritDoc} */
+    @CacheEvict(cacheNames = {
+            "HibernateNewsStore.newsSetById",
+            "HibernateNewsStore.newsSetByUser",
+            "HibernateNewsStore.newsSetByUserAndName"
+    }, allEntries = true)
     public void deleteNewsConfiguration(NewsConfiguration configuration) {
         try {
 
@@ -357,7 +367,7 @@ public class HibernateNewsStore extends HibernateDaoSupport implements NewsStore
             "HibernateNewsStore.newsSetById",
             "HibernateNewsStore.newsSetByUser",
             "HibernateNewsStore.newsSetByUserAndName"
-    })
+    }, allEntries = true)
 	public void storeNewsSet(NewsSet set) {
         try {
             if (set == null) {

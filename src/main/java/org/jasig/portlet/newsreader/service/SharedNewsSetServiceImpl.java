@@ -87,18 +87,19 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 
 		final Object mutex = PortletUtils.getSessionMutex(session);
 		synchronized (mutex) {
-			logger.debug("Got Mutex {} for userId={}", mutex, userId);
+			logger.debug("getNewsSet called for userId={}, fname={}", userId, fname);
 
 			set = newsStore.getNewsSet(userId, fname);
 
 			if (set == null) {
-				logger.debug("No existing set found for "+userId+", creating and saving new set.");
+				logger.debug("No existing set found for userId={}, fname={}, creating new set.", userId, fname);
 		        set = new NewsSet();
 		        set.setUserId(userId);
 		        set.setName(fname);
 		        
 		        try {
 		            newsStore.storeNewsSet(set);
+		            logger.debug("storeNewsSet completed, set.getId()={}", set.getId());
 		            
 		            if (set.getId() == null) {
 		                logger.warn("NewsSet was saved but no ID was generated for userId={}, fname={}", userId, fname);
