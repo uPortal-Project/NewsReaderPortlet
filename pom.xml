@@ -92,7 +92,7 @@
         <jdbc.groupId>org.hsqldb</jdbc.groupId>
         <jdbc.artifactId>hsqldb</jdbc.artifactId>
         <jdbc.version>2.7.4</jdbc.version>
-        <xalan.version>2.7.3</xalan.version>
+        <xalan.version>2.7.3-atlassian-hosted</xalan.version>
     </properties>
 
 
