@@ -79,7 +79,7 @@
     <properties>
         <hibernate.version>3.6.10.Final</hibernate.version>
         <spring.version>4.3.30.RELEASE</spring.version>
-        <resource-server.version>1.5.2</resource-server.version>
+        <resource-server.version>1.5.3</resource-server.version>
         <httpclient.version>4.5.14</httpclient.version>
         <antisamy.version>1.7.8</antisamy.version>
         <junit.version>4.13.2</junit.version>
