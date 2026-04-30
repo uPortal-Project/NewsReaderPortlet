@@ -486,20 +486,12 @@
                       | the standard boilerplate excludes and aggregate=true.
                       | Local block keeps only the NewsReader-specific
                       | antisamy / dtd / validator-rules excludes.
-                      |
-                      | <java>SLASHSTAR_STYLE: NewsReader's existing Java
-                      | headers are /* ... */ (SLASHSTAR), not the plugin's
-                      | JAVADOC default. Override locally so license:check
-                      | recognizes them without rewriting 54 files.
                     +-->
                     <excludes>
                         <exclude>src/main/resources/antisamy/**</exclude>
                         <exclude>src/main/webapp/WEB-INF/dtd/**</exclude>
                         <exclude>src/main/webapp/WEB-INF/validator-rules.xml</exclude>
                     </excludes>
-                    <mapping>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
                 </configuration>
             </plugin>
             <plugin>
