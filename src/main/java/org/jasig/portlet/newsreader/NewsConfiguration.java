@@ -18,7 +18,7 @@
  */
 package org.jasig.portlet.newsreader;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
 /**
  * NewsConfiguration represents a user-specific registration and configuration
