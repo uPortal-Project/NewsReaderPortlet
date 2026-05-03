@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.jasig.portlet</groupId>
         <artifactId>uportal-portlet-parent</artifactId>
-        <version>50</version>
+        <version>51</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -165,8 +165,8 @@
             <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.portlet</groupId>
@@ -728,6 +728,22 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Local notice-plugin override: extend the parent's license-lookup
+                 URL with a local file that supplies a mapping for hibernate-ehcache
+                 (the Atlassian-hosted variant in use here is missing from parent
+                 mappings). Drop this override once parent mappings learn about
+                 hibernate-ehcache. -->
+            <plugin>
+                <groupId>org.jasig.maven</groupId>
+                <artifactId>notice-maven-plugin</artifactId>
+                <configuration>
+                    <licenseMapping>
+                        <param>${jasig-license-lookup-url}</param>
+                        <param>file://${basedir}/licenses/license-mappings.xml</param>
+                    </licenseMapping>
+                </configuration>
             </plugin>
         </plugins>
     </build>

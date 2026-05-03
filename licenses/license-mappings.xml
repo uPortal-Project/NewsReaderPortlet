@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<license-lookup xmlns="https://source.jasig.org/schemas/maven-notice-plugin/license-lookup"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="https://source.jasig.org/schemas/maven-notice-plugin/license-lookup https://source.jasig.org/schemas/maven-notice-plugin/license-lookup/license-lookup-v1.0.xsd">
+
+    <!--
+      Local license-mapping overrides for artifacts not present in
+      uportal-portlet-parent's shared license-mappings.xml.
+
+      hibernate-ehcache is part of the upstream Hibernate ORM project
+      and ships under the same LGPL 2.1 license as hibernate-core and
+      hibernate-ejb3-persistence (both of which the parent maps to LGPL).
+      The "-atlassian-N" qualifier is the Atlassian-hosted patched
+      build hosted at https://packages.atlassian.com/maven/repository/public/.
+      Add the bare artifactId entry so any version (including the
+      Atlassian-hosted variants) resolves cleanly.
+    -->
+    <artifact>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-ehcache</artifactId>
+        <license>LGPL, v2.1</license>
+    </artifact>
+
+</license-lookup>
