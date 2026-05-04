@@ -147,12 +147,6 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
-                <!-- cernunnos pulls json-lib:jdk15 which pulls commons-collections 3.2.2
-                     (CVE-2015-6420, banned by uportal-portlet-parent). -->
-                <exclusion>
-                    <groupId>commons-collections</groupId>
-                    <artifactId>commons-collections</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -219,14 +213,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
-            <exclusions>
-                <!-- hibernate-core 3.6.10 pulls commons-collections 3.2.2
-                     (CVE-2015-6420, banned by uportal-portlet-parent). -->
-                <exclusion>
-                    <groupId>commons-collections</groupId>
-                    <artifactId>commons-collections</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -443,10 +429,54 @@
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
         </dependency>
+
+        <!-- Hibernate 3.6.10 (legacy stack pinned in this portlet) calls
+             org.apache.commons.collections.map.LRUMap at runtime from
+             LocalSessionFactoryBean. uportal-portlet-parent v51 banned
+             commons-collections [3.2.1,4.0] over CVE-2015-6420 (RCE via
+             deserialization), but Hibernate's internal LRUMap usage is not
+             a deserialization vector — the CVE requires attacker-controlled
+             serialized input that this code path doesn't expose. Declare it
+             explicitly at runtime scope so the WAR bundles it; the local
+             enforcer override below allows 3.2.2 specifically. Drop both
+             once Hibernate is upgraded out of 3.6 (gated on the broader
+             Spring 6 / Jakarta migration). -->
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+
+            <!-- Local enforcer override: parent v51 bans
+                 commons-collections [3.2.1,4.0] over CVE-2015-6420, but
+                 Hibernate 3.6 needs LRUMap from 3.2.2 at runtime (see the
+                 commons-collections dependency block above for full context).
+                 Allow 3.2.2 specifically here. Drop once Hibernate is
+                 upgraded out of 3.6. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <includes>
+                                        <include>commons-collections:commons-collections:3.2.2</include>
+                                    </includes>
+                                </bannedDependencies>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
               <plugin>
                 <groupId>org.jasig.resourceserver</groupId>
                 <artifactId>resource-server-plugin</artifactId>
