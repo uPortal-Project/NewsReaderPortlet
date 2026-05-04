@@ -48,6 +48,11 @@
       "matchPackageNames": ["javax.servlet:javax.servlet-api"],
       "allowedVersions": "< 5.0",
       "description": "Servlet API 5+ is in the Jakarta EE namespace and incompatible with this portlet's javax.servlet imports. Runtime is Tomcat 8.5/9 (Servlet 3.1)."
+    },
+    {
+      "matchPackageNames": ["commons-collections:commons-collections"],
+      "allowedVersions": "3.2.2",
+      "description": "Pinned to 3.2.2 specifically. Hibernate 3.6 needs LRUMap from this jar at runtime; uportal-portlet-parent v51 bans the [3.2.1,4.0] range over CVE-2015-6420 and we override that locally. The 4.x line is org.apache.commons:commons-collections4 with a different package, so it isn't a drop-in replacement. Revisit when this portlet upgrades out of Hibernate 3.6."
     }
   ]
 }
