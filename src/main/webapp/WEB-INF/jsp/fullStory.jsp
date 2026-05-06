@@ -22,15 +22,12 @@
     <link href="<c:url value="/css/newsreader.css"/>" rel="stylesheet" type="text/css" />
 <c:set var="n"><portlet:namespace/></c:set>
 <%--
-  -- Attach jQuery and Handlebars to ${n}.
-  -- Similar to scripts.js but without initializing "upnews"
+  -- Attach jQuery to ${n}. Similar to scripts.jsp but without initializing "upnews".
   --%>
 <rs:aggregatedResources path="skin.xml"/>
 <script type="text/javascript">
     var ${n} = ${n} || {};
     ${n}.jQuery = (typeof up !== 'undefined' && up.jQuery) ? up.jQuery : jQuery;
-    ${n}.Handlebars = Handlebars;
-    Handlebars.noConflict();
 </script>
 
 <div class="org-jasig-portlet-newsreader">
@@ -110,7 +107,7 @@
 
     /* Apply feed template to dropdown/tabs */
     var source = $("#${n}feed-list-template").html();
-    var template = ${n}.Handlebars.compile(source);
+    var template = upnews.compileTemplate(source);
     $("#${n} .news-feeds-container").html(template(${feeds}));
 
     if (${ feedView == 'select' }) {

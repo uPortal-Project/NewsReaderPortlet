@@ -22,7 +22,67 @@ var upnews = {};
 
 (function() {
 
-    upnews.init = function($, Handlebars) {
+    // Tiny templating helper — supports the subset of Handlebars syntax that
+    // NewsReader templates use: {{var}} (HTML-escaped), {{{var}}} (raw),
+    // {{#each X}}…{{/each}}, {{#if X}}…{{/if}}, and {{{helperName arg}}}.
+    // Replaces the previous Handlebars 3.0.3 dependency; see
+    // https://CVE-2019-19919 / CVE-2019-20920 (prototype pollution in <4.0.14).
+    var helpers = {};
+
+    function escapeHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function resolve(expr, ctx) {
+        if (expr === 'this') return ctx;
+        return ctx == null ? undefined : ctx[expr];
+    }
+
+    function renderTemplate(source, ctx) {
+        // Strip Handlebars-style comments: {{! ... }} and {{!-- ... --}}
+        source = source.replace(/\{\{!--[\s\S]*?--\}\}|\{\{![\s\S]*?\}\}/g, '');
+        // {{#each X}}...{{/each}}
+        source = source.replace(/\{\{#each\s+([^\s\}]+)\}\}([\s\S]*?)\{\{\/each\}\}/g, function (_m, expr, body) {
+            var arr = resolve(expr, ctx);
+            if (!arr) return '';
+            return Array.prototype.map.call(arr, function (item) {
+                return renderTemplate(body, item);
+            }).join('');
+        });
+        // {{#if X}}...{{/if}}
+        source = source.replace(/\{\{#if\s+([^\}]+?)\}\}([\s\S]*?)\{\{\/if\}\}/g, function (_m, expr, body) {
+            return resolve(expr.trim(), ctx) ? renderTemplate(body, ctx) : '';
+        });
+        // Helper call {{{name arg}}} — must run before plain {{{var}}}
+        source = source.replace(/\{\{\{(\w+)\s+([^\}]+)\}\}\}/g, function (_m, name, expr) {
+            return helpers[name] ? String(helpers[name](resolve(expr.trim(), ctx))) : '';
+        });
+        // Raw {{{var}}}
+        source = source.replace(/\{\{\{([^\}]+)\}\}\}/g, function (_m, expr) {
+            var v = resolve(expr.trim(), ctx);
+            return v == null ? '' : String(v);
+        });
+        // Escaped {{var}} (exclude block-tag markers)
+        source = source.replace(/\{\{([^\}#\/][^\}]*?)\}\}/g, function (_m, expr) {
+            return escapeHtml(resolve(expr.trim(), ctx));
+        });
+        return source;
+    }
+
+    upnews.compileTemplate = function (source) {
+        return function (data) { return renderTemplate(source, data); };
+    };
+
+    upnews.registerHelper = function (name, fn) {
+        helpers[name] = fn;
+    };
+
+    upnews.init = function ($) {
 
         $.fn.infiniteScroll = function(options) {
 
