@@ -23,11 +23,9 @@
 <script type="text/javascript">
     var ${n} = ${n} || {};
     ${n}.jQuery = up.jQuery;
-    ${n}.Handlebars = Handlebars;
-    Handlebars.noConflict();
     ${n}.upnews = ${n}.upnews || upnews;
     if (!${n}.upnews.initialized) {
-        ${n}.upnews.init(${n}.jQuery, ${n}.Handlebars);
+        ${n}.upnews.init(${n}.jQuery);
         ${n}.upnews.initialized = true;
     }
     upnews = null;

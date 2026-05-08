@@ -139,14 +139,13 @@
 <script type="text/javascript">
     ${n}.jQuery(function() {
 
-        var $, Handlebars, newsView, upnews;
+        var $, newsView, upnews;
 
         $ = ${n}.jQuery;
-        Handlebars = ${n}.Handlebars;
         upnews = ${n}.upnews;
 
-        var newsStoryTemplate = Handlebars.compile($("#${n}news-story-template").html())
-        Handlebars.registerHelper('news_stories', function(entries) {
+        var newsStoryTemplate = upnews.compileTemplate($("#${n}news-story-template").html());
+        upnews.registerHelper('news_stories', function(entries) {
             return newsStoryTemplate(entries);
         });
 
@@ -212,7 +211,7 @@
 
             },
             feedDetailView: $.extend(upnews.NewsFeedDetailView, {
-                template: Handlebars.compile($("#${n}feed-detail-template").html()),
+                template: upnews.compileTemplate($("#${n}feed-detail-template").html()),
                 postRender: adjustToolTips,
                 loader: function(id) {
                     var view = this;
@@ -243,7 +242,7 @@
             }),
             feedListView: $.extend(upnews.NewsFeedListView, {
                 $el: $("#${n} .news-feeds-container"),
-                template: Handlebars.compile($("#${n}feed-list-template").html())
+                template: upnews.compileTemplate($("#${n}feed-list-template").html())
             }),
             namespace: "${n}"
         });
