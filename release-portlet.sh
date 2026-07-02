@@ -84,7 +84,9 @@ CURRENT=$(git rev-parse --abbrev-ref HEAD)
 [[ "$CURRENT" == "$BRANCH" ]] || fail "on '$CURRENT', expected '$BRANCH'"
 ok "on branch $BRANCH"
 
-git fetch upstream "$BRANCH" --tags --quiet
+# --force so a stale local tag (e.g. one re-cut on upstream during an earlier
+# release) can't fail the fetch and silently abort the script under `set -e`.
+git fetch upstream "$BRANCH" --tags --force --quiet
 LOCAL_HEAD=$(git rev-parse HEAD)
 UPSTREAM_HEAD=$(git rev-parse "upstream/$BRANCH")
 if [[ "$LOCAL_HEAD" != "$UPSTREAM_HEAD" ]]; then
