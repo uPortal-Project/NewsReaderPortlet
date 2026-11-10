@@ -18,6 +18,7 @@
  */
 package org.jasig.portlet.newsreader.service;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.portlet.PortletRequest;
@@ -29,7 +30,6 @@ import org.jasig.portlet.newsreader.NewsSet;
 import org.jasig.portlet.newsreader.dao.NewsStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.portlet.util.PortletUtils;
 
 /**
  * <p>SharedNewsSetServiceImpl class.</p>
@@ -49,6 +49,20 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 	private RolesService rolesService;
 
 	private Logger logger = LoggerFactory.getLogger(SharedNewsSetServiceImpl.class);
+
+	/*
+	 * Locks for getNewsSet, shared out by user and set name.  The store caches a
+	 * user's set and gives the same object to every request.  If two requests saved
+	 * it at the same moment, Hibernate would refuse the second one.  A lock on the
+	 * portlet session isn't enough, because one user can have several sessions.
+	 */
+	private final Object[] setLocks = new Object[64];
+
+	public SharedNewsSetServiceImpl() {
+		for (int i = 0; i < setLocks.length; i++) {
+			setLocks[i] = new Object();
+		}
+	}
 
 	/**
 	 * <p>Setter for the field <code>newsStore</code>.</p>
@@ -85,7 +99,7 @@ public class SharedNewsSetServiceImpl implements NewsSetResolvingService {
 
 		NewsSet set;
 
-		final Object mutex = PortletUtils.getSessionMutex(session);
+		final Object mutex = setLocks[Math.floorMod(Objects.hash(userId, fname), setLocks.length)];
 		synchronized (mutex) {
 			logger.debug("getNewsSet called for userId={}, fname={}", userId, fname);
 
