@@ -625,24 +625,7 @@
                             </tasks>
                         </configuration>
                     </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>javax.servlet-api</artifactId>
-                        <version>3.1.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>javax.portlet</groupId>
-                        <artifactId>portlet-api</artifactId>
-                        <version>2.0-Draft32</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <!-- To import the news reader db tables, use mvn [-Ddir=dir] data-import -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
+                    <!-- To import the news reader db tables, use mvn [-Ddir=dir] data-import -->
                     <execution>
                         <id>data-import</id>
                         <phase>data-import</phase>
@@ -717,6 +700,16 @@
                     </execution>
                 </executions>
                 <dependencies>
+                    <dependency>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>javax.servlet-api</artifactId>
+                        <version>3.1.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.portlet</groupId>
+                        <artifactId>portlet-api</artifactId>
+                        <version>2.0-Draft32</version>
+                    </dependency>
                     <dependency>
                         <groupId>rhino</groupId>
                         <artifactId>js</artifactId>
