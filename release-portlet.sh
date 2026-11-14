@@ -38,13 +38,13 @@ Environment:
 
 Phases:
   1. Tree state — clean, on expected branch, in sync with upstream
-  2. Env — Java 11, mvn, ~/.m2/settings.xml, GPG key on keys.openpgp.org
+  2. Env — Java 11, ./mvnw (Maven Wrapper), ~/.m2/settings.xml, GPG key on keys.openpgp.org
   3. POM hygiene — no stale OSSRH URLs, <developers> present
-  4. Build smoke — mvn clean install
-  5. Styling — mvn notice:generate / license:format / javadoc:fix; aborts on drift
+  4. Build smoke — ./mvnw clean install
+  5. Styling — ./mvnw notice:generate / license:format / javadoc:fix; aborts on drift
   6. Artifact discovery — groupId/artifactId from POM, build canary URL
   7. Summary + y/N confirmation
-  8. Cut release — mvn -B release:clean release:prepare release:perform
+  8. Cut release — ./mvnw -B release:clean release:prepare release:perform
   9. OSSRH POST — push staged repo into Central Portal staging UI
  10. Print next steps (Publish in Portal UI, watch propagation)
 EOF
@@ -104,10 +104,13 @@ done
 
 # 2. Env & credentials
 hdr "Env & credentials"
-command -v mvn > /dev/null || fail "mvn not on PATH"
+# Use the pinned Maven Wrapper rather than whatever mvn is on PATH, so a release
+# is built with the same Maven version as CI.
+MVN=./mvnw
+[[ -x "$MVN" ]] || fail "$MVN missing or not executable (Maven Wrapper not present on this branch)"
 JAVA_VER=$(java -version 2>&1 | awk -F\" 'NR==1{print $2}')
 [[ "$JAVA_VER" == 11.* ]] || warn "java $JAVA_VER — expected 11.x"
-ok "java $JAVA_VER, mvn $(mvn -v 2>/dev/null | head -1 | awk '{print $3}')"
+ok "java $JAVA_VER, mvn $("$MVN" -v 2>/dev/null | head -1 | awk '{print $3}')"
 
 [[ -f "$HOME/.m2/settings.xml" ]] || fail "~/.m2/settings.xml missing (see Maven release guide §Setup)"
 grep -q '<id>central</id>' "$HOME/.m2/settings.xml" \
@@ -142,13 +145,13 @@ ok "no stale OSSRH URLs"
 if grep -q '<developers>' pom.xml 2>/dev/null; then
   ok "<developers> in top-level pom.xml"
 else
-  PARENT_VER=$(mvn -q help:evaluate -Dexpression=project.parent.version -DforceStdout 2>/dev/null || echo unknown)
+  PARENT_VER=$("$MVN" -q help:evaluate -Dexpression=project.parent.version -DforceStdout 2>/dev/null || echo unknown)
   warn "<developers> not in top-level POM — relying on parent (version: $PARENT_VER)"
 fi
 
 # 4. Build smoke
-hdr "Build smoke (mvn clean install)"
-mvn -B clean install > /tmp/release-build.log 2>&1 \
+hdr "Build smoke (./mvnw clean install)"
+"$MVN" -B clean install > /tmp/release-build.log 2>&1 \
   || { echo; tail -30 /tmp/release-build.log; fail "build failed (see /tmp/release-build.log)"; }
 ok "clean install passed"
 
@@ -158,16 +161,16 @@ ok "clean install passed"
 hdr "Styling pass + NOTICE/license verification"
 
 # Run formatters/generators (best-effort; warnings only)
-mvn -B notice:generate license:format javadoc:fix > /tmp/release-styling.log 2>&1 \
+"$MVN" -B notice:generate license:format javadoc:fix > /tmp/release-styling.log 2>&1 \
   || warn "styling pass non-zero exit (see /tmp/release-styling.log)"
 
 # Verify check goals pass. If notice:check fails, target/NOTICE.expected contains
 # the correct content — copy it over and re-verify.
-if ! mvn -B notice:check license:check > /tmp/release-checks.log 2>&1; then
+if ! "$MVN" -B notice:check license:check > /tmp/release-checks.log 2>&1; then
   if [[ -f target/NOTICE.expected ]] && ! diff -q target/NOTICE.expected NOTICE > /dev/null 2>&1; then
     cp target/NOTICE.expected NOTICE
     warn "NOTICE refreshed from target/NOTICE.expected"
-    if ! mvn -B notice:check license:check > /tmp/release-checks.log 2>&1; then
+    if ! "$MVN" -B notice:check license:check > /tmp/release-checks.log 2>&1; then
       echo; tail -30 /tmp/release-checks.log
       fail "notice:check / license:check still failing after NOTICE auto-fix"
     fi
@@ -187,8 +190,8 @@ ok "no drift; notice:check + license:check pass"
 
 # 6. Artifact discovery
 hdr "Artifact discovery"
-GROUP_ID=$(mvn -q help:evaluate -Dexpression=project.groupId -DforceStdout 2>/dev/null)
-ARTIFACT_ID=$(mvn -q help:evaluate -Dexpression=project.artifactId -DforceStdout 2>/dev/null)
+GROUP_ID=$("$MVN" -q help:evaluate -Dexpression=project.groupId -DforceStdout 2>/dev/null)
+ARTIFACT_ID=$("$MVN" -q help:evaluate -Dexpression=project.artifactId -DforceStdout 2>/dev/null)
 GROUP_PATH=$(echo "$GROUP_ID" | tr . /)
 ok "groupId:    $GROUP_ID"
 ok "artifactId: $ARTIFACT_ID"
@@ -219,8 +222,8 @@ read -r -p "Proceed with release? (y/N) " ANS
 [[ "$ANS" == "y" || "$ANS" == "Y" ]] || { echo "aborted"; exit 0; }
 
 # 8. Cut release
-hdr "mvn release:clean release:prepare release:perform"
-mvn -B release:clean release:prepare release:perform \
+hdr "./mvnw release:clean release:prepare release:perform"
+"$MVN" -B release:clean release:prepare release:perform \
   -DautoVersionSubmodules=true \
   -DreleaseVersion="$RELEASE" \
   -DdevelopmentVersion="$NEXT" \
