@@ -229,11 +229,26 @@ ok "release cut + tag pushed"
 
 # 9. OSSRH POST
 hdr "POST staged artifacts to Central Portal"
-AUTH=$(printf '%s:%s' "$OSSRH_USERNAME" "$OSSRH_PASSWORD" | base64)
-HTTP=$(curl -s -o /tmp/release-ossrh.out -w "%{http_code}" -X POST \
-  "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/$GROUP_ID" \
+# base64 wraps at 76 columns on some platforms; a newline inside the header
+# silently breaks authentication, so strip them.
+AUTH=$(printf '%s:%s' "$OSSRH_USERNAME" "$OSSRH_PASSWORD" | base64 | tr -d '\n')
+OSSRH_API="https://ossrh-staging-api.central.sonatype.com"
+# The staging repository is keyed by the source IP the artifacts were uploaded
+# from, and Maven's HTTP client reaches Sonatype over IPv4. On a dual-stack
+# network curl prefers IPv6, so an unforced POST looks for a repository keyed to
+# the v6 address and fails with "No repository found for <user>/<v6-addr>/...".
+# Force IPv4 so this matches the repository release:perform just created.
+HTTP=$(curl -4 -s -o /tmp/release-ossrh.out -w "%{http_code}" -X POST \
+  "$OSSRH_API/manual/upload/defaultRepository/$GROUP_ID" \
   -H "Authorization: Bearer $AUTH")
-[[ "$HTTP" == "200" ]] || fail "OSSRH POST HTTP $HTTP (see /tmp/release-ossrh.out)"
+if [[ "$HTTP" != "200" ]]; then
+  warn "OSSRH POST HTTP $HTTP (body in /tmp/release-ossrh.out)"
+  warn "open staging repositories for $GROUP_ID (the key embeds the IP each was created from):"
+  curl -4 -s "$OSSRH_API/manual/search/repositories?ip=any&profile_id=$GROUP_ID" \
+    -H "Authorization: Bearer $AUTH" >&2 || true
+  printf '\n' >&2
+  fail "could not promote staged artifacts to the Central Portal"
+fi
 ok "OSSRH POST: HTTP 200"
 
 # 10. Next steps
